@@ -6,6 +6,7 @@ import com.itu.bibliotheque.model.Pret;
 import com.itu.bibliotheque.repository.ExemplaireRepository;
 import com.itu.bibliotheque.repository.PretRepository;
 import com.itu.bibliotheque.service.LivreService;
+import com.itu.bibliotheque.service.PretService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,6 +31,9 @@ public class LivreController {
     @Autowired
     private ExemplaireRepository exemplaireRepository;
 
+    @Autowired
+    private PretService pretService;
+
     @GetMapping("/livres")
     public String listLivres(Model model) {
         List<Livre> livres = livreService.findAll();
@@ -45,6 +49,7 @@ public class LivreController {
         return "livres/rendre";
     }
 
+
     @PostMapping("/livres/rendre")
     public String rendreLivre(
         @RequestParam("pretId") Integer pretId,
@@ -53,36 +58,25 @@ public class LivreController {
     ) {
         try {
             LocalDate dateRetourReelle = LocalDate.parse(dateRetourStr);
-            Pret pret = pretRepository.findById(pretId)
-                .orElseThrow(() -> new RuntimeException("Prêt introuvable"));
 
-            if (pret.getDateRetourReelle() != null) {
-                throw new RuntimeException("Ce livre a déjà été rendu.");
+            String erreur = pretService.rendreLivre(pretId, dateRetourReelle);
+
+            if (erreur != null) {
+                model.addAttribute("error", erreur);
+            } else {
+                model.addAttribute("message", "Livre rendu avec succès.");
             }
 
-            pret.setDateRetourReelle(dateRetourReelle);
-            pretRepository.save(pret);
-
-            Exemplaire ex = pret.getExemplaire();
-            ex.setStatut("disponible");
-            exemplaireRepository.save(ex);
-
-            if (dateRetourReelle.isAfter(pret.getDateRetourPrevue())) {
-                
-                System.out.println("⚠️ Livre rendu en retard !");
-            }
-
-            model.addAttribute("message", "Livre rendu avec succès.");
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
         }
 
-        model.addAttribute("prets", pretRepository.findByDateRetourReelleIsNull());
+        model.addAttribute("prets", pretRepository.findByDateRetourReelleIsNull()); 
         model.addAttribute("pretSelectionne", new Pret());
         return "livres/rendre";
     }
 
-    @GetMapping("/livres/disponibles")
+
     public String livresDisponibles(
         @RequestParam(name = "date", required = false) String dateStr,
         Model model
@@ -93,7 +87,7 @@ public class LivreController {
             try {
                 LocalDate date = LocalDate.parse(dateStr);
                 LocalDateTime dateTime = date.atStartOfDay();
-                exemplairesDisponibles = exemplaireRepository.findByStatutAndDateAjoutBeforeAndDateSuppressionIsNull("disponible", dateTime);
+                exemplairesDisponibles = livreService.findExemplairesDisponiblesAtDate(dateTime);
             } catch (Exception e) {
                 model.addAttribute("error", "Date invalide.");
             }

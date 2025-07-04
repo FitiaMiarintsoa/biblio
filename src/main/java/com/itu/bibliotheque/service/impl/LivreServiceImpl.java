@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -71,7 +72,10 @@ public boolean rendreLivre(String identifiantAdherent, String isbnLivre, LocalDa
     exemplaire.setStatut("disponible");
     exemplaireRepository.save(exemplaire);
 
-    // ⚠️ À vous de gérer si vous voulez générer une alerte pour le retard
     return true;
 }
+    @Override
+    public List<Exemplaire> findExemplairesDisponiblesAtDate(LocalDateTime date) {
+        return exemplaireRepository.findByStatutAndDateAjoutBeforeAndDateSuppressionIsNull("disponible", date);
+    }
 }

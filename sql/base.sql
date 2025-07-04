@@ -196,6 +196,33 @@ CREATE TABLE utilisateur_role (
     CONSTRAINT fk_role FOREIGN KEY (id_role) REFERENCES role(id) ON DELETE CASCADE
 );
 
+CREATE TABLE notification (
+    id SERIAL PRIMARY KEY,
+    id_adherent INT NOT NULL,
+    message TEXT NOT NULL,
+    est_lu BOOLEAN DEFAULT FALSE,
+    date_notification TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    date_suppression TIMESTAMP,
+
+    CONSTRAINT fk_notification_adherent FOREIGN KEY (id_adherent)
+        REFERENCES adherent(id) ON DELETE CASCADE
+);
+
+CREATE TABLE sanction (
+    id SERIAL PRIMARY KEY,
+    id_adherent INT NOT NULL,
+    type_sanction VARCHAR(100) NOT NULL, 
+    description TEXT,
+    date_debut DATE NOT NULL,
+    date_fin DATE,
+    est_active BOOLEAN DEFAULT TRUE,
+    date_ajout TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    date_suppression TIMESTAMP,
+
+    CONSTRAINT fk_sanction_adherent FOREIGN KEY (id_adherent)
+        REFERENCES adherent(id) ON DELETE CASCADE
+);
+
 
 ALTER TABLE adherent ADD COLUMN mot_de_passe VARCHAR(255);
     ALTER TABLE role
