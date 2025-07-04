@@ -1,20 +1,29 @@
 package com.itu.bibliotheque.service;
 
-// import com.itu.bibliotheque.model.Exemplaire;
-// import com.itu.bibliotheque.model.Livre;
 import com.itu.bibliotheque.model.*;
 import com.itu.bibliotheque.repository.*;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-// import java.util.List;
-import java.util.UUID;
+import java.util.Random;
+
+@Service
 public class AdherentService {
+
+    @Autowired
     private PersonneRepository personneRepository;
+
+    @Autowired
     private AdherentRepository adherentRepository;
+
+    @Autowired
     private CategorieAdherentRepository categorieRepository;
 
     public void ajouterAdherent(String nom, String prenom, String email, String adresse, LocalDate dateNaissance, int idCategorie) {
+        // Création de la personne
         Personne personne = new Personne();
         personne.setNom(nom);
         personne.setPrenom(prenom);
@@ -26,11 +35,15 @@ public class AdherentService {
         personne = personneRepository.save(personne);
 
         CategorieAdherent categorie = categorieRepository.findById(idCategorie)
-            .orElseThrow(() -> new RuntimeException("Catégorie non trouvée"));
+                .orElseThrow(() -> new RuntimeException("Catégorie non trouvée"));
+
+        String identifiant = nom.toLowerCase().replaceAll("\\s+", "") + new Random().nextInt(1000);
+        String motDePasse = prenom.toLowerCase().replaceAll("\\s+", "") + new Random().nextInt(1000);
 
         Adherent adherent = new Adherent();
         adherent.setPersonne(personne);
-        adherent.setIdentifiant(UUID.randomUUID().toString().substring(0, 8)); // identifiant aléatoire
+        adherent.setIdentifiant(identifiant);
+        adherent.setMotDePasse(motDePasse);
         adherent.setCategorieAdherent(categorie);
         adherent.setQuotaMax(5);
         adherent.setEstBloque(false);

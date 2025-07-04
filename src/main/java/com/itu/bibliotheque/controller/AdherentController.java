@@ -28,7 +28,7 @@ public class AdherentController {
     @GetMapping("/ajouter")
     public String showFormAjout(Model model) {
         model.addAttribute("categories", categorieRepository.findAll());
-        return "adherent/ajout";
+        return "bibliothecaire/ajout";
     }
 
     @PostMapping("/ajouter")
@@ -48,6 +48,6 @@ public class AdherentController {
             model.addAttribute("error", e.getMessage());
         }
         model.addAttribute("categories", categorieRepository.findAll());
-        return "adherent/ajout";
+        return "bibliothecaire/ajout";
     }
 }

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Ajouter un adhérent</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Ajouter un nouvel adhérent</h2>
+    <form th:action="@{/adherents/ajouter}" method="post">
+        <div class="mb-3">
+            <label>Nom :</label>
+            <input type="text" name="nom" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label>Prénom :</label>
+            <input type="text" name="prenom" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label>Email :</label>
+            <input type="email" name="email" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label>Adresse :</label>
+            <input type="text" name="adresse" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label>Date de naissance :</label>
+            <input type="date" name="dateNaissance" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label>Catégorie :</label>
+            <select name="idCategorie" class="form-control" required>
+                <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.nom}"></option>
+            </select>
+        </div>
+        <button class="btn btn-primary" type="submit">Ajouter</button>
+    </form>
+
+    <div th:if="${success}" class="alert alert-success mt-3" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-danger mt-3" th:text="${error}"></div>
+</div>
+</body>
+</html>
