@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.itu.bibliotheque.model.Abonnement;
+import com.itu.bibliotheque.model.Adherent;
+import com.itu.bibliotheque.repository.AbonnementRepository;
+import com.itu.bibliotheque.repository.AdherentRepository;
 import com.itu.bibliotheque.repository.CategorieAdherentRepository;
 import com.itu.bibliotheque.service.AdherentService;
 
@@ -24,6 +28,12 @@ public class AdherentController {
 
     @Autowired
     private CategorieAdherentRepository categorieRepository;
+
+    @Autowired
+    private AbonnementRepository abonnementRepository;
+
+    @Autowired
+    private AdherentRepository adherentRepository;
 
     @GetMapping("/ajouter")
     public String showFormAjout(Model model) {
@@ -49,5 +59,36 @@ public class AdherentController {
         }
         model.addAttribute("categories", categorieRepository.findAll());
         return "bibliothecaire/ajout";
+    }
+
+    @GetMapping("/abonner")
+    public String showAbonnementForm(Model model) {
+        model.addAttribute("adherents", adherentRepository.findAll());
+        return "bibliothecaire/abonner";
+    }
+
+    @PostMapping("/abonner")
+    public String enregistrerAbonnement(@RequestParam("idAdherent") Integer idAdherent,
+                                        @RequestParam("dateDebut") String dateDebutStr,
+                                        @RequestParam("dateFin") String dateFinStr,
+                                        Model model) {
+        try {
+            Adherent adherent = adherentRepository.findById(idAdherent)
+                .orElseThrow(() -> new RuntimeException("Adhérent introuvable"));
+
+            Abonnement abonnement = new Abonnement();
+            abonnement.setAdherent(adherent);
+            abonnement.setDateDebut(LocalDate.parse(dateDebutStr));
+            abonnement.setDateFin(LocalDate.parse(dateFinStr));
+
+            abonnementRepository.save(abonnement);
+
+            model.addAttribute("success", "Abonnement enregistré avec succès.");
+        } catch (Exception e) {
+            model.addAttribute("error", "Erreur : " + e.getMessage());
+        }
+
+        model.addAttribute("adherents", adherentRepository.findAll());
+        return "bibliothecaire/abonner";
     }
 }

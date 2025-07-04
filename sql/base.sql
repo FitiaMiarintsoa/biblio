@@ -223,6 +223,17 @@ CREATE TABLE sanction (
         REFERENCES adherent(id) ON DELETE CASCADE
 );
 
+CREATE TABLE abonnement (
+    id SERIAL PRIMARY KEY,
+    id_adherent INT NOT NULL,
+    date_debut DATE NOT NULL,
+    date_fin DATE NOT NULL,
+    date_ajout TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    date_suppression TIMESTAMP,
+
+    CONSTRAINT fk_abonnement_adherent FOREIGN KEY (id_adherent) REFERENCES adherent(id) ON DELETE CASCADE
+);
+
 
 ALTER TABLE adherent ADD COLUMN mot_de_passe VARCHAR(255);
     ALTER TABLE role

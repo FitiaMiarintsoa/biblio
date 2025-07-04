@@ -46,7 +46,7 @@ public class LoginController {
     Adherent adherent = loginService.authenticateAdherent(identifiant, password);
         if(adherent != null) {
             session.setAttribute("userAdherent", adherent);
-            return "redirect:/adherent/home";  // page d'accueil après login
+            return "redirect:/adherent/home";  
         } else {
             model.addAttribute("error", "Identifiants incorrects");
             return "adherent/login";

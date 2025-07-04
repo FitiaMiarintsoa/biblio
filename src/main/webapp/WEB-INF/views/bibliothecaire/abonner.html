@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Abonnement d’un adhérent</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Nouvel abonnement</h2>
+    <form th:action="@{/adherents/abonner}" method="post">
+        <div class="mb-3">
+            <label>Adhérent :</label>
+            <select name="idAdherent" class="form-control" required>
+                <option th:each="a : ${adherents}" th:value="${a.id}"
+                        th:text="${a.prenom + ' ' + a.nom}"></option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label>Date de début :</label>
+            <input type="date" name="dateDebut" class="form-control" required/>
+        </div>
+        <div class="mb-3">
+            <label>Date de fin :</label>
+            <input type="date" name="dateFin" class="form-control" required/>
+        </div>
+        <button type="submit" class="btn btn-primary">Abonner</button>
+
+        <div th:if="${success}" class="alert alert-success mt-2" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger mt-2" th:text="${error}"></div>
+    </form>
+</div>
+</body>
+</html>
