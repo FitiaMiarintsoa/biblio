@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -79,5 +80,27 @@ public class LivreController {
         model.addAttribute("prets", pretRepository.findByDateRetourReelleIsNull());
         model.addAttribute("pretSelectionne", new Pret());
         return "livres/rendre";
+    }
+
+    @GetMapping("/livres/disponibles")
+    public String livresDisponibles(
+        @RequestParam(name = "date", required = false) String dateStr,
+        Model model
+    ) {
+        List<Exemplaire> exemplairesDisponibles = null;
+
+        if (dateStr != null && !dateStr.isEmpty()) {
+            try {
+                LocalDate date = LocalDate.parse(dateStr);
+                LocalDateTime dateTime = date.atStartOfDay();
+                exemplairesDisponibles = exemplaireRepository.findByStatutAndDateAjoutBeforeAndDateSuppressionIsNull("disponible", dateTime);
+            } catch (Exception e) {
+                model.addAttribute("error", "Date invalide.");
+            }
+        }
+
+        model.addAttribute("exemplaires", exemplairesDisponibles);
+        model.addAttribute("dateRecherche", dateStr);
+        return "livres/disponibles";
     }
 }
