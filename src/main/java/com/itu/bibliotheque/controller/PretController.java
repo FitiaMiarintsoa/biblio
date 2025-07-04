@@ -84,7 +84,6 @@ public String enregistrerPret(@RequestParam("idAdherent") int idAdherent,
         }
     }
 
-    // RG3 - Quota d’emprunt non dépassé
     long nbPretsEnCours = pretRepository.countByAdherentAndDateRetourReelleIsNull(adherent);
     if (nbPretsEnCours >= adherent.getQuotaMax()) {
         model.addAttribute("error", "Cet adhérent a atteint le nombre maximal de livres empruntés.");
@@ -93,9 +92,7 @@ public String enregistrerPret(@RequestParam("idAdherent") int idAdherent,
         return "bibliothecaire/emprunt";
     }
 
-    // RG4 - Vérification que c'est bien un adhérent (déjà fait implicitement)
 
-    // ✅ Enregistrement du prêt
     Pret pret = new Pret();
     pret.setAdherent(adherent);
     pret.setExemplaire(exemplaire);

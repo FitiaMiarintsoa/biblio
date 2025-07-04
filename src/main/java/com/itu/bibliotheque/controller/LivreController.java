@@ -55,21 +55,17 @@ public class LivreController {
             Pret pret = pretRepository.findById(pretId)
                 .orElseThrow(() -> new RuntimeException("Prêt introuvable"));
 
-            // Vérification : déjà rendu ?
             if (pret.getDateRetourReelle() != null) {
                 throw new RuntimeException("Ce livre a déjà été rendu.");
             }
 
-            // Mise à jour du prêt
             pret.setDateRetourReelle(dateRetourReelle);
             pretRepository.save(pret);
 
-            // Mise à jour du statut de l'exemplaire
             Exemplaire ex = pret.getExemplaire();
             ex.setStatut("disponible");
             exemplaireRepository.save(ex);
 
-            // Vérifier le retard
             if (dateRetourReelle.isAfter(pret.getDateRetourPrevue())) {
                 
                 System.out.println("⚠️ Livre rendu en retard !");
@@ -80,7 +76,6 @@ public class LivreController {
             model.addAttribute("error", e.getMessage());
         }
 
-        // Recharger la liste des prêts actifs
         model.addAttribute("prets", pretRepository.findByDateRetourReelleIsNull());
         model.addAttribute("pretSelectionne", new Pret());
         return "livres/rendre";
