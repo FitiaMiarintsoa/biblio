@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+ Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="1.2.0" use-changelog="false" max-obj-count="13"
+	 gen-disabled-objs-code="false" show-sys-schemas-rects="true"
+	 last-position="-330,-185" last-zoom="0.65" scene-rect="-508,-647,2874.09,1908.92"
+	 default-schema="public" default-owner="postgres"
+	 layers="Default layer"
+	 active-layers="0"
+	 layer-name-colors="#000000"
+	 layer-rect-colors="#b4b4b4"
+	 show-layer-names="false" show-layer-rects="false">
+<database name="bibliotheque" encoding="UTF8" lc-collate="fr_FR.UTF-8" lc-ctype="fr_FR.UTF-8" is-template="false" allow-conns="true">
+	<role name="postgres"/>
+	<tablespace name="pg_default"/>
+</database>
+
+<schema name="public" layers="0" rect-visible="true" fill-color="#e1e1e1" name-color="#000000" sql-disabled="true">
+</schema>
+
+<sequence name="categorie_adherent_id_seq" cycle="false" start="1" increment="1" min-value="1" max-value="2147483647" cache="1">
+	<schema name="public"/>
+	<role name="postgres"/>
+</sequence>
+
+<table name="categorie_adherent" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="60" y="60"/>
+	<column name="id" not-null="true" sequence="public.categorie_adherent_id_seq">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="nom" not-null="true">
+		<type name="character varying" length="50"/>
+	</column>
+	<column name="description">
+		<type name="text" length="0"/>
+	</column>
+	<column name="date_ajout" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="date_suppression">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="categorie_adherent_pkey" type="pk-constr" table="public.categorie_adherent">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="categorie_adherent_nom_key" type="uq-constr" table="public.categorie_adherent">
+		<columns names="nom" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="personne_id_seq" cycle="false" start="1" increment="1" min-value="1" max-value="2147483647" cache="1">
+	<schema name="public"/>
+	<role name="postgres"/>
+</sequence>
+
+<table name="personne" layers="0" collapse-mode="2" max-obj-count="9" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1360" y="-600"/>
+	<column name="id" not-null="true" sequence="public.personne_id_seq">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="nom" not-null="true">
+		<type name="character varying" length="100"/>
+	</column>
+	<column name="prenom" not-null="true">
+		<type name="character varying" length="100"/>
+	</column>
+	<column name="email" not-null="true">
+		<type name="character varying" length="150"/>
+	</column>
+	<column name="adresse">
+		<type name="character varying" length="255"/>
+	</column>
+	<column name="date_naissance">
+		<type name="date" length="0"/>
+	</column>
+	<column name="date_ajout" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="date_suppression">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="personne_pkey" type="pk-constr" table="public.personne">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="personne_email_key" type="uq-constr" table="public.personne">
+		<columns names="email" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="adherent" layers="0" collapse-mode="2" max-obj-count="8" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="640" y="-560"/>
+	<column name="id" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="identifiant" not-null="true">
+		<type name="character varying" length="50"/>
+	</column>
+	<column name="id_categorie_adherent" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="quota_max" default-value="5">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="est_bloque" default-value="false">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="date_ajout" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="date_suppression">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="adherent_quota_max_check" type="ck-constr" table="public.adherent">
+			<expression> <![CDATA[(quota_max >= 1)]]> </expression>
+	</constraint>
+	<constraint name="adherent_pkey" type="pk-constr" table="public.adherent">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="adherent_identifiant_key" type="uq-constr" table="public.adherent">
+		<columns names="identifiant" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="bibliothecaire" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1580" y="-100"/>
+	<column name="id" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="date_ajout" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="date_suppression">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="bibliothecaire_pkey" type="pk-constr" table="public.bibliothecaire">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="livre_id_seq" cycle="false" start="1" increment="1" min-value="1" max-value="2147483647" cache="1">
+	<schema name="public"/>
+	<role name="postgres"/>
+</sequence>
+
+<table name="livre" layers="0" collapse-mode="2" max-obj-count="9" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="380" y="940"/>
+	<column name="id" not-null="true" sequence="public.livre_id_seq">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="titre" not-null="true">
+		<type name="character varying" length="255"/>
+	</column>
+	<column name="auteur">
+		<type name="character varying" length="150"/>
+	</column>
+	<column name="genre">
+		<type name="character varying" length="100"/>
+	</column>
+	<column name="isbn" not-null="true">
+		<type name="character varying" length="50"/>
+	</column>
+	<column name="restriction_age">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="date_ajout" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="date_suppression">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="livre_pkey" type="pk-constr" table="public.livre">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="livre_isbn_key" type="uq-constr" table="public.livre">
+		<columns names="isbn" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="exemplaire_id_seq" cycle="false" start="1" increment="1" min-value="1" max-value="2147483647" cache="1">
+	<schema name="public"/>
+	<role name="postgres"/>
+</sequence>
+
+<table name="exemplaire" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="-180" y="280"/>
+	<column name="id" not-null="true" sequence="public.exemplaire_id_seq">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="id_livre" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="statut" default-value="'disponible'">
+		<type name="character varying" length="50"/>
+	</column>
+	<column name="date_ajout" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="date_suppression">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="exemplaire_statut_check" type="ck-constr" table="public.exemplaire">
+			<expression> <![CDATA[((statut)::text = ANY ((ARRAY['disponible'::character varying, 'emprunte'::character varying, 'perdu'::character varying])::text[]))]]> </expression>
+	</constraint>
+	<constraint name="exemplaire_pkey" type="pk-constr" table="public.exemplaire">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="pret_id_seq" cycle="false" start="1" increment="1" min-value="1" max-value="2147483647" cache="1">
+	<schema name="public"/>
+	<role name="postgres"/>
+</sequence>
+
+<table name="pret" layers="0" collapse-mode="2" max-obj-count="10" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="460" y="420"/>
+	<column name="id" not-null="true" sequence="public.pret_id_seq">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="id_adherent" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="id_exemplaire" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="date_emprunt" not-null="true">
+		<type name="date" length="0"/>
+	</column>
+	<column name="date_retour_prevue" not-null="true">
+		<type name="date" length="0"/>
+	</column>
+	<column name="date_retour_reelle">
+		<type name="date" length="0"/>
+	</column>
+	<column name="est_prolonge" default-value="false">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="date_ajout" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="date_suppression">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pret_pkey" type="pk-constr" table="public.pret">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="reservation_id_seq" cycle="false" start="1" increment="1" min-value="1" max-value="2147483647" cache="1">
+	<schema name="public"/>
+	<role name="postgres"/>
+</sequence>
+
+<table name="reservation" layers="0" collapse-mode="2" max-obj-count="9" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="840" y="420"/>
+	<column name="id" not-null="true" sequence="public.reservation_id_seq">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="id_adherent" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="id_livre" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="date_reservation" default-value="CURRENT_DATE">
+		<type name="date" length="0"/>
+	</column>
+	<column name="expire_le">
+		<type name="date" length="0"/>
+	</column>
+	<column name="statut" default-value="'en_attente'">
+		<type name="character varying" length="50"/>
+	</column>
+	<column name="date_ajout" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="date_suppression">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="reservation_statut_check" type="ck-constr" table="public.reservation">
+			<expression> <![CDATA[((statut)::text = ANY ((ARRAY['en_attente'::character varying, 'confirmee'::character varying, 'expiree'::character varying, 'annulee'::character varying])::text[]))]]> </expression>
+	</constraint>
+	<constraint name="reservation_pkey" type="pk-constr" table="public.reservation">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="type_action_id_seq" cycle="false" start="1" increment="1" min-value="1" max-value="2147483647" cache="1">
+	<schema name="public"/>
+	<role name="postgres"/>
+</sequence>
+
+<table name="type_action" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="940" y="940"/>
+	<column name="id" not-null="true" sequence="public.type_action_id_seq">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="nom" not-null="true">
+		<type name="character varying" length="100"/>
+	</column>
+	<column name="description">
+		<type name="text" length="0"/>
+	</column>
+	<column name="date_ajout" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="date_suppression">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="type_action_pkey" type="pk-constr" table="public.type_action">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="type_action_nom_key" type="uq-constr" table="public.type_action">
+		<columns names="nom" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="historique_adherent_id_seq" cycle="false" start="1" increment="1" min-value="1" max-value="2147483647" cache="1">
+	<schema name="public"/>
+	<role name="postgres"/>
+</sequence>
+
+<table name="historique_adherent" layers="0" collapse-mode="2" max-obj-count="8" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1360" y="420"/>
+	<column name="id" not-null="true" sequence="public.historique_adherent_id_seq">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="id_adherent" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="id_type_action" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="commentaire">
+		<type name="text" length="0"/>
+	</column>
+	<column name="date_action" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="date_ajout" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="date_suppression">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="historique_adherent_pkey" type="pk-constr" table="public.historique_adherent">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="configuration_quota_id_seq" cycle="false" start="1" increment="1" min-value="1" max-value="2147483647" cache="1">
+	<schema name="public"/>
+	<role name="postgres"/>
+</sequence>
+
+<table name="configuration_quota" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="180" y="-500"/>
+	<column name="id" not-null="true" sequence="public.configuration_quota_id_seq">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="id_categorie_adherent" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="quota_max">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="date_ajout" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="date_suppression">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="configuration_quota_pkey" type="pk-constr" table="public.configuration_quota">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<constraint name="fk_adherent_personne" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="CASCADE" ref-table="public.personne" table="public.adherent">
+	<columns names="id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_adherent_categorie" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="RESTRICT" ref-table="public.categorie_adherent" table="public.adherent">
+	<columns names="id_categorie_adherent" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_bibliothecaire_personne" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="CASCADE" ref-table="public.personne" table="public.bibliothecaire">
+	<columns names="id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_exemplaire_livre" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="CASCADE" ref-table="public.livre" table="public.exemplaire">
+	<columns names="id_livre" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_pret_adherent" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="RESTRICT" ref-table="public.adherent" table="public.pret">
+	<columns names="id_adherent" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_pret_exemplaire" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="RESTRICT" ref-table="public.exemplaire" table="public.pret">
+	<columns names="id_exemplaire" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_reservation_adherent" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="CASCADE" ref-table="public.adherent" table="public.reservation">
+	<columns names="id_adherent" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_reservation_livre" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="CASCADE" ref-table="public.livre" table="public.reservation">
+	<columns names="id_livre" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_historique_adherent" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="CASCADE" ref-table="public.adherent" table="public.historique_adherent">
+	<columns names="id_adherent" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_historique_type_action" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="RESTRICT" ref-table="public.type_action" table="public.historique_adherent">
+	<columns names="id_type_action" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_configuration_categorie" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="CASCADE" ref-table="public.categorie_adherent" table="public.configuration_quota">
+	<columns names="id_categorie_adherent" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<relationship name="rel_adherent_personne" type="relfk" layers="0"
+	 custom-color="#19b0f3"
+	 src-table="public.adherent"
+	 dst-table="public.personne" reference-fk="fk_adherent_personne"
+	 src-required="false" dst-required="true"/>
+
+<relationship name="rel_adherent_categorie_adherent" type="relfk" layers="0"
+	 custom-color="#c3e921"
+	 src-table="public.adherent"
+	 dst-table="public.categorie_adherent" reference-fk="fk_adherent_categorie"
+	 src-required="false" dst-required="true"/>
+
+<relationship name="rel_bibliothecaire_personne" type="relfk" layers="0"
+	 custom-color="#ebaf8c"
+	 src-table="public.bibliothecaire"
+	 dst-table="public.personne" reference-fk="fk_bibliothecaire_personne"
+	 src-required="false" dst-required="true"/>
+
+<relationship name="rel_exemplaire_livre" type="relfk" layers="0"
+	 custom-color="#b9146d"
+	 src-table="public.exemplaire"
+	 dst-table="public.livre" reference-fk="fk_exemplaire_livre"
+	 src-required="false" dst-required="true"/>
+
+<relationship name="rel_pret_adherent" type="relfk" layers="0"
+	 custom-color="#e0a4c5"
+	 src-table="public.pret"
+	 dst-table="public.adherent" reference-fk="fk_pret_adherent"
+	 src-required="false" dst-required="true"/>
+
+<relationship name="rel_pret_exemplaire" type="relfk" layers="0"
+	 custom-color="#3b3d3b"
+	 src-table="public.pret"
+	 dst-table="public.exemplaire" reference-fk="fk_pret_exemplaire"
+	 src-required="false" dst-required="true"/>
+
+<relationship name="rel_reservation_adherent" type="relfk" layers="0"
+	 custom-color="#c8231f"
+	 src-table="public.reservation"
+	 dst-table="public.adherent" reference-fk="fk_reservation_adherent"
+	 src-required="false" dst-required="true"/>
+
+<relationship name="rel_reservation_livre" type="relfk" layers="0"
+	 custom-color="#3379f7"
+	 src-table="public.reservation"
+	 dst-table="public.livre" reference-fk="fk_reservation_livre"
+	 src-required="false" dst-required="true"/>
+
+<relationship name="rel_historique_adherent_adherent" type="relfk" layers="0"
+	 custom-color="#beac9c"
+	 src-table="public.historique_adherent"
+	 dst-table="public.adherent" reference-fk="fk_historique_adherent"
+	 src-required="false" dst-required="true"/>
+
+<relationship name="rel_historique_adherent_type_action" type="relfk" layers="0"
+	 custom-color="#9bd048"
+	 src-table="public.historique_adherent"
+	 dst-table="public.type_action" reference-fk="fk_historique_type_action"
+	 src-required="false" dst-required="true"/>
+
+<relationship name="rel_configuration_quota_categorie_adherent" type="relfk" layers="0"
+	 custom-color="#758311"
+	 src-table="public.configuration_quota"
+	 dst-table="public.categorie_adherent" reference-fk="fk_configuration_categorie"
+	 src-required="false" dst-required="true"/>
+
+</dbmodel>

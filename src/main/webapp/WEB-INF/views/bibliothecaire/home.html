@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Accueil Bibliothécaire</title>
+    <meta charset="UTF-8" />
+</head>
+<body>
+    <!-- <h1>Bienvenue, <span th:text="${user.nom}">Nom Bibliothécaire</span> !</h1> -->
+
+    <p>Vous êtes connecté en tant que bibliothécaire.</p>
+
+    <nav>
+        <ul>
+            <li><a th:href="@{/livres}">Gestion des livres</a></li>
+            <li><a th:href="@{/adherents}">Gestion des adhérents</a></li>
+            <li><a th:href="@{/bibliothecaire/logout}">Déconnexion</a></li>
+            <li><a th:href="@{/bibliothecaire/Pret}">Pret</a></li>
+        </ul>
+    </nav>
+</body>
+</html>

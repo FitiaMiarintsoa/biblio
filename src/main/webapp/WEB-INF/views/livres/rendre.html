@@ -1,0 +1,19 @@
+<h2>Rendre un livre</h2>
+<form method="post" action="/livres/rendre">
+    <label>Identifiant de l'adhérent:</label><br>
+    <input type="text" name="identifiantAdherent" required><br><br>
+
+    <label>ISBN du livre:</label><br>
+    <input type="text" name="isbnLivre" required><br><br>
+
+    <label>Date d'emprunt:</label><br>
+    <input type="date" name="dateEmprunt" required><br><br>
+
+    <label>Date de retour:</label><br>
+    <input type="date" name="dateRetourReelle" required><br><br>
+
+    <button type="submit">Rendre</button>
+</form>
+
+<div th:if="${message}" style="color: green;"><p th:text="${message}"></p></div>
+<div th:if="${error}" style="color: red;"><p th:text="${error}"></p></div>
