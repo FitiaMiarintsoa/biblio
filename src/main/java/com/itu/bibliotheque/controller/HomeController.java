@@ -2,11 +2,14 @@ package com.itu.bibliotheque.controller;
 
 import jakarta.servlet.http.HttpSession;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.itu.bibliotheque.model.Bibliothecaire;
+import com.itu.bibliotheque.model.Livre;
 import com.itu.bibliotheque.model.Adherent;
 
 @Controller
@@ -35,4 +38,6 @@ public class HomeController {
         model.addAttribute("user", user);
         return "adherent/home";
     }
+
+
 }

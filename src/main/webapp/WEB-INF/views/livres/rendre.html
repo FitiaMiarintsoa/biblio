@@ -1,19 +1,24 @@
-<h2>Rendre un livre</h2>
-<form method="post" action="/livres/rendre">
-    <label>Identifiant de l'adhérent:</label><br>
-    <input type="text" name="identifiantAdherent" required><br><br>
+<h2>Rendre un Livre</h2>
 
-    <label>ISBN du livre:</label><br>
-    <input type="text" name="isbnLivre" required><br><br>
+<form action="/livres/rendre" method="post">
+    <label for="pretId">Sélectionnez un livre emprunté :</label><br>
+    <select name="pretId" required>
+        <option value="" disabled selected>-- Choisissez un prêt --</option>
+        <th:block th:each="pret : ${prets}">
+            <option th:value="${pret.id}"
+                    th:text="${pret.adherent.nom + ' ' + pret.adherent.prenom + ' - ' + pret.exemplaire.livre.titre + ' (emprunté le ' + pret.dateEmprunt + ')'}">
+            </option>
+        </th:block>
+    </select>
+    <br><br>
 
-    <label>Date d'emprunt:</label><br>
-    <input type="date" name="dateEmprunt" required><br><br>
-
-    <label>Date de retour:</label><br>
-    <input type="date" name="dateRetourReelle" required><br><br>
+    <label for="dateRetourReelle">Date de retour effective :</label><br>
+    <input type="date" name="dateRetourReelle" required>
+    <br><br>
 
     <button type="submit">Rendre</button>
 </form>
 
-<div th:if="${message}" style="color: green;"><p th:text="${message}"></p></div>
-<div th:if="${error}" style="color: red;"><p th:text="${error}"></p></div>
+<!-- Affichage des messages -->
+<p th:if="${message}" style="color: green;" th:text="${message}"></p>
+<p th:if="${error}" style="color: red;" th:text="${error}"></p>
