@@ -5,7 +5,15 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "adherent")
-public class Adherent extends Personne {
+public class Adherent {
+
+    @Id
+    private Integer id;
+
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "id")
+    private Personne personne;
 
     private String identifiant;
 
@@ -25,11 +33,26 @@ public class Adherent extends Personne {
     @Column(name = "date_suppression")
     private LocalDateTime dateSuppression;
 
-    // NOUVEAU champ motDePasse
     @Column(name = "mot_de_passe")
     private String motDePasse;
 
     // --- Getters & Setters ---
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Personne getPersonne() {
+        return personne;
+    }
+
+    public void setPersonne(Personne personne) {
+        this.personne = personne;
+    }
 
     public String getIdentifiant() {
         return identifiant;

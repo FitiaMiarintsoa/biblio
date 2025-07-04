@@ -29,7 +29,7 @@ CREATE TABLE personne (
 );
 
 -- ===============================
--- TABLE: adherent
+-- TABLE: adherent  
 -- ===============================
 CREATE TABLE adherent (
     id INT PRIMARY KEY,

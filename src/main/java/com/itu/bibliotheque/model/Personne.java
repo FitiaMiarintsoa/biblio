@@ -3,13 +3,11 @@ package com.itu.bibliotheque.model;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
-
 
 @Entity
 @Table(name = "personne")
-@Inheritance(strategy = InheritanceType.JOINED)
 public class Personne {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -27,6 +25,8 @@ public class Personne {
 
     @Column(name = "date_suppression")
     private LocalDateTime dateSuppression;
+
+    // --- Getters & Setters ---
 
     public Integer getId() {
         return id;
@@ -91,5 +91,4 @@ public class Personne {
     public void setDateSuppression(LocalDateTime dateSuppression) {
         this.dateSuppression = dateSuppression;
     }
-
 }

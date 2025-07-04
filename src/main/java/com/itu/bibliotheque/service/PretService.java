@@ -51,8 +51,8 @@ public class PretService {
             return "Ce livre n'est pas disponible pour l'emprunt.";
         }
 
-        if (adherent.getDateNaissance() != null && exemplaire.getLivre().getRestrictionAge() != null) {
-            int age = Period.between(adherent.getDateNaissance(), aujourdHui).getYears();
+        if (adherent.getPersonne().getDateNaissance() != null && exemplaire.getLivre().getRestrictionAge() != null) {
+            int age = Period.between(adherent.getPersonne().getDateNaissance(), aujourdHui).getYears();
             int restriction = exemplaire.getLivre().getRestrictionAge();
             if (age < restriction) {
                 return "L’adhérent n’a pas l’âge requis pour emprunter ce livre.";

@@ -6,4 +6,5 @@ import java.util.Optional;
 
 public interface AdherentRepository extends JpaRepository<Adherent, Integer> {
     Optional<Adherent> findByIdentifiant(String identifiant);
+    boolean existsByIdentifiant(String identifiant);
 }
