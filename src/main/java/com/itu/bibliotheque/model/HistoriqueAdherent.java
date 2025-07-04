@@ -87,6 +87,5 @@ public class HistoriqueAdherent {
         this.dateSuppression = dateSuppression;
     }
 
-    // Getters and Setters
 }
 

@@ -12,12 +12,13 @@ public class Sanction {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "id_adherent")
+    @JoinColumn(name = "id_adherent", nullable = false)
     private Adherent adherent;
 
     @Column(name = "type_sanction")
     private String typeSanction;
 
+    @Column(name = "description")
     private String description;
 
     @Column(name = "date_debut")
@@ -27,13 +28,85 @@ public class Sanction {
     private LocalDate dateFin;
 
     @Column(name = "est_active")
-    private Boolean estActive = true;
+    private Boolean estActive;
 
     @Column(name = "date_ajout")
-    private LocalDateTime dateAjout = LocalDateTime.now();
+    private LocalDateTime dateAjout;
 
     @Column(name = "date_suppression")
     private LocalDateTime dateSuppression;
 
-    // Getters & Setters
+    // Getters et Setters
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Adherent getAdherent() {
+        return adherent;
+    }
+
+    public void setAdherent(Adherent adherent) {
+        this.adherent = adherent;
+    }
+
+    public String getTypeSanction() {
+        return typeSanction;
+    }
+
+    public void setTypeSanction(String typeSanction) {
+        this.typeSanction = typeSanction;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public LocalDate getDateDebut() {
+        return dateDebut;
+    }
+
+    public void setDateDebut(LocalDate dateDebut) {
+        this.dateDebut = dateDebut;
+    }
+
+    public LocalDate getDateFin() {
+        return dateFin;
+    }
+
+    public void setDateFin(LocalDate dateFin) {
+        this.dateFin = dateFin;
+    }
+
+    public Boolean getEstActive() {
+        return estActive;
+    }
+
+    public void setEstActive(Boolean estActive) {
+        this.estActive = estActive;
+    }
+
+    public LocalDateTime getDateAjout() {
+        return dateAjout;
+    }
+
+    public void setDateAjout(LocalDateTime dateAjout) {
+        this.dateAjout = dateAjout;
+    }
+
+    public LocalDateTime getDateSuppression() {
+        return dateSuppression;
+    }
+
+    public void setDateSuppression(LocalDateTime dateSuppression) {
+        this.dateSuppression = dateSuppression;
+    }
 }

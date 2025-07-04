@@ -23,6 +23,15 @@ public class PretService {
     @Autowired
     private ExemplaireRepository exemplaireRepository;
 
+    @Autowired
+    private HistoriqueAdherentRepository historiqueAdherentRepository;
+
+    @Autowired
+    private TypeActionRepository typeActionRepository;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
+
     public String verifierEtEnregistrerPret(Adherent adherent, Exemplaire exemplaire, LocalDate dateEmprunt, LocalDate dateRetourPrevue) {
         LocalDate aujourdHui = LocalDate.now();
 
@@ -67,8 +76,9 @@ public class PretService {
 
         exemplaire.setStatut("emprunte");
         exemplaireRepository.save(exemplaire);
+        enregistrerHistorique(adherent, "emprunt", "L'adhérent a emprunté l’exemplaire " + exemplaire.getId());
 
-        return null; // Tout est OK
+        return null; 
     }
 
     public String rendreLivre(Integer pretId, LocalDate dateRetourReelle) {
@@ -87,10 +97,40 @@ public class PretService {
         exemplaireRepository.save(ex);
 
         if (dateRetourReelle.isAfter(pret.getDateRetourPrevue())) {
-            // Ici, tu peux déclencher la création d'une notification ou d'une sanction
-            System.out.println("⚠️ Livre rendu en retard !");
-        }
+            Adherent adherent = pret.getAdherent();
 
-        return null; // succès
+            Sanction sanction = new Sanction();
+            sanction.setAdherent(adherent);
+            sanction.setTypeSanction("retard");
+            sanction.setDescription("Retard de retour du livre n°" + pret.getExemplaire().getId());
+            sanction.setDateDebut(LocalDate.now());
+            sanction.setDateFin(LocalDate.now().plusDays(7));
+            sanction.setEstActive(true);
+            sanctionRepository.save(sanction);
+
+            Notification notification = new Notification();
+            notification.setAdherent(adherent);
+            notification.setMessage("Vous avez reçu une sanction pour retard de retour du livre. "
+                + "Sanction active du " + sanction.getDateDebut() + " au " + sanction.getDateFin() + ".");
+            notification.setEstLu(false);
+            notification.setDateNotification(LocalDateTime.now());
+            notificationRepository.save(notification);
+        }
+        enregistrerHistorique(pret.getAdherent(), "retour", "L'adhérent a rendu l’exemplaire " + pret.getExemplaire().getId());
+
+        return null;
+    }
+
+    private void enregistrerHistorique(Adherent adherent, String nomAction, String commentaire) {
+        TypeAction action = typeActionRepository.findByNom(nomAction)
+            .orElseThrow(() -> new RuntimeException("Type d'action introuvable : " + nomAction));
+
+        HistoriqueAdherent historique = new HistoriqueAdherent();
+        historique.setAdherent(adherent);
+        historique.setTypeAction(action);
+        historique.setCommentaire(commentaire);
+        historique.setDateAction(LocalDateTime.now());
+
+        historiqueAdherentRepository.save(historique);
     }
 }
