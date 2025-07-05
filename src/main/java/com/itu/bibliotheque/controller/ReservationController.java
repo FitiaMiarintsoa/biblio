@@ -34,14 +34,14 @@ public class ReservationController {
         return "reservation/form";
     }
 
-    @PostMapping("/nouvelle")
-    public String reserverLivre(@RequestParam("idLivre") int idLivre,
-                                @RequestParam("idAdherent") int idAdherent,
-                                Model model) {
-        String result = reservationService.reserverLivre(idLivre, idAdherent);
-        model.addAttribute("message", result);
-        model.addAttribute("livres", livreRepository.findAll());
-        model.addAttribute("adherents", adherentRepository.findAll());
-        return "reservation/form";
-    }
+    // @PostMapping("/nouvelle")
+    // public String reserverLivre(@RequestParam("idLivre") int idLivre,
+    //                             @RequestParam("idAdherent") int idAdherent,
+    //                             Model model) {
+    //     String result = reservationService.reserverLivre(idLivre, idAdherent);
+    //     model.addAttribute("message", result);
+    //     model.addAttribute("livres", livreRepository.findAll());
+    //     model.addAttribute("adherents", adherentRepository.findAll());
+    //     return "reservation/form";
+    // }
 }

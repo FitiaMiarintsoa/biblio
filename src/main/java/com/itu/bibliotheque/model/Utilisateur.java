@@ -2,6 +2,7 @@ package com.itu.bibliotheque.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "utilisateur")
@@ -14,12 +15,12 @@ public class Utilisateur {
     @JoinColumn(name = "id_personne")
     private Personne personne;
 
+    @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(name = "mot_de_passe")
+    @Column(name = "mot_de_passe", nullable = false)
     private String motDePasse;
 
-    private String role;
     private Boolean actif;
 
     @Column(name = "date_ajout")
@@ -27,6 +28,14 @@ public class Utilisateur {
 
     @Column(name = "date_suppression")
     private LocalDateTime dateSuppression;
+
+    @ManyToMany
+    @JoinTable(
+        name = "utilisateur_role",
+        joinColumns = @JoinColumn(name = "id_utilisateur"),
+        inverseJoinColumns = @JoinColumn(name = "id_role")
+    )
+    private Set<Role> roles;
 
     // Getters & Setters
     public Integer getId() { return id; }
@@ -41,9 +50,6 @@ public class Utilisateur {
     public String getMotDePasse() { return motDePasse; }
     public void setMotDePasse(String motDePasse) { this.motDePasse = motDePasse; }
 
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
-
     public Boolean getActif() { return actif; }
     public void setActif(Boolean actif) { this.actif = actif; }
 
@@ -52,4 +58,7 @@ public class Utilisateur {
 
     public LocalDateTime getDateSuppression() { return dateSuppression; }
     public void setDateSuppression(LocalDateTime dateSuppression) { this.dateSuppression = dateSuppression; }
+
+    public Set<Role> getRoles() { return roles; }
+    public void setRoles(Set<Role> roles) { this.roles = roles; }
 }

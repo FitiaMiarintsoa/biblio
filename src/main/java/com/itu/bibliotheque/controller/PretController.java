@@ -49,16 +49,16 @@ public class PretController {
     private PretService pretService;
 
     @PostMapping("/save")
-    public String enregistrerPret(@RequestParam("idAdherent") int idAdherent,
-                                @RequestParam("idExemplaire") int idExemplaire,
-                                @RequestParam("dateEmprunt") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateEmprunt,
-                                @RequestParam("dateRetourPrevue") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateRetourPrevue,
-                                Model model) {
+    public String enregistrerPret(
+            @RequestParam("idAdherent") int idAdherent,
+            @RequestParam("idExemplaire") int idExemplaire,
+            @RequestParam("dateEmprunt") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateEmprunt,
+            Model model) {
 
         Adherent adherent = adherentRepository.findById(idAdherent).orElse(null);
         Exemplaire exemplaire = exemplaireRepository.findById(idExemplaire).orElse(null);
 
-        String erreur = pretService.verifierEtEnregistrerPret(adherent, exemplaire, dateEmprunt, dateRetourPrevue);
+        String erreur = pretService.verifierEtEnregistrerPret(adherent, exemplaire, dateEmprunt);
 
         if (erreur != null) {
             model.addAttribute("error", erreur);
@@ -68,8 +68,7 @@ public class PretController {
         }
 
         model.addAttribute("success", "Le prêt a été enregistré avec succès !");
-        return "redirect:/bibliothecaire/emprunt";
+        return "redirect:/bibliothecaire/nouveau-pret";
     }
-
 
 }

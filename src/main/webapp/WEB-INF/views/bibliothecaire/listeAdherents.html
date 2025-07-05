@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Liste des adhérents</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>Liste des adhérents</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Email</th>
+                    <th>Adresse</th>
+                    <th>Profil</th>
+                    <th>Bloqué</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="adherent : ${adherents}">
+                    <td th:text="${adherent.id}"></td>
+                    <td th:text="${adherent.personne.nom}"></td>
+                    <td th:text="${adherent.personne.prenom}"></td>
+                    <td th:text="${adherent.personne.email}"></td>
+                    <td th:text="${adherent.personne.adresse}"></td>
+                    <td th:text="${adherent.profil.nom}"></td>
+                    <td th:text="${adherent.estBloque ? 'Oui' : 'Non'}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

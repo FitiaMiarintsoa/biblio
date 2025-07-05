@@ -1,20 +1,17 @@
 package com.itu.bibliotheque.controller;
 
 import com.itu.bibliotheque.model.Utilisateur;
-import com.itu.bibliotheque.repository.AdherentRepository;
-import com.itu.bibliotheque.repository.BibliothecaireRepository;
 import com.itu.bibliotheque.model.Adherent;
 import com.itu.bibliotheque.model.Bibliothecaire;
 import com.itu.bibliotheque.service.LoginService;
 
-import java.util.Optional;
-
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.servlet.http.HttpSession;
+import java.util.Optional;
 
 @Controller
 public class LoginController {
@@ -22,54 +19,63 @@ public class LoginController {
     @Autowired
     private LoginService loginService;
 
-    @Autowired
-    private AdherentRepository adherentRepository;
-
-    @Autowired
-    private BibliothecaireRepository bibliothecaireRepository;
-
-    @GetMapping("/login")
-    public String login() {
-        return "login";  // Une seule page de login générique
+    // Page de login adhérent
+    @GetMapping("/adherent/login")
+    public String adherentLogin() {
+        return "adherent/login";
     }
 
-    @PostMapping("/login")
-    public String doLogin(@RequestParam String username,
-                          @RequestParam String password,
-                          HttpSession session,
-                          Model model) {
+    @PostMapping("/adherent/login")
+    public String doAdherentLogin(
+            @RequestParam(name = "username") String username,
+            @RequestParam(name = "password") String password,
+            HttpSession session,
+            Model model) {
 
         Utilisateur user = loginService.authenticate(username, password);
         if (user == null) {
             model.addAttribute("error", "Identifiants incorrects");
-            return "login";
+            return "adherent/login";
         }
 
-        if ("bibliothecaire".equalsIgnoreCase(user.getRole())) {
-            // Charge infos bibliothécaire
-            Optional<Bibliothecaire> bibOpt = bibliothecaireRepository.findByPersonne(user.getPersonne());
-            if (bibOpt.isPresent()) {
-                session.setAttribute("user", user);
-                session.setAttribute("role", "bibliothecaire");
-                return "redirect:/bibliothecaire/home";
-            } else {
-                model.addAttribute("error", "Compte bibliothécaire non configuré");
-                return "login";
-            }
-        } else if ("adherent".equalsIgnoreCase(user.getRole())) {
-            Optional<Adherent> adhOpt = adherentRepository.findByPersonne(user.getPersonne());
-            if (adhOpt.isPresent() && !Boolean.TRUE.equals(adhOpt.get().getEstBloque())) {
-                session.setAttribute("user", adhOpt.get());
-                session.setAttribute("role", "adherent");
-                return "redirect:/adherent/home";
-            } else {
-                model.addAttribute("error", "Compte adhérent bloqué ou non trouvé");
-                return "login";
-            }
+        Optional<Adherent> adhOpt = loginService.getAdherent(user);
+        if (adhOpt.isPresent()) {
+            session.setAttribute("userAdherent", adhOpt.get());
+            session.setAttribute("role", "adherent");
+            return "redirect:/adherent/home";
         } else {
-            model.addAttribute("error", "Rôle utilisateur non reconnu");
-            return "login";
+            model.addAttribute("error", "Adhérent bloqué ou non trouvé");
+            return "adherent/login";
+        }
+    }
+
+    // Page de login bibliothécaire
+    @GetMapping("/bibliothecaire/login")
+    public String bibliothecaireLogin() {
+        return "bibliothecaire/login";
+    }
+
+    @PostMapping("/bibliothecaire/login")
+    public String doBibliothecaireLogin(
+            @RequestParam(name = "username") String username,
+            @RequestParam(name = "password") String password,
+            HttpSession session,
+            Model model) {
+
+        Utilisateur user = loginService.authenticate(username, password);
+        if (user == null) {
+            model.addAttribute("error", "Identifiants incorrects");
+            return "bibliothecaire/login";
+        }
+
+        Optional<Bibliothecaire> bibOpt = loginService.getBibliothecaire(user);
+        if (bibOpt.isPresent()) {
+            session.setAttribute("userBibliothecaire", bibOpt.get());
+            session.setAttribute("role", "bibliothecaire");
+            return "redirect:/bibliothecaire/home";
+        } else {
+            model.addAttribute("error", "Bibliothécaire non trouvé");
+            return "bibliothecaire/login";
         }
     }
 }
-

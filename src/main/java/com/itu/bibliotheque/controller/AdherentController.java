@@ -1,6 +1,5 @@
 package com.itu.bibliotheque.controller;
 
-
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.stereotype.Controller;
 
 import com.itu.bibliotheque.model.Abonnement;
 import com.itu.bibliotheque.model.Adherent;
@@ -18,8 +18,7 @@ import com.itu.bibliotheque.repository.AdherentRepository;
 import com.itu.bibliotheque.repository.ProfilRepository;
 import com.itu.bibliotheque.service.AdherentService;
 
-
-
+@Controller
 @RequestMapping("/adherents")
 public class AdherentController {
 
@@ -35,6 +34,12 @@ public class AdherentController {
     @Autowired
     private AdherentRepository adherentRepository;
 
+    @GetMapping
+    public String listeAdherents(Model model) {
+        model.addAttribute("adherents", adherentRepository.findAll());
+        return "bibliothecaire/listeAdherents";
+    }
+
     @GetMapping("/ajouter")
     public String showFormAjout(Model model) {
         model.addAttribute("categories", profil.findAll());
@@ -43,12 +48,12 @@ public class AdherentController {
 
     @PostMapping("/ajouter")
     public String enregistrerAdherent(
-        @RequestParam String nom,
-        @RequestParam String prenom,
-        @RequestParam String email,
-        @RequestParam String adresse,
-        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateNaissance,
-        @RequestParam Integer idCategorie,
+        @RequestParam(name = "nom") String nom,
+        @RequestParam(name = "prenom") String prenom,
+        @RequestParam(name = "email") String email,
+        @RequestParam(name = "adresse") String adresse,
+        @RequestParam(name = "dateNaissance") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateNaissance,
+        @RequestParam(name = "idCategorie") Integer idCategorie,
         Model model
     ) {
         try {
@@ -68,10 +73,12 @@ public class AdherentController {
     }
 
     @PostMapping("/abonner")
-    public String enregistrerAbonnement(@RequestParam("idAdherent") Integer idAdherent,
-                                        @RequestParam("dateDebut") String dateDebutStr,
-                                        @RequestParam("dateFin") String dateFinStr,
-                                        Model model) {
+    public String enregistrerAbonnement(
+        @RequestParam(name = "idAdherent") Integer idAdherent,
+        @RequestParam(name = "dateDebut") String dateDebutStr,
+        @RequestParam(name = "dateFin") String dateFinStr,
+        Model model
+    ) {
         try {
             Adherent adherent = adherentRepository.findById(idAdherent)
                 .orElseThrow(() -> new RuntimeException("Adhérent introuvable"));

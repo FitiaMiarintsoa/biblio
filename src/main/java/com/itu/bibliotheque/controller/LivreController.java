@@ -41,60 +41,60 @@ public class LivreController {
         return "livres";
     }
 
-    @GetMapping("/livres/rendre")
-    public String showFormRendre(Model model) {
-        List<Pret> pretsEnCours = pretRepository.findByDateRetourReelleIsNull();
-        model.addAttribute("prets", pretsEnCours);
-        model.addAttribute("pretSelectionne", new Pret());
-        return "livres/rendre";
-    }
+    // @GetMapping("/livres/rendre")
+    // public String showFormRendre(Model model) {
+    //     List<Pret> pretsEnCours = pretRepository.findByDateRetourReelleIsNull();
+    //     model.addAttribute("prets", pretsEnCours);
+    //     model.addAttribute("pretSelectionne", new Pret());
+    //     return "livres/rendre";
+    // }
 
 
-    @PostMapping("/livres/rendre")
-    public String rendreLivre(
-        @RequestParam("pretId") Integer pretId,
-        @RequestParam("dateRetourReelle") String dateRetourStr,
-        Model model
-    ) {
-        try {
-            LocalDate dateRetourReelle = LocalDate.parse(dateRetourStr);
+    // @PostMapping("/livres/rendre")
+    // public String rendreLivre(
+    //     @RequestParam("pretId") Integer pretId,
+    //     @RequestParam("dateRetourReelle") String dateRetourStr,
+    //     Model model
+    // ) {
+    //     try {
+    //         LocalDate dateRetourReelle = LocalDate.parse(dateRetourStr);
 
-            String erreur = pretService.rendreLivre(pretId, dateRetourReelle);
+    //         String erreur = pretService.rendreLivre(pretId, dateRetourReelle);
 
-            if (erreur != null) {
-                model.addAttribute("error", erreur);
-            } else {
-                model.addAttribute("message", "Livre rendu avec succès.");
-            }
+    //         if (erreur != null) {
+    //             model.addAttribute("error", erreur);
+    //         } else {
+    //             model.addAttribute("message", "Livre rendu avec succès.");
+    //         }
 
-        } catch (Exception e) {
-            model.addAttribute("error", e.getMessage());
-        }
+    //     } catch (Exception e) {
+    //         model.addAttribute("error", e.getMessage());
+    //     }
 
-        model.addAttribute("prets", pretRepository.findByDateRetourReelleIsNull()); 
-        model.addAttribute("pretSelectionne", new Pret());
-        return "livres/rendre";
-    }
+    //     model.addAttribute("prets", pretRepository.findByDateRetourReelleIsNull()); 
+    //     model.addAttribute("pretSelectionne", new Pret());
+    //     return "livres/rendre";
+    // }
 
+    // @GetMapping("/livres/disponibles")
+    // public String livresDisponibles(
+    //     @RequestParam(name = "date", required = false) String dateStr,
+    //     Model model
+    // ) {
+    //     List<Exemplaire> exemplairesDisponibles = null;
 
-    public String livresDisponibles(
-        @RequestParam(name = "date", required = false) String dateStr,
-        Model model
-    ) {
-        List<Exemplaire> exemplairesDisponibles = null;
+    //     if (dateStr != null && !dateStr.isEmpty()) {
+    //         try {
+    //             LocalDate date = LocalDate.parse(dateStr);
+    //             LocalDateTime dateTime = date.atStartOfDay();
+    //             exemplairesDisponibles = livreService.findExemplairesDisponiblesAtDate(dateTime);
+    //         } catch (Exception e) {
+    //             model.addAttribute("error", "Date invalide.");
+    //         }
+    //     }
 
-        if (dateStr != null && !dateStr.isEmpty()) {
-            try {
-                LocalDate date = LocalDate.parse(dateStr);
-                LocalDateTime dateTime = date.atStartOfDay();
-                exemplairesDisponibles = livreService.findExemplairesDisponiblesAtDate(dateTime);
-            } catch (Exception e) {
-                model.addAttribute("error", "Date invalide.");
-            }
-        }
-
-        model.addAttribute("exemplaires", exemplairesDisponibles);
-        model.addAttribute("dateRecherche", dateStr);
-        return "livres/disponibles";
-    }
+    //     model.addAttribute("exemplaires", exemplairesDisponibles);
+    //     model.addAttribute("dateRecherche", dateStr);
+    //     return "livres/disponibles";
+    // }
 }

@@ -35,7 +35,7 @@ public class PretService {
     @Autowired
     private ConfigurationQuotaRepository configurationQuotaRepository;
 
-    public String verifierEtEnregistrerPret(Adherent adherent, Exemplaire exemplaire, LocalDate dateEmprunt, LocalDate dateRetourPrevue) {
+    public String verifierEtEnregistrerPret(Adherent adherent, Exemplaire exemplaire, LocalDate dateEmprunt) {
         LocalDate aujourdHui = LocalDate.now();
 
         if (adherent == null || exemplaire == null) {
@@ -50,10 +50,6 @@ public class PretService {
             return "Cet adhérent est actuellement sanctionné et ne peut pas emprunter de livres.";
         }
 
-        if (!"disponible".equalsIgnoreCase(exemplaire.getStatut())) {
-            return "Ce livre n'est pas disponible pour l'emprunt.";
-        }
-
         if (adherent.getPersonne().getDateNaissance() != null && exemplaire.getLivre().getRestrictionAge() != null) {
             int age = Period.between(adherent.getPersonne().getDateNaissance(), aujourdHui).getYears();
             int restriction = exemplaire.getLivre().getRestrictionAge();
@@ -62,7 +58,6 @@ public class PretService {
             }
         }
 
-        // Vérifier le quota autorisé via la configuration de son profil
         ConfigurationQuota quota = configurationQuotaRepository.findByProfil(adherent.getProfil())
                 .orElseThrow(() -> new RuntimeException("Configuration de quota introuvable pour ce profil."));
 
@@ -70,6 +65,9 @@ public class PretService {
         if (nbPretsEnCours >= quota.getQuotaPret()) {
             return "Cet adhérent a atteint le nombre maximal de livres empruntés.";
         }
+
+        // Calcule automatique de la date de retour prévue
+        LocalDate dateRetourPrevue = dateEmprunt.plusDays(quota.getNbJour());
 
         // Enregistrement du prêt
         Pret pret = new Pret();
@@ -88,6 +86,7 @@ public class PretService {
 
         return null;
     }
+
 
     public String rendreLivre(Integer pretId, LocalDate dateRetourReelle) {
         Pret pret = pretRepository.findById(pretId)

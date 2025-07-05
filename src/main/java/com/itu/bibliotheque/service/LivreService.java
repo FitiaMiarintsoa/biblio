@@ -12,6 +12,6 @@ public interface LivreService {
     Livre findById(Long id);
     Livre save(Livre livre);
     void deleteById(Long id);
-    boolean rendreLivre(String identifiantAdherent, String isbnLivre, LocalDate dateEmprunt, LocalDate dateRetourReelle);
+    // boolean rendreLivre(String identifiantAdherent, String isbnLivre, LocalDate dateEmprunt, LocalDate dateRetourReelle);
     List<Exemplaire> findExemplairesDisponiblesAtDate(LocalDateTime date);
 }

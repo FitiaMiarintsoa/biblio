@@ -12,32 +12,35 @@
         <div class="mb-3">
             <label>Adhérent :</label>
             <select name="idAdherent" class="form-control" required>
-                <option th:each="a : ${adherents}" th:value="${a.id}" th:text="${a.prenom} + ' ' + ${a.nom}"></option>
+                <option th:each="a : ${adherents}" 
+                        th:value="${a.id}" 
+                        th:text="${a.personne.prenom + ' ' + a.personne.nom}">
+                </option>
             </select>
         </div>
+
         <div class="mb-3">
             <label>Exemplaire :</label>
             <select name="idExemplaire" class="form-control" required>
-<option th:each="e : ${exemplaires}" th:value="${e.id}"
-        th:text="${e.livre.titre + ' - Ex n°' + e.id}"></option>
-
+                <option th:each="e : ${exemplaires}" 
+                        th:value="${e.id}"
+                        th:text="${e.livre.titre + ' - Ex n°' + e.id}">
+                </option>
             </select>
         </div>
+
         <div class="mb-3">
             <label>Date d'emprunt :</label>
             <input type="date" name="dateEmprunt" class="form-control" required>
         </div>
-        <div class="mb-3">
-            <label>Date retour prévue :</label>
-            <input type="date" name="dateRetourPrevue" class="form-control" required>
-        </div>
+
         <button type="submit" class="btn btn-primary">Enregistrer</button>
+
         <!-- Message d'erreur -->
-<div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+        <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
 
-<!-- Message de succès -->
-<div th:if="${success}" class="alert alert-success" role="alert" th:text="${success}"></div>
-
+        <!-- Message de succès -->
+        <div th:if="${success}" class="alert alert-success" role="alert" th:text="${success}"></div>
     </form>
 </div>
 </body>

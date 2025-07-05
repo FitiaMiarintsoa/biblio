@@ -17,12 +17,20 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-
 @Service
 public class LivreServiceImpl implements LivreService {
 
     @Autowired
     private LivreRepository livreRepository;
+
+    @Autowired
+    private AdherentRepository adherentRepository;
+
+    @Autowired
+    private ExemplaireRepository exemplaireRepository;
+
+    @Autowired
+    private PretRepository pretRepository;
 
     @Override
     public List<Livre> findAll() {
@@ -43,37 +51,38 @@ public class LivreServiceImpl implements LivreService {
     public void deleteById(Long id) {
         livreRepository.deleteById(id);
     }
-@Autowired
-private AdherentRepository adherentRepository;
 
-@Autowired
-private ExemplaireRepository exemplaireRepository;
+    // @Override
+    // public boolean rendreLivre(String identifiantAdherent, String isbnLivre, LocalDate dateEmprunt, LocalDate dateRetourReelle) {
+    //     // Convertir identifiantAdherent en Long (supposé être l'id réel)
+    //     Long adherentId;
+    //     try {
+    //         adherentId = Long.parseLong(identifiantAdherent);
+    //     } catch (NumberFormatException e) {
+    //         throw new RuntimeException("Identifiant de l'adhérent invalide : " + identifiantAdherent);
+    //     }
 
-@Autowired
-private PretRepository pretRepository;
+    //     Adherent adherent = adherentRepository.findById(adherentId)
+    //         .orElseThrow(() -> new RuntimeException("Adhérent non trouvé"));
 
-    @Override
-public boolean rendreLivre(String identifiantAdherent, String isbnLivre, LocalDate dateEmprunt, LocalDate dateRetourReelle) {
-    Adherent adherent = adherentRepository.findByIdentifiant(identifiantAdherent)
-        .orElseThrow(() -> new RuntimeException("Adhérent non trouvé"));
+    //     Livre livre = livreRepository.findByIsbn(isbnLivre)
+    //         .orElseThrow(() -> new RuntimeException("Livre non trouvé"));
 
-    Livre livre = livreRepository.findByIsbn(isbnLivre)
-        .orElseThrow(() -> new RuntimeException("Livre non trouvé"));
+    //     Exemplaire exemplaire = exemplaireRepository.findFirstByIdLivreAndStatut(livre.getId(), "emprunte")
+    //         .orElseThrow(() -> new RuntimeException("Aucun exemplaire emprunté trouvé"));
 
-    Exemplaire exemplaire = exemplaireRepository.findFirstByIdLivreAndStatut(livre.getId(), "emprunte")
-        .orElseThrow(() -> new RuntimeException("Aucun exemplaire emprunté trouvé"));
+    //     Pret pret = pretRepository.findByAdherentAndExemplaireAndDateEmprunt(adherent, exemplaire, dateEmprunt)
+    //         .orElseThrow(() -> new RuntimeException("Prêt introuvable pour ces informations"));
 
-    Pret pret = pretRepository.findByAdherentAndExemplaireAndDateEmprunt(adherent, exemplaire, dateEmprunt)
-        .orElseThrow(() -> new RuntimeException("Prêt introuvable pour ces informations"));
+    //     pret.setDateRetourReelle(dateRetourReelle);
+    //     pretRepository.save(pret);
 
-    pret.setDateRetourReelle(dateRetourReelle);
-    pretRepository.save(pret);
+    //     exemplaire.setStatut("disponible");
+    //     exemplaireRepository.save(exemplaire);
 
-    exemplaire.setStatut("disponible");
-    exemplaireRepository.save(exemplaire);
+    //     return true;
+    // }
 
-    return true;
-}
     @Override
     public List<Exemplaire> findExemplairesDisponiblesAtDate(LocalDateTime date) {
         return exemplaireRepository.findByStatutAndDateAjoutBeforeAndDateSuppressionIsNull("disponible", date);

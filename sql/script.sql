@@ -38,17 +38,31 @@ CREATE TABLE bibliothecaire (
     CONSTRAINT fk_bibliothecaire_personne FOREIGN KEY (id_personne) REFERENCES personne(id) ON DELETE CASCADE
 );
 
+CREATE TABLE role (
+    id SERIAL PRIMARY KEY,
+    nom VARCHAR(100) UNIQUE NOT NULL,
+    description TEXT
+);
+
 CREATE TABLE utilisateur (
     id SERIAL PRIMARY KEY,
     id_personne INT NOT NULL,
     username VARCHAR(100) UNIQUE NOT NULL,
     mot_de_passe VARCHAR(255) NOT NULL,
-    role VARCHAR(50) DEFAULT 'adherent' CHECK (role IN ('adherent', 'bibliothecaire')),
     actif BOOLEAN DEFAULT TRUE,
     date_ajout TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     date_suppression TIMESTAMP,
-    CONSTRAINT fk_utilisateur_personne FOREIGN KEY (id_personne) REFERENCES personne(id)
+    FOREIGN KEY (id_personne) REFERENCES personne(id)
 );
+
+CREATE TABLE utilisateur_role (
+    id_utilisateur INT,
+    id_role INT,
+    PRIMARY KEY (id_utilisateur, id_role),
+    FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id) ON DELETE CASCADE,
+    FOREIGN KEY (id_role) REFERENCES role(id) ON DELETE CASCADE
+);
+
 
 CREATE TABLE livre (
     id SERIAL PRIMARY KEY,
