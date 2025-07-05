@@ -11,8 +11,8 @@ public class Bibliothecaire {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "id_personne")
+    @OneToOne
+    @JoinColumn(name = "id_personne", nullable = false)
     private Personne personne;
 
     @Column(name = "date_ajout")
@@ -21,7 +21,7 @@ public class Bibliothecaire {
     @Column(name = "date_suppression")
     private LocalDateTime dateSuppression;
 
-    // --- Getters & Setters ---
+    // Getters & Setters
 
     public Integer getId() {
         return id;
