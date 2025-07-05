@@ -39,7 +39,8 @@ INSERT INTO reservation (id_adherent, id_livre, expire_le, statut) VALUES
 -- Insertion types d'actions
 INSERT INTO type_action (nom, description) VALUES
 ('Emprunt', 'Action d''emprunter un livre'),
-('Retour', 'Action de retourner un livre');
+('Retour', 'Action de retourner un livre'),
+('reservstion', 'Action de reserver un livre');
 
 -- Insertion roles (pour utilisateurs)
 INSERT INTO role (nom, description) VALUES

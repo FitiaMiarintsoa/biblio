@@ -8,21 +8,16 @@ import java.time.LocalDateTime;
 public class Adherent {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_personne")
     private Personne personne;
 
-    private String identifiant;
-
-    @ManyToOne
-    @JoinColumn(name = "id_categorie_adherent")
-    private CategorieAdherent categorieAdherent;
-
-    @Column(name = "quota_max")
-    private Integer quotaMax;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_profil")
+    private Profil profil;
 
     @Column(name = "est_bloque")
     private Boolean estBloque;
@@ -32,9 +27,6 @@ public class Adherent {
 
     @Column(name = "date_suppression")
     private LocalDateTime dateSuppression;
-
-    @Column(name = "mot_de_passe")
-    private String motDePasse;
 
     // --- Getters & Setters ---
 
@@ -54,28 +46,12 @@ public class Adherent {
         this.personne = personne;
     }
 
-    public String getIdentifiant() {
-        return identifiant;
+    public Profil getProfil() {
+        return profil;
     }
 
-    public void setIdentifiant(String identifiant) {
-        this.identifiant = identifiant;
-    }
-
-    public CategorieAdherent getCategorieAdherent() {
-        return categorieAdherent;
-    }
-
-    public void setCategorieAdherent(CategorieAdherent categorieAdherent) {
-        this.categorieAdherent = categorieAdherent;
-    }
-
-    public Integer getQuotaMax() {
-        return quotaMax;
-    }
-
-    public void setQuotaMax(Integer quotaMax) {
-        this.quotaMax = quotaMax;
+    public void setProfil(Profil profil) {
+        this.profil = profil;
     }
 
     public Boolean getEstBloque() {
@@ -100,13 +76,5 @@ public class Adherent {
 
     public void setDateSuppression(LocalDateTime dateSuppression) {
         this.dateSuppression = dateSuppression;
-    }
-
-    public String getMotDePasse() {
-        return motDePasse;
-    }
-
-    public void setMotDePasse(String motDePasse) {
-        this.motDePasse = motDePasse;
     }
 }

@@ -2,12 +2,10 @@ package com.itu.bibliotheque.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "personne")
 public class Personne {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -20,75 +18,22 @@ public class Personne {
     @Column(name = "date_naissance")
     private LocalDate dateNaissance;
 
-    @Column(name = "date_ajout")
-    private LocalDateTime dateAjout;
+    // Getters & Setters
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
 
-    @Column(name = "date_suppression")
-    private LocalDateTime dateSuppression;
+    public String getNom() { return nom; }
+    public void setNom(String nom) { this.nom = nom; }
 
-    // --- Getters & Setters ---
+    public String getPrenom() { return prenom; }
+    public void setPrenom(String prenom) { this.prenom = prenom; }
 
-    public Integer getId() {
-        return id;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    public String getAdresse() { return adresse; }
+    public void setAdresse(String adresse) { this.adresse = adresse; }
 
-    public String getNom() {
-        return nom;
-    }
-
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-
-    public String getPrenom() {
-        return prenom;
-    }
-
-    public void setPrenom(String prenom) {
-        this.prenom = prenom;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getAdresse() {
-        return adresse;
-    }
-
-    public void setAdresse(String adresse) {
-        this.adresse = adresse;
-    }
-
-    public LocalDate getDateNaissance() {
-        return dateNaissance;
-    }
-
-    public void setDateNaissance(LocalDate dateNaissance) {
-        this.dateNaissance = dateNaissance;
-    }
-
-    public LocalDateTime getDateAjout() {
-        return dateAjout;
-    }
-
-    public void setDateAjout(LocalDateTime dateAjout) {
-        this.dateAjout = dateAjout;
-    }
-
-    public LocalDateTime getDateSuppression() {
-        return dateSuppression;
-    }
-
-    public void setDateSuppression(LocalDateTime dateSuppression) {
-        this.dateSuppression = dateSuppression;
-    }
+    public LocalDate getDateNaissance() { return dateNaissance; }
+    public void setDateNaissance(LocalDate dateNaissance) { this.dateNaissance = dateNaissance; }
 }

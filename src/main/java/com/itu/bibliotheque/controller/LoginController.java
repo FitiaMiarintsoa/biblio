@@ -17,7 +17,6 @@ public class LoginController {
     @Autowired
     private LoginService loginService;
 
-    // PAGE LOGIN BIBLIOTHECAIRE
     @GetMapping("/bibliothecaire/login")
     public String loginBibliothecaire() {
         return "bibliothecaire/login";

@@ -15,7 +15,7 @@ import com.itu.bibliotheque.model.Abonnement;
 import com.itu.bibliotheque.model.Adherent;
 import com.itu.bibliotheque.repository.AbonnementRepository;
 import com.itu.bibliotheque.repository.AdherentRepository;
-import com.itu.bibliotheque.repository.CategorieAdherentRepository;
+import com.itu.bibliotheque.repository.ProfilRepository;
 import com.itu.bibliotheque.service.AdherentService;
 
 
@@ -27,7 +27,7 @@ public class AdherentController {
     private AdherentService adherentService;
 
     @Autowired
-    private CategorieAdherentRepository categorieRepository;
+    private ProfilRepository profil;
 
     @Autowired
     private AbonnementRepository abonnementRepository;
@@ -37,7 +37,7 @@ public class AdherentController {
 
     @GetMapping("/ajouter")
     public String showFormAjout(Model model) {
-        model.addAttribute("categories", categorieRepository.findAll());
+        model.addAttribute("categories", profil.findAll());
         return "bibliothecaire/ajout";
     }
 
@@ -57,7 +57,7 @@ public class AdherentController {
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
         }
-        model.addAttribute("categories", categorieRepository.findAll());
+        model.addAttribute("categories", profil.findAll());
         return "bibliothecaire/ajout";
     }
 

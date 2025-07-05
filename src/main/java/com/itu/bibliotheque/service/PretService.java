@@ -32,6 +32,9 @@ public class PretService {
     @Autowired
     private NotificationRepository notificationRepository;
 
+    @Autowired
+    private ConfigurationQuotaRepository configurationQuotaRepository;
+
     public String verifierEtEnregistrerPret(Adherent adherent, Exemplaire exemplaire, LocalDate dateEmprunt, LocalDate dateRetourPrevue) {
         LocalDate aujourdHui = LocalDate.now();
 
@@ -40,8 +43,8 @@ public class PretService {
         }
 
         List<Sanction> sanctionsActives = sanctionRepository
-            .findByAdherentAndEstActiveTrueAndDateDebutLessThanEqualAndDateFinGreaterThanEqual(
-                adherent, aujourdHui, aujourdHui);
+                .findByAdherentAndEstActiveTrueAndDateDebutLessThanEqualAndDateFinGreaterThanEqual(
+                        adherent, aujourdHui, aujourdHui);
 
         if (!sanctionsActives.isEmpty()) {
             return "Cet adhérent est actuellement sanctionné et ne peut pas emprunter de livres.";
@@ -59,8 +62,12 @@ public class PretService {
             }
         }
 
+        // Vérifier le quota autorisé via la configuration de son profil
+        ConfigurationQuota quota = configurationQuotaRepository.findByProfil(adherent.getProfil())
+                .orElseThrow(() -> new RuntimeException("Configuration de quota introuvable pour ce profil."));
+
         long nbPretsEnCours = pretRepository.countByAdherentAndDateRetourReelleIsNull(adherent);
-        if (nbPretsEnCours >= adherent.getQuotaMax()) {
+        if (nbPretsEnCours >= quota.getQuotaPret()) {
             return "Cet adhérent a atteint le nombre maximal de livres empruntés.";
         }
 
@@ -76,14 +83,15 @@ public class PretService {
 
         exemplaire.setStatut("emprunte");
         exemplaireRepository.save(exemplaire);
+
         enregistrerHistorique(adherent, "emprunt", "L'adhérent a emprunté l’exemplaire " + exemplaire.getId());
 
-        return null; 
+        return null;
     }
 
     public String rendreLivre(Integer pretId, LocalDate dateRetourReelle) {
         Pret pret = pretRepository.findById(pretId)
-            .orElseThrow(() -> new RuntimeException("Prêt introuvable"));
+                .orElseThrow(() -> new RuntimeException("Prêt introuvable"));
 
         if (pret.getDateRetourReelle() != null) {
             return "Ce livre a déjà été rendu.";
@@ -111,11 +119,12 @@ public class PretService {
             Notification notification = new Notification();
             notification.setAdherent(adherent);
             notification.setMessage("Vous avez reçu une sanction pour retard de retour du livre. "
-                + "Sanction active du " + sanction.getDateDebut() + " au " + sanction.getDateFin() + ".");
+                    + "Sanction active du " + sanction.getDateDebut() + " au " + sanction.getDateFin() + ".");
             notification.setEstLu(false);
             notification.setDateNotification(LocalDateTime.now());
             notificationRepository.save(notification);
         }
+
         enregistrerHistorique(pret.getAdherent(), "retour", "L'adhérent a rendu l’exemplaire " + pret.getExemplaire().getId());
 
         return null;
@@ -123,7 +132,7 @@ public class PretService {
 
     private void enregistrerHistorique(Adherent adherent, String nomAction, String commentaire) {
         TypeAction action = typeActionRepository.findByNom(nomAction)
-            .orElseThrow(() -> new RuntimeException("Type d'action introuvable : " + nomAction));
+                .orElseThrow(() -> new RuntimeException("Type d'action introuvable : " + nomAction));
 
         HistoriqueAdherent historique = new HistoriqueAdherent();
         historique.setAdherent(adherent);

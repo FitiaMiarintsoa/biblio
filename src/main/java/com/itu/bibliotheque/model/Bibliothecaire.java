@@ -1,19 +1,43 @@
 package com.itu.bibliotheque.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
-
 
 @Entity
 @Table(name = "bibliothecaire")
-public class Bibliothecaire extends Personne {
+public class Bibliothecaire {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_personne")
+    private Personne personne;
+
     @Column(name = "date_ajout")
     private LocalDateTime dateAjout;
 
     @Column(name = "date_suppression")
     private LocalDateTime dateSuppression;
+
+    // --- Getters & Setters ---
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Personne getPersonne() {
+        return personne;
+    }
+
+    public void setPersonne(Personne personne) {
+        this.personne = personne;
+    }
 
     public LocalDateTime getDateAjout() {
         return dateAjout;
@@ -30,6 +54,4 @@ public class Bibliothecaire extends Personne {
     public void setDateSuppression(LocalDateTime dateSuppression) {
         this.dateSuppression = dateSuppression;
     }
-
-    // Getters and Setters
 }
