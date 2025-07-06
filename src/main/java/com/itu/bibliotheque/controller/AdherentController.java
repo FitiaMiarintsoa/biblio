@@ -176,7 +176,7 @@ public class AdherentController {
             model.addAttribute("error", "Erreur : " + e.getMessage());
         }
         model.addAttribute("livres", livreRepository.findAll());
-        return "adherent/reservation";
+        return "redirect:/adherents/demander-reservation";
     }
 
 

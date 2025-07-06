@@ -44,6 +44,22 @@ public class ReservationController {
         return "bibliothecaire/reserver";
     }
 
+    // @PostMapping("/reserver")
+    // public String enregistrerReservation(
+    //     @RequestParam("idAdherent") Integer idAdherent,
+    //     @RequestParam("idLivre") Integer idLivre,
+    //     @RequestParam("dateReservation") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateReservation,
+    //     Model model
+    // ) {
+    //     Adherent adherent = adherentRepository.findById(idAdherent).orElseThrow();
+    //     Livre livre = livreRepository.findById((long) idLivre).orElseThrow();
+
+    //     reservationService.reserver(adherent, livre, dateReservation);
+
+    //     model.addAttribute("success", "Réservation ajoutée !");
+    //     return "redirect:/reservations/reserver";
+    // }
+
     @PostMapping("/reserver")
     public String enregistrerReservation(
         @RequestParam("idAdherent") Integer idAdherent,
@@ -54,16 +70,25 @@ public class ReservationController {
         Adherent adherent = adherentRepository.findById(idAdherent).orElseThrow();
         Livre livre = livreRepository.findById((long) idLivre).orElseThrow();
 
-        reservationService.reserver(adherent, livre, dateReservation);
+        try {
+            reservationService.reserver(adherent, livre, dateReservation);
+            model.addAttribute("success", "Réservation ajoutée !");
+        } catch (IllegalStateException e) {
+            model.addAttribute("error", e.getMessage());
+        } catch (Exception e) {
+            model.addAttribute("error", "Une erreur s’est produite lors de la réservation.");
+        }
 
-        model.addAttribute("success", "Réservation ajoutée !");
-        return "redirect:/reservations/reserver";
+        model.addAttribute("livres", livreRepository.findAll());
+        model.addAttribute("user", adherent);
+        return "bibliothecaire/reserver"; 
     }
+
 
     @GetMapping("/valider-reservations")
     public String voirDemandes(Model model) {
         List<Reservation> demandes = reservationRepository.findByStatut("en_attente");
-        model.addAttribute("demandes", demandes);
+        model.addAttribute("reservations", demandes);
         return "bibliothecaire/reservation";
     }
 
