@@ -1,6 +1,7 @@
 package com.itu.bibliotheque.controller;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,8 +14,10 @@ import org.springframework.stereotype.Controller;
 
 import com.itu.bibliotheque.model.Abonnement;
 import com.itu.bibliotheque.model.Adherent;
+import com.itu.bibliotheque.model.Notification;
 import com.itu.bibliotheque.repository.AbonnementRepository;
 import com.itu.bibliotheque.repository.AdherentRepository;
+import com.itu.bibliotheque.repository.NotificationRepository;
 import com.itu.bibliotheque.repository.ProfilRepository;
 import com.itu.bibliotheque.service.AdherentService;
 
@@ -33,6 +36,9 @@ public class AdherentController {
 
     @Autowired
     private AdherentRepository adherentRepository;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     @GetMapping
     public String listeAdherents(Model model) {
@@ -97,5 +103,18 @@ public class AdherentController {
 
         model.addAttribute("adherents", adherentRepository.findAll());
         return "bibliothecaire/abonner";
+    }
+
+    @GetMapping("/notifications")
+    public String voirNotifications(@RequestParam("id") Integer idAdherent, Model model) {
+        Adherent adherent = adherentService.findById(idAdherent)
+            .orElseThrow(() -> new RuntimeException("Adhérent introuvable"));
+
+        adherentService.verifierEtNotifierRetard(adherent);
+
+        List<Notification> notifications = adherentService.findNotificationsByAdherent(adherent);
+        model.addAttribute("notifications", notifications);
+
+        return "adherent/notification";
     }
 }

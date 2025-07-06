@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mes Notifications</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Mes Notifications</h2>
+
+    <div th:if="${notifications.isEmpty()}">
+        <div class="alert alert-info">Aucune notification pour le moment.</div>
+    </div>
+
+    <ul class="list-group" th:if="${!notifications.isEmpty()}">
+        <li th:each="notif : ${notifications}" class="list-group-item"
+            th:classappend="${notif.estLu} ? '' : 'list-group-item-warning'">
+            <strong th:if="${!notif.estLu}">[Non lu]</strong>
+            <span th:text="${notif.message}"></span>
+            <small class="text-muted float-end" th:text="${#temporals.format(notif.dateNotification, 'dd/MM/yyyy HH:mm')}"></small>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

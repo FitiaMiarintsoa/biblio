@@ -71,4 +71,39 @@ public class PretController {
         return "redirect:/bibliothecaire/nouveau-pret";
     }
 
+    @GetMapping("/rendre")
+    public String showFormRendreLivre(Model model) {
+        List<Pret> pretsEnCours = pretRepository.findByDateRetourReelleIsNull();
+        model.addAttribute("pretsEnCours", pretsEnCours);
+        return "bibliothecaire/rendre";
+    }
+
+    @PostMapping("/rendre")
+    public String enregistrerRetour(
+            @RequestParam("pretId") Integer pretId,
+            @RequestParam("dateRetour") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateRetour,
+            Model model) {
+        try {
+            String erreur = pretService.rendreLivre(pretId, dateRetour);
+            if (erreur != null) {
+                model.addAttribute("error", erreur);
+            } else {
+                model.addAttribute("success", "Livre rendu avec succès !");
+            }
+        } catch (Exception e) {
+            model.addAttribute("error", "Erreur : " + e.getMessage());
+        }
+        model.addAttribute("pretsEnCours", pretRepository.findByDateRetourReelleIsNull());
+        return "bibliothecaire/rendre";
+    }
+
+    @GetMapping("/retards")
+    public String afficherPretsEnRetard(Model model) {
+        LocalDate aujourdHui = LocalDate.now();
+        List<Pret> pretsEnRetard = pretRepository.findByDateRetourReelleIsNullAndDateRetourPrevueBefore(aujourdHui);
+        model.addAttribute("pretsEnRetard", pretsEnRetard);
+        return "bibliothecaire/prets_retards";
+    }
+
+
 }

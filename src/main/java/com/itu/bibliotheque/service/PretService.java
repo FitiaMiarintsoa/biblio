@@ -56,6 +56,13 @@ public class PretService {
             return "Cet adhérent est actuellement sanctionné et ne peut pas emprunter de livres.";
         }
 
+        List<Pret> pretsEnCours = pretRepository.findByAdherentAndDateRetourReelleIsNull(adherent);
+        for (Pret p : pretsEnCours) {
+            if (p.getDateRetourPrevue().isBefore(aujourdHui)) {
+                return "L’adhérent a un livre non rendu dont la date de retour est dépassée.";
+            }
+        }
+
         if (adherent.getPersonne().getDateNaissance() != null && exemplaire.getLivre().getRestrictionAge() != null) {
             int age = Period.between(adherent.getPersonne().getDateNaissance(), aujourdHui).getYears();
             int restriction = exemplaire.getLivre().getRestrictionAge();

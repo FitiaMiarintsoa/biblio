@@ -8,4 +8,7 @@ import java.util.List;
 
 public interface NotificationRepository extends JpaRepository<Notification, Integer> {
     List<Notification> findByAdherentAndEstLuFalse(Adherent adherent);
+    boolean existsByAdherentAndMessageAndEstLuFalse(Adherent adherent, String message);
+    List<Notification> findByAdherentOrderByDateNotificationDesc(Adherent adherent);
+
 }

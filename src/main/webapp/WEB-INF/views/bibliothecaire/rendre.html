@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Rendre un livre</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Rendre un livre emprunté</h2>
+
+    <form th:action="@{/bibliothecaire/rendre}" method="post">
+        <div class="mb-3">
+            <label for="pretId">Sélectionnez le prêt :</label>
+            <select id="pretId" name="pretId" class="form-control" required>
+                <option th:each="pret : ${pretsEnCours}" 
+                        th:value="${pret.id}" 
+                        th:text="${pret.adherent.personne.nom + ' - ' + pret.exemplaire.livre.titre + ' (emprunté le ' + pret.dateEmprunt + ')'}">
+                </option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="dateRetour">Date de retour :</label>
+            <input id="dateRetour" name="dateRetour" type="date" class="form-control" required/>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Enregistrer le retour</button>
+    </form>
+
+    <div th:if="${success}" class="alert alert-success mt-3" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-danger mt-3" th:text="${error}"></div>
+</div>
+</body>
+</html>

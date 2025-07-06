@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Prêts en retard</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Liste des prêts en retard</h2>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Adhérent</th>
+            <th>Livre</th>
+            <th>Exemplaire</th>
+            <th>Date d'emprunt</th>
+            <th>Date de retour prévue</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="pret : ${pretsEnRetard}">
+            <td th:text="${pret.adherent.personne.nom + ' ' + pret.adherent.personne.prenom}"></td>
+            <td th:text="${pret.exemplaire.livre.titre}"></td>
+            <td th:text="${pret.exemplaire.id}"></td>
+            <td th:text="${pret.dateEmprunt}"></td>
+            <td th:text="${pret.dateRetourPrevue}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
