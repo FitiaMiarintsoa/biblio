@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Livres Disponibles</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Rechercher des livres disponibles</h2>
+
+    <form method="get" th:action="@{/livres/disponibles}" class="mb-3">
+        <div class="form-group">
+            <label>Date de recherche :</label>
+            <input type="date" name="date" th:value="${dateRecherche}" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Rechercher</button>
+    </form>
+
+    <div th:if="${exemplaires != null}">
+        <h4 th:if="${#lists.isEmpty(exemplaires)}">Aucun exemplaire disponible à cette date.</h4>
+        <table class="table" th:if="${!#lists.isEmpty(exemplaires)}">
+            <thead>
+                <tr>
+                    <th>Titre</th>
+                    <th>Auteur</th>
+                    <th>Exemplaire n°</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="ex : ${exemplaires}">
+                    <td th:text="${ex.livre.titre}">Titre</td>
+                    <td th:text="${ex.livre.auteur}">Auteur</td>
+                    <td th:text="${ex.id}">ID</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

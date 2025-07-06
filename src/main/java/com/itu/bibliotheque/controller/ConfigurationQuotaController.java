@@ -44,6 +44,17 @@ public class ConfigurationQuotaController {
 
     @PostMapping("/save")
     public String saveQuota(ConfigurationQuota quota, Model model) {
+
+        if (quota.getQuotaPret() == null || quota.getQuotaPret() < 0 ||
+            quota.getQuotaPretPlace() == null || quota.getQuotaPretPlace() < 0 ||
+            quota.getQuotaReservation() == null || quota.getQuotaReservation() < 0 ||
+            quota.getQuotaProlongation() == null || quota.getQuotaProlongation() < 0 ||
+            quota.getNbJour() == null || quota.getNbJour() <= 0) {
+            model.addAttribute("error", "Tous les quotas doivent être remplis avec des valeurs valides.");
+            model.addAttribute("quota", quota);
+            model.addAttribute("profils", profilRepository.findAll());
+            return "bibliothecaire/quota/edit";
+        }
         boolean existe = configurationQuotaRepository.existsByProfilAndDateSuppressionIsNull(quota.getProfil());
 
         if (existe) {

@@ -10,6 +10,11 @@ import com.itu.bibliotheque.model.Bibliothecaire;
 
 @Controller
 public class HomeController {
+        
+    @GetMapping("/")
+    public String accueil() {
+        return "index";
+    }
 
     @GetMapping("/bibliothecaire/home")
     public String bibliothecaireHome(HttpSession session, Model model) {

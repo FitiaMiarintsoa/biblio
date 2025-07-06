@@ -16,6 +16,7 @@ import com.itu.bibliotheque.model.Abonnement;
 import com.itu.bibliotheque.model.Adherent;
 import com.itu.bibliotheque.model.Livre;
 import com.itu.bibliotheque.model.Notification;
+import com.itu.bibliotheque.model.Pret;
 import com.itu.bibliotheque.model.Reservation;
 import com.itu.bibliotheque.repository.AbonnementRepository;
 import com.itu.bibliotheque.repository.AdherentRepository;
@@ -25,6 +26,8 @@ import com.itu.bibliotheque.repository.ProfilRepository;
 import com.itu.bibliotheque.repository.ReservationRepository;
 import com.itu.bibliotheque.service.AdherentService;
 import com.itu.bibliotheque.service.ReservationService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/adherents")
@@ -117,6 +120,18 @@ public class AdherentController {
         model.addAttribute("adherents", adherentRepository.findAll());
         return "bibliothecaire/abonner";
     }
+    @GetMapping("/emprunts")
+    public String voirMesEmprunts(HttpSession session, Model model) {
+        Adherent adherent = (Adherent) session.getAttribute("userAdherent");
+        if (adherent == null) {
+            return "redirect:/adherent/login"; 
+        }
+
+        List<Pret> prets = adherentService.findPretsActifs(adherent); 
+        model.addAttribute("prets", prets);
+        model.addAttribute("user", adherent);
+        return "adherent/emprunts";
+    }
 
     @GetMapping("/notifications")
     public String voirNotifications(@RequestParam("id") Integer idAdherent, Model model) {
@@ -132,10 +147,17 @@ public class AdherentController {
     }
 
     @GetMapping("/demander-reservation")
-    public String showDemandeForm(Model model) {
+    public String showDemandeForm(HttpSession session, Model model) {
+        Adherent adherent = (Adherent) session.getAttribute("userAdherent");
+        if (adherent == null) {
+            return "redirect:/adherent/login";
+        }
+
         model.addAttribute("livres", livreRepository.findAll());
+        model.addAttribute("user", adherent); 
         return "adherent/reservation";
     }
+
     @PostMapping("/demander-reservation")
     public String demanderReservation(
         @RequestParam("idLivre") Integer idLivre,
@@ -147,7 +169,6 @@ public class AdherentController {
             Adherent adherent = adherentRepository.findById(idAdherent).orElseThrow();
             Livre livre = livreRepository.findById((long) idLivre).orElseThrow();
 
-            // Utilise le service pour créer la réservation avec dateExpiration calculée automatiquement
             reservationService.demanderReservation(adherent, livre, dateReservation);
 
             model.addAttribute("success", "Votre demande de réservation a été envoyée !");
@@ -155,7 +176,7 @@ public class AdherentController {
             model.addAttribute("error", "Erreur : " + e.getMessage());
         }
         model.addAttribute("livres", livreRepository.findAll());
-        return "adherent/reservation";
+        return "redirect:/adherents/demander-reservation";
     }
 
 

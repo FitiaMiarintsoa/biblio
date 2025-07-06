@@ -21,4 +21,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Intege
 
     // Pour que le bibliothécaire gère les réservations en attente
     List<Reservation> findByStatut(String statut);
+
+    int countByAdherentAndStatutIn(Adherent adherent, List<String> statuts);
+
 }

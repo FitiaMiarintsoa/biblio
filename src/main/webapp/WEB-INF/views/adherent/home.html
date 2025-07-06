@@ -12,8 +12,10 @@
 
     <nav>
         <ul>
-            <li><a th:href="@{/adherent/livres}">Voir les livres disponibles</a></li>
-            <li><a th:href="@{/adherent/emprunts}">Mes emprunts</a></li>
+            <li><a th:href="@{/livres/disponibles}">Voir les livres disponibles</a></li>
+            <li><a th:href="@{/adherents/demander-reservation}">Faire une demande de reservation</a></li>
+            <li><a th:href="@{/adherents/emprunts}">Mes emprunts</a></li>
+            <li><a th:href="@{/adherents/notifications(id=${user.id})}">Notifications</a></li>
             <li><a th:href="@{/adherent/logout}">Déconnexion</a></li>
         </ul>
     </nav>

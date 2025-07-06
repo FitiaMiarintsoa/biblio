@@ -51,12 +51,11 @@ public class PretService {
             return "Exemplaire introuvable.";
         }
 
-        List<Sanction> sanctionsActives = sanctionRepository
-                .findByAdherentAndEstActiveTrueAndDateDebutLessThanEqualAndDateFinGreaterThanEqual(
-                        adherent, aujourdHui, aujourdHui);
+
+        List<Sanction> sanctionsActives = sanctionRepository.findByAdherentAndEstActiveTrueAndDateDebutLessThanEqualAndDateFinGreaterThanEqual(adherent, dateEmprunt, dateEmprunt);
 
         if (!sanctionsActives.isEmpty()) {
-            return "Cet adhérent est actuellement sanctionné et ne peut pas emprunter de livres.";
+            return "Cet adhérent est sanctionné à la date d'emprunt et ne peut pas emprunter de livres.";
         }
 
         boolean estAbonne = abonnementRepository.existsByAdherentAndDateDebutLessThanEqualAndDateFinGreaterThanEqual(adherent, dateEmprunt, dateEmprunt);
@@ -72,8 +71,8 @@ public class PretService {
 
         List<Pret> pretsEnCours = pretRepository.findByAdherentAndDateRetourReelleIsNull(adherent);
         for (Pret p : pretsEnCours) {
-            if (p.getDateRetourPrevue().isBefore(aujourdHui)) {
-                return "L’adhérent a un livre non rendu dont la date de retour est dépassée.";
+            if (p.getDateRetourPrevue().isBefore(dateEmprunt)) {
+                return "L’adhérent a un livre non rendu en retard à la date d’emprunt.";
             }
         }
 
@@ -137,8 +136,10 @@ public class PretService {
             sanction.setAdherent(adherent);
             sanction.setTypeSanction(typeSanction);
             sanction.setDescription("Retard de retour du livre n°" + ex.getId());
-            sanction.setDateDebut(LocalDate.now());
-            sanction.setDateFin(LocalDate.now().plusDays(typeSanction.getPenaliteJour()));
+            // sanction.setDateDebut(LocalDate.now());
+            sanction.setDateDebut(dateRetourReelle);
+            // sanction.setDateFin(LocalDate.now().plusDays(typeSanction.getPenaliteJour()));
+            sanction.setDateFin(dateRetourReelle.plusDays(typeSanction.getPenaliteJour()));
             sanction.setEstActive(true);
             sanction.setDateAjout(LocalDateTime.now());
             sanctionRepository.save(sanction);
@@ -151,9 +152,7 @@ public class PretService {
             notification.setDateNotification(LocalDateTime.now());
             notificationRepository.save(notification);
         }
-
         enregistrerHistorique(pret.getAdherent(), "retour", "L'adhérent a rendu l’exemplaire " + pret.getExemplaire().getId());
-
         return null;
     }
 

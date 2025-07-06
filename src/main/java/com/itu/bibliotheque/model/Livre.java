@@ -93,5 +93,4 @@ public class Livre {
 
     
 
-    // Getters and Setters
 }
