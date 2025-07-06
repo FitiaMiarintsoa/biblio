@@ -147,10 +147,17 @@ public class AdherentController {
     }
 
     @GetMapping("/demander-reservation")
-    public String showDemandeForm(Model model) {
+    public String showDemandeForm(HttpSession session, Model model) {
+        Adherent adherent = (Adherent) session.getAttribute("userAdherent");
+        if (adherent == null) {
+            return "redirect:/adherent/login";
+        }
+
         model.addAttribute("livres", livreRepository.findAll());
+        model.addAttribute("user", adherent); 
         return "adherent/reservation";
     }
+
     @PostMapping("/demander-reservation")
     public String demanderReservation(
         @RequestParam("idLivre") Integer idLivre,
