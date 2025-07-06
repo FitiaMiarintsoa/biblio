@@ -134,6 +134,8 @@ CREATE TABLE configuration_quota (
     id SERIAL PRIMARY KEY,
     id_profil INT NOT NULL,
     quota_pret INT, 
+    quota_pret_place INT,
+    quota_reservation INT,
     quota_prolongation INT,
     nb_jour INT,
     date_ajout TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

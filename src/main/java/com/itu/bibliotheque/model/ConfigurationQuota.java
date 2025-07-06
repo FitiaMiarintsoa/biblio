@@ -29,6 +29,12 @@ public class ConfigurationQuota {
     @Column(name = "date_suppression")
     private LocalDateTime dateSuppression;
 
+    @Column(name = "quota_pret_place")
+    private Integer quotaPretPlace;
+
+    @Column(name = "quota_reservation")
+    private Integer quotaReservation;
+
     // Getters and Setters
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
@@ -38,6 +44,13 @@ public class ConfigurationQuota {
 
     public Integer getQuotaPret() { return quotaPret; }
     public void setQuotaPret(Integer quotaPret) { this.quotaPret = quotaPret; }
+
+    public Integer getQuotaPretPlace() { return quotaPretPlace; }
+    public void setQuotaPretPlace(Integer quotaPretPlace) { this.quotaPretPlace = quotaPretPlace; }
+
+    public Integer getQuotaReservation() { return quotaReservation; }
+    public void setQuotaReservation(Integer quotaReservation) { this.quotaReservation = quotaReservation; }
+
 
     public Integer getQuotaProlongation() { return quotaProlongation; }
     public void setQuotaProlongation(Integer quotaProlongation) { this.quotaProlongation = quotaProlongation; }
@@ -50,4 +63,6 @@ public class ConfigurationQuota {
 
     public LocalDateTime getDateSuppression() { return dateSuppression; }
     public void setDateSuppression(LocalDateTime dateSuppression) { this.dateSuppression = dateSuppression; }
+
+
 }
