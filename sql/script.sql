@@ -153,10 +153,18 @@ CREATE TABLE notification (
         REFERENCES adherent(id) ON DELETE CASCADE
 );
 
+
+CREATE TABLE type_sanction (
+    id SERIAL PRIMARY KEY,
+    nom VARCHAR(100) UNIQUE NOT NULL,
+    description TEXT,
+    penalite_jour INT DEFAULT 0
+);
+
 CREATE TABLE sanction (
     id SERIAL PRIMARY KEY,
     id_adherent INT NOT NULL,
-    type_sanction VARCHAR(100) NOT NULL, 
+    id_type_sanction INT NOT NULL,
     description TEXT,
     date_debut DATE NOT NULL,
     date_fin DATE,
@@ -165,7 +173,9 @@ CREATE TABLE sanction (
     date_suppression TIMESTAMP,
 
     CONSTRAINT fk_sanction_adherent FOREIGN KEY (id_adherent)
-        REFERENCES adherent(id) ON DELETE CASCADE
+        REFERENCES adherent(id) ON DELETE CASCADE,
+    CONSTRAINT fk_sanction_type FOREIGN KEY (id_type_sanction)
+        REFERENCES type_sanction(id) ON DELETE RESTRICT
 );
 
 CREATE TABLE abonnement (
@@ -178,3 +188,4 @@ CREATE TABLE abonnement (
 
     CONSTRAINT fk_abonnement_adherent FOREIGN KEY (id_adherent) REFERENCES adherent(id) ON DELETE CASCADE
 );
+

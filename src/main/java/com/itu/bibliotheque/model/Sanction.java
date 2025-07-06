@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "sanction")
 public class Sanction {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -15,8 +16,9 @@ public class Sanction {
     @JoinColumn(name = "id_adherent", nullable = false)
     private Adherent adherent;
 
-    @Column(name = "type_sanction")
-    private String typeSanction;
+    @ManyToOne
+    @JoinColumn(name = "id_type_sanction", nullable = false)
+    private TypeSanction typeSanction;
 
     @Column(name = "description")
     private String description;
@@ -54,11 +56,11 @@ public class Sanction {
         this.adherent = adherent;
     }
 
-    public String getTypeSanction() {
+    public TypeSanction getTypeSanction() {
         return typeSanction;
     }
 
-    public void setTypeSanction(String typeSanction) {
+    public void setTypeSanction(TypeSanction typeSanction) {
         this.typeSanction = typeSanction;
     }
 

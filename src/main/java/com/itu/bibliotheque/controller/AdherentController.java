@@ -42,7 +42,7 @@ public class AdherentController {
 
     @GetMapping("/ajouter")
     public String showFormAjout(Model model) {
-        model.addAttribute("categories", profil.findAll());
+        model.addAttribute("profils", profil.findAll());
         return "bibliothecaire/ajout";
     }
 
@@ -53,16 +53,16 @@ public class AdherentController {
         @RequestParam(name = "email") String email,
         @RequestParam(name = "adresse") String adresse,
         @RequestParam(name = "dateNaissance") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateNaissance,
-        @RequestParam(name = "idCategorie") Integer idCategorie,
+        @RequestParam(name = "idProfil") Integer idProfil,
         Model model
     ) {
         try {
-            adherentService.ajouterAdherent(nom, prenom, email, adresse, dateNaissance, idCategorie);
+            adherentService.ajouterAdherent(nom, prenom, email, adresse, dateNaissance, idProfil);
             model.addAttribute("success", "Adhérent ajouté avec succès !");
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
         }
-        model.addAttribute("categories", profil.findAll());
+        model.addAttribute("profils", profil.findAll());
         return "bibliothecaire/ajout";
     }
 

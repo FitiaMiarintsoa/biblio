@@ -29,9 +29,9 @@
             <input type="date" name="dateNaissance" class="form-control" required>
         </div>
         <div class="mb-3">
-            <label>Catégorie :</label>
-            <select name="idCategorie" class="form-control" required>
-                <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.nom}"></option>
+            <label>Profil :</label>
+            <select name="idProfil" class="form-control" required>
+                <option th:each="p : ${profils}" th:value="${p.id}" th:text="${p.nom}"></option>
             </select>
         </div>
         <button class="btn btn-primary" type="submit">Ajouter</button>
