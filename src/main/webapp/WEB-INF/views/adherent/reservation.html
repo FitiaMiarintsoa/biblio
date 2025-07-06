@@ -18,7 +18,7 @@
             <label>Date de réservation :</label>
             <input type="date" name="dateReservation" class="form-control" required> 
         </div>
-        <input type="hidden" name="idAdherent" th:value="${adherent.id}" />
+        <input type="hidden" name="idAdherent" th:value="${user.id}" />
         <button type="submit" class="btn btn-primary">Envoyer la demande</button>
     </form>
 

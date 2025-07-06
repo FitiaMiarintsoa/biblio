@@ -2,23 +2,25 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Gestion des prêts</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
 </head>
 <body>
+<div class="container mt-4">
     <h1>Gestion des prêts</h1>
 
-    <nav>
+    <nav class="mb-3">
         <ul>
             <li><a th:href="@{/bibliothecaire/nouveau-pret}">Ajouter un prêt</a></li>
             <li><a th:href="@{/bibliothecaire/rendre}">Rendre un livre</a></li>
             <li><a th:href="@{/bibliothecaire/retards}">Voir les prêts en retard</a></li>
-            <li><a th:href="@{/bibliothecaire/prets_encours}">Prolonger un pret</a></li>
-            <li><a th:href="@{/reservations/valider-reservations}">Reservations en attente</a></li>
-            <li><a th:href="@{/reservations/reserver}">Enregister une reservation</a></li>
+            <li><a th:href="@{/bibliothecaire/prets_encours}">Prolonger un prêt</a></li>
+            <li><a th:href="@{/reservations/valider-reservations}">Réservations en attente</a></li>
+            <li><a th:href="@{/reservations/reserver}">Enregistrer une réservation</a></li>
             <li><a th:href="@{/bibliothecaire/home}">Retour à l'accueil</a></li>
         </ul>
     </nav>
 
-    <form method="get" th:action="@{/bibliothecaire/prets}">
+    <form method="get" th:action="@{/bibliothecaire/prets}" class="mb-4">
         <label for="statut">Statut :</label>
         <select id="statut" name="statut">
             <option value="" th:selected="${statutSelectionne == null}">-- Tous --</option>
@@ -36,10 +38,10 @@
             </option>
         </select>
 
-        <button type="submit">Filtrer</button>
+        <button type="submit" class="btn btn-primary btn-sm">Filtrer</button>
     </form>
 
-    <table border="1" cellpadding="5" cellspacing="0">
+    <table class="table table-bordered">
         <thead>
             <tr>
                 <th>ID</th>
@@ -61,13 +63,14 @@
                 <td th:text="${pret.dateRetourReelle != null ? pret.dateRetourReelle : '-'}"></td>
                 <td>
                     <span th:if="${pret.dateRetourReelle == null}">
-                        <span th:if="${#dates.isAfter(#dates.createNow(), pret.dateRetourPrevue)}" style="color:red;">En retard</span>
-                        <span th:unless="${#dates.isAfter(#dates.createNow(), pret.dateRetourPrevue)}" style="color:green;">En cours</span>
+                        <span th:if="${pret.dateRetourPrevue != null and pret.dateRetourPrevue.isBefore(#temporals.today())}" style="color:red;">En retard</span>
+                        <span th:unless="${pret.dateRetourPrevue != null and pret.dateRetourPrevue.isBefore(#temporals.today())}" style="color:green;">En cours</span>
                     </span>
                     <span th:if="${pret.dateRetourReelle != null}">Terminé</span>
                 </td>
             </tr>
         </tbody>
     </table>
+</div>
 </body>
 </html>

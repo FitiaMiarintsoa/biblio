@@ -89,4 +89,8 @@ public class AdherentService {
     public List<Notification> findNotificationsByAdherent(Adherent adherent) {
         return notificationRepository.findByAdherentOrderByDateNotificationDesc(adherent);
     }
+
+    public List<Pret> findPretsActifs(Adherent adherent) {
+        return pretRepository.findByAdherentAndDateRetourReelleIsNull(adherent);
+    }
 }

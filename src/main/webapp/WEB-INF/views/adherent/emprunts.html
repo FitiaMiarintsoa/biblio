@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mes Emprunts</title>
+    <!-- <link rel="stylesheet" th:href="@{/public/assets/css/style.css}"> -->
+</head>
+<body>
+    <h1>Mes emprunts en cours</h1>
+
+    <div th:if="${#lists.isEmpty(prets)}">
+        <p>Aucun emprunt en cours.</p>
+    </div>
+
+    <table th:if="${not #lists.isEmpty(prets)}" border="1">
+        <thead>
+            <tr>
+                <th>Titre du livre</th>
+                <th>ID Exemplaire</th>
+                <th>Date d'emprunt</th>
+                <th>Date retour prévue</th>
+                <th>Prolongé</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="pret : ${prets}">
+                <td th:text="${pret.exemplaire.livre.titre}">Titre du livre</td>
+                <td th:text="${pret.exemplaire.id}">ID</td>
+                <td th:text="${#dates.format(pret.dateEmprunt, 'dd/MM/yyyy')}">Date emprunt</td>
+                <td th:text="${#dates.format(pret.dateRetourPrevue, 'dd/MM/yyyy')}">Date retour</td>
+                <td th:text="${pret.estProlonge ? 'Oui' : 'Non'}">Prolongé</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+    <a th:href="@{/adherent}">Retour à l'accueil adhérent</a>
+</body>
+</html>

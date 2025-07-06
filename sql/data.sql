@@ -73,6 +73,9 @@ INSERT INTO type_sanction (nom, description, penalite_jour) VALUES
 ('Comportement inapproprié', 'L adhérent a eu un comportement déplacé', 5);
 
 -- Insertion de configuration de quota
-INSERT INTO configuration_quota (id_profil, quota_pret, quota_prolongation, nb_jour) VALUES
-(1, 5, 1, 7),
-(2, 10, 2, 10);
+INSERT INTO configuration_quota 
+(id_profil, quota_pret, quota_pret_place, quota_reservation, quota_prolongation, nb_jour) 
+VALUES
+(1, 5, 3, 2, 1, 7),
+(2, 10, 5, 5, 2, 10);
+

@@ -9,6 +9,7 @@ import com.itu.bibliotheque.service.LivreService;
 import com.itu.bibliotheque.service.PretService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,26 +41,22 @@ public class LivreController {
         model.addAttribute("livres", livres);
         return "livres";
     }
-    
-    // @GetMapping("/livres/disponibles")
-    // public String livresDisponibles(
-    //     @RequestParam(name = "date", required = false) String dateStr,
-    //     Model model
-    // ) {
-    //     List<Exemplaire> exemplairesDisponibles = null;
+    @GetMapping("/livres/disponibles")
+    public String livresDisponibles(
+        @RequestParam(name = "date", required = false) 
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+        Model model
+    ) {
+        List<Exemplaire> exemplairesDisponibles = null;
 
-    //     if (dateStr != null && !dateStr.isEmpty()) {
-    //         try {
-    //             LocalDate date = LocalDate.parse(dateStr);
-    //             LocalDateTime dateTime = date.atStartOfDay();
-    //             exemplairesDisponibles = livreService.findExemplairesDisponiblesAtDate(dateTime);
-    //         } catch (Exception e) {
-    //             model.addAttribute("error", "Date invalide.");
-    //         }
-    //     }
+        if (date != null) {
+            LocalDateTime dateTime = date.atStartOfDay(); 
+            exemplairesDisponibles = livreService.findExemplairesDisponiblesAtDate(dateTime);
+        }
 
-    //     model.addAttribute("exemplaires", exemplairesDisponibles);
-    //     model.addAttribute("dateRecherche", dateStr);
-    //     return "livres/disponibles";
-    // }
+        model.addAttribute("exemplaires", exemplairesDisponibles);
+        model.addAttribute("dateRecherche", date);
+        return "livres/disponibles";
+    }
+
 }
