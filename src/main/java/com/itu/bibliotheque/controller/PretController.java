@@ -167,8 +167,8 @@ public class PretController {
 
     @GetMapping("/prets_encours")
     public String pretsEncours(
-            @RequestParam(required = false) Integer idAdherent,
-            Model model) {
+        @RequestParam(name = "idAdherent", required = false) Integer idAdherent,
+        Model model){
 
         List<Adherent> adherents = adherentRepository.findAll();
         model.addAttribute("adherents", adherents);
