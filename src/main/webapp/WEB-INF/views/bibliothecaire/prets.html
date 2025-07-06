@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Gestion des prêts</title>
+</head>
+<body>
+    <h1>Gestion des prêts</h1>
+
+    <nav>
+        <ul>
+            <li><a th:href="@{/bibliothecaire/nouveau-pret}">Ajouter un prêt</a></li>
+            <li><a th:href="@{/bibliothecaire/rendre}">Rendre un livre</a></li>
+            <li><a th:href="@{/bibliothecaire/retards}">Voir les prêts en retard</a></li>
+            <li><a th:href="@{/bibliothecaire/home}">Retour à l'accueil</a></li>
+        </ul>
+    </nav>
+
+    <form method="get" th:action="@{/bibliothecaire/prets}">
+        <label for="statut">Statut :</label>
+        <select id="statut" name="statut">
+            <option value="" th:selected="${statutSelectionne == null}">-- Tous --</option>
+            <option value="en_cours" th:selected="${statutSelectionne == 'en_cours'}">En cours</option>
+            <option value="en_retard" th:selected="${statutSelectionne == 'en_retard'}">En retard</option>
+        </select>
+
+        <label for="idAdherent">Adhérent :</label>
+        <select id="idAdherent" name="idAdherent">
+            <option value="" th:selected="${idAdherentSelectionne == null}">-- Tous --</option>
+            <option th:each="adherent : ${adherents}" 
+                    th:value="${adherent.id}" 
+                    th:text="${adherent.personne.nom + ' ' + adherent.personne.prenom}" 
+                    th:selected="${adherent.id == idAdherentSelectionne}">
+            </option>
+        </select>
+
+        <button type="submit">Filtrer</button>
+    </form>
+
+    <table border="1" cellpadding="5" cellspacing="0">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Adhérent</th>
+                <th>Livre</th>
+                <th>Date Emprunt</th>
+                <th>Date Retour Prévue</th>
+                <th>Date Retour Réelle</th>
+                <th>Statut</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="pret : ${prets}">
+                <td th:text="${pret.id}"></td>
+                <td th:text="${pret.adherent.personne.nom + ' ' + pret.adherent.personne.prenom}"></td>
+                <td th:text="${pret.exemplaire.livre.titre}"></td>
+                <td th:text="${pret.dateEmprunt}"></td>
+                <td th:text="${pret.dateRetourPrevue}"></td>
+                <td th:text="${pret.dateRetourReelle != null ? pret.dateRetourReelle : '-'}"></td>
+                <td>
+                    <span th:if="${pret.dateRetourReelle == null}">
+                        <span th:if="${#dates.isAfter(#dates.createNow(), pret.dateRetourPrevue)}" style="color:red;">En retard</span>
+                        <span th:unless="${#dates.isAfter(#dates.createNow(), pret.dateRetourPrevue)}" style="color:green;">En cours</span>
+                    </span>
+                    <span th:if="${pret.dateRetourReelle != null}">Terminé</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

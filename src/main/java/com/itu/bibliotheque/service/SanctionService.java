@@ -21,7 +21,6 @@ public class SanctionService {
     @Autowired
     private AdherentRepository adherentRepository;
 
-    // ⏰ S’exécute tous les jours à 02:00 du matin
     @Scheduled(cron = "0 0 2 * * *")
     public void verifierSanctionsEtMettreAJourAdherents() {
         LocalDate aujourdHui = LocalDate.now();
@@ -36,7 +35,6 @@ public class SanctionService {
                 }
             }
 
-            // Vérifier s’il reste des sanctions actives
             boolean aSanctionActive = sanctionRepository
                 .existsByAdherentAndEstActiveTrueAndDateDebutLessThanEqualAndDateFinGreaterThanEqual(
                         adherent, aujourdHui, aujourdHui);

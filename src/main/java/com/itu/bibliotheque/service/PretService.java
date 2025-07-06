@@ -38,6 +38,9 @@ public class PretService {
     @Autowired
     private TypeSanctionRepository typeSanctionRepository;
 
+    @Autowired
+    private AbonnementRepository abonnementRepository;
+
     public String verifierEtEnregistrerPret(Adherent adherent, Exemplaire exemplaire, LocalDate dateEmprunt) {
         LocalDate aujourdHui = LocalDate.now();
 
@@ -54,6 +57,12 @@ public class PretService {
 
         if (!sanctionsActives.isEmpty()) {
             return "Cet adhérent est actuellement sanctionné et ne peut pas emprunter de livres.";
+        }
+
+        boolean estAbonne = abonnementRepository.existsByAdherentAndDateDebutLessThanEqualAndDateFinGreaterThanEqual(adherent, dateEmprunt, dateEmprunt);
+
+        if (!estAbonne) {
+            return "L'adhérent n'est pas abonné à la date d'emprunt.";
         }
 
         List<Pret> pretsEnCours = pretRepository.findByAdherentAndDateRetourReelleIsNull(adherent);

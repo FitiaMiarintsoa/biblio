@@ -29,28 +29,37 @@ public class AdherentService {
     @Autowired
     private NotificationRepository notificationRepository; 
 
-    public void ajouterAdherent(String nom, String prenom, String email, String adresse, LocalDate dateNaissance, int idProfil) {
+    @Autowired
+    private AbonnementRepository abonnementRepository; 
+
+    public void ajouterAdherent(String nom, String prenom, String email, String adresse, LocalDate dateNaissance, Integer idProfil, boolean souhaiteAbonnement) {
         Personne personne = new Personne();
         personne.setNom(nom);
         personne.setPrenom(prenom);
         personne.setEmail(email);
         personne.setAdresse(adresse);
         personne.setDateNaissance(dateNaissance);
-
-
-        personne = personneRepository.save(personne);
+        personneRepository.save(personne);
 
         Profil profil = profilRepository.findById(idProfil)
-                .orElseThrow(() -> new RuntimeException("Profil non trouvé"));
+            .orElseThrow(() -> new RuntimeException("Profil introuvable"));
 
         Adherent adherent = new Adherent();
         adherent.setPersonne(personne);
         adherent.setProfil(profil);
         adherent.setEstBloque(false);
         adherent.setDateAjout(LocalDateTime.now());
-
         adherentRepository.save(adherent);
+
+        if (souhaiteAbonnement) {
+            Abonnement abonnement = new Abonnement();
+            abonnement.setAdherent(adherent);
+            abonnement.setDateDebut(LocalDate.now());
+            abonnement.setDateFin(LocalDate.now().plusMonths(1));
+            abonnementRepository.save(abonnement);
+        }
     }
+
 
     public void verifierEtNotifierRetard(Adherent adherent) {
         LocalDate aujourdHui = LocalDate.now();

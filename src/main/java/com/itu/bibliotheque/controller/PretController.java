@@ -38,9 +38,60 @@ public class PretController {
     @Autowired
     private SanctionRepository sanctionRepository;
 
+    // @GetMapping("/prets")
+    // public String gestionPrets() {
+    //     return "bibliothecaire/prets"; 
+    // }
+
     @GetMapping("/prets")
-    public String gestionPrets() {
-        return "bibliothecaire/prets"; 
+    public String gestionPrets(
+            @RequestParam(value = "statut", required = false) String statut,
+            @RequestParam(value = "idAdherent", required = false) Integer idAdherent,
+            Model model) {
+
+        List<Pret> prets;
+        LocalDate aujourdHui = LocalDate.now();
+
+        if (statut != null && idAdherent != null) {
+            Adherent adherent = adherentRepository.findById(idAdherent).orElse(null);
+            if (adherent == null) {
+                model.addAttribute("error", "Adhérent non trouvé.");
+                prets = List.of();
+            } else {
+                if ("en_cours".equals(statut)) {
+                    prets = pretRepository.findByAdherentAndDateRetourReelleIsNull(adherent);
+                } else if ("en_retard".equals(statut)) {
+                    prets = pretRepository.findByAdherentAndDateRetourReelleIsNullAndDateRetourPrevueBefore(adherent, aujourdHui);
+                } else {
+                    prets = pretRepository.findByAdherent(adherent);
+                }
+            }
+        } else if (statut != null) {
+            if ("en_cours".equals(statut)) {
+                prets = pretRepository.findByDateRetourReelleIsNull();
+            } else if ("en_retard".equals(statut)) {
+                prets = pretRepository.findByDateRetourReelleIsNullAndDateRetourPrevueBefore(aujourdHui);
+            } else {
+                prets = pretRepository.findAll();
+            }
+        } else if (idAdherent != null) {
+            Adherent adherent = adherentRepository.findById(idAdherent).orElse(null);
+            if (adherent == null) {
+                model.addAttribute("error", "Adhérent non trouvé.");
+                prets = List.of();
+            } else {
+                prets = pretRepository.findByAdherent(adherent);
+            }
+        } else {
+            prets = pretRepository.findAll();
+        }
+
+        model.addAttribute("prets", prets);
+        model.addAttribute("adherents", adherentRepository.findAll());
+        model.addAttribute("statutSelectionne", statut);
+        model.addAttribute("idAdherentSelectionne", idAdherent);
+
+        return "bibliothecaire/prets";
     }
 
     @GetMapping("/nouveau-pret")

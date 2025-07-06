@@ -34,6 +34,11 @@
                 <option th:each="p : ${profils}" th:value="${p.id}" th:text="${p.nom}"></option>
             </select>
         </div>
+
+        <div class="mb-3 form-check">
+            <input type="checkbox" name="souhaiteAbonnement" class="form-check-input" id="abonnementCheck">
+            <label class="form-check-label" for="abonnementCheck">Souhaite s'abonner</label>
+        </div>
         <button class="btn btn-primary" type="submit">Ajouter</button>
     </form>
 

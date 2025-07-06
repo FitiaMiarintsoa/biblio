@@ -60,10 +60,11 @@ public class AdherentController {
         @RequestParam(name = "adresse") String adresse,
         @RequestParam(name = "dateNaissance") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateNaissance,
         @RequestParam(name = "idProfil") Integer idProfil,
+        @RequestParam(name = "souhaiteAbonnement", required = false) Boolean souhaiteAbonnement, // <-- ajouté
         Model model
     ) {
         try {
-            adherentService.ajouterAdherent(nom, prenom, email, adresse, dateNaissance, idProfil);
+            adherentService.ajouterAdherent(nom, prenom, email, adresse, dateNaissance, idProfil, souhaiteAbonnement != null && souhaiteAbonnement);
             model.addAttribute("success", "Adhérent ajouté avec succès !");
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
@@ -71,6 +72,7 @@ public class AdherentController {
         model.addAttribute("profils", profil.findAll());
         return "bibliothecaire/ajout";
     }
+
 
     @GetMapping("/abonner")
     public String showAbonnementForm(Model model) {
