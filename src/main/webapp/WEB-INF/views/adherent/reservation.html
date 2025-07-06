@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Demande de réservation</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Demande de réservation (Adhérent)</h2>
+    <form th:action="@{/adherents/demander-reservation}" method="post">
+        <div class="mb-3">
+            <label>Livre :</label>
+            <select name="idLivre" class="form-control" required>
+                <option th:each="l : ${livres}" th:value="${l.id}" th:text="${l.titre}"></option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label>Date de réservation :</label>
+            <input type="date" name="dateReservation" class="form-control" required>
+        </div>
+        <input type="hidden" name="idAdherent" th:value="${adherent.id}" />
+        <button type="submit" class="btn btn-primary">Envoyer la demande</button>
+    </form>
+
+    <div th:if="${success}" class="alert alert-success mt-3" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-danger mt-3" th:text="${error}"></div>
+</div>
+</body>
+</html>

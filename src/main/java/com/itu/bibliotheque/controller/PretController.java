@@ -10,12 +10,14 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 
 import com.itu.bibliotheque.repository.PretRepository;
 import com.itu.bibliotheque.repository.SanctionRepository;
 import com.itu.bibliotheque.repository.AdherentRepository;
+import com.itu.bibliotheque.repository.ConfigurationQuotaRepository;
 import com.itu.bibliotheque.repository.ExemplaireRepository;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -37,7 +39,9 @@ public class PretController {
 
     @Autowired
     private SanctionRepository sanctionRepository;
-
+    @Autowired
+    private ConfigurationQuotaRepository configurationQuotaRepository;
+    
     // @GetMapping("/prets")
     // public String gestionPrets() {
     //     return "bibliothecaire/prets"; 
@@ -161,5 +165,60 @@ public class PretController {
         return "bibliothecaire/prets_retards";
     }
 
+    @GetMapping("/prets_encours")
+    public String pretsEncours(
+            @RequestParam(required = false) Integer idAdherent,
+            Model model) {
+
+        List<Adherent> adherents = adherentRepository.findAll();
+        model.addAttribute("adherents", adherents);
+        model.addAttribute("idAdherent", idAdherent);
+
+        List<Pret> prets;
+        if (idAdherent != null) {
+            prets = pretRepository.findByAdherentIdAndDateRetourReelleIsNull(idAdherent);
+        } else {
+            prets = pretRepository.findByDateRetourReelleIsNull();
+        }
+        model.addAttribute("prets", prets);
+
+        return "bibliothecaire/prets_encours";
+    }
+
+    @PostMapping("/prets_encours/prolonger")
+    public String prolongerPret(
+            @RequestParam("idPret") Integer idPret,
+            @RequestParam(value = "idAdherent", required = false) Integer idAdherent,
+            RedirectAttributes redirectAttributes) {
+
+        try {
+            Pret pret = pretRepository.findById(idPret)
+                    .orElseThrow(() -> new RuntimeException("Prêt introuvable"));
+            Adherent adherent = pret.getAdherent();
+
+            ConfigurationQuota quota = configurationQuotaRepository.findByProfilAndDateSuppressionIsNull(adherent.getProfil())
+                    .orElseThrow(() -> new RuntimeException("Configuration quota introuvable pour ce profil"));
+
+            long nbProlongations = pretRepository.countByAdherentIdAndEstProlongeTrue(adherent.getId());
+
+            if (pret.getEstProlonge()) {
+                redirectAttributes.addFlashAttribute("error", "Ce prêt a déjà été prolongé.");
+            } else if (nbProlongations >= quota.getQuotaProlongation()) {
+                redirectAttributes.addFlashAttribute("error", "Quota de prolongation dépassé pour cet adhérent.");
+            } else {
+                pret.setDateRetourPrevue(pret.getDateRetourPrevue().plusDays(quota.getNbJour()));
+                pret.setEstProlonge(true);
+                pretRepository.save(pret);
+                redirectAttributes.addFlashAttribute("success", "Prêt prolongé avec succès.");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Erreur lors de la prolongation : " + e.getMessage());
+        }
+
+        if (idAdherent != null) {
+            return "redirect:/bibliothecaire/prets_encours?idAdherent=" + idAdherent;
+        }
+        return "redirect:/bibliothecaire/prets_encours";
+    }
 
 }

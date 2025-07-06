@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${quota.id != null} ? 'Modifier quota' : 'Ajouter quota'"></title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+</head>
+<body>
+<div class="container mt-4">
+    <h2 th:text="${quota.id != null} ? 'Modifier configuration quota' : 'Ajouter configuration quota'"></h2>
+
+    <form th:action="@{/bibliothecaire/quota/save}" method="post" th:object="${quota}">
+        <input type="hidden" th:field="*{id}" />
+        <div class="mb-3">
+            <label>Profil :</label>
+            <select th:field="*{profil}" class="form-control" required>
+                <option th:each="p : ${profils}" th:value="${p}" th:text="${p.nom}"></option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label>Quota prêt :</label>
+            <input type="number" min="0" th:field="*{quotaPret}" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label>Quota prolongation :</label>
+            <input type="number" min="0" th:field="*{quotaProlongation}" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label>Nombre de jours (réservation) :</label>
+            <input type="number" min="0" th:field="*{nbJour}" class="form-control" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+        <a href="/bibliothecaire/quota" class="btn btn-secondary">Annuler</a>
+    </form>
+</div>
+</body>
+</html>

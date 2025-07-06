@@ -60,9 +60,14 @@ public class PretService {
         }
 
         boolean estAbonne = abonnementRepository.existsByAdherentAndDateDebutLessThanEqualAndDateFinGreaterThanEqual(adherent, dateEmprunt, dateEmprunt);
-
+        
         if (!estAbonne) {
             return "L'adhérent n'est pas abonné à la date d'emprunt.";
+        }
+        boolean dejaEmprunteCeJour = pretRepository.existsByExemplaireAndDateEmpruntLessThanEqualAndDateRetourReelleGreaterThanEqual(exemplaire, dateEmprunt, dateEmprunt);
+
+        if (dejaEmprunteCeJour) {
+            return "Ce livre n’est pas disponible à la date choisie.";
         }
 
         List<Pret> pretsEnCours = pretRepository.findByAdherentAndDateRetourReelleIsNull(adherent);
@@ -88,10 +93,8 @@ public class PretService {
             return "Cet adhérent a atteint le nombre maximal de livres empruntés.";
         }
 
-        // Calcule automatique de la date de retour prévue
         LocalDate dateRetourPrevue = dateEmprunt.plusDays(quota.getNbJour());
 
-        // Enregistrement du prêt
         Pret pret = new Pret();
         pret.setAdherent(adherent);
         pret.setExemplaire(exemplaire);

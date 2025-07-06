@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Prêts en cours</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Prêts en cours</h2>
+
+    <form th:action="@{/bibliothecaire/prets_encours}" method="get" class="mb-3">
+        <label for="idAdherent">Filtrer par adhérent :</label>
+        <select name="idAdherent" class="form-control" style="max-width: 300px; display: inline-block;">
+            <option value="">-- Tous --</option>
+            <option th:each="a : ${adherents}"
+                    th:value="${a.id}"
+                    th:text="${a.personne.nom + ' ' + a.personne.prenom}"
+                    th:selected="${a.id == idAdherent}"></option>
+        </select>
+        <button type="submit" class="btn btn-primary ml-2">Filtrer</button>
+    </form>
+
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Adhérent</th>
+            <th>Livre</th>
+            <th>Date emprunt</th>
+            <th>Date retour prévue</th>
+            <th>Prolongé</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="pret : ${prets}">
+            <td th:text="${pret.adherent.personne.nom + ' ' + pret.adherent.personne.prenom}"></td>
+            <td th:text="${pret.exemplaire.livre.titre}"></td>
+            <td th:text="${pret.dateEmprunt}"></td>
+            <td th:text="${pret.dateRetourPrevue}"></td>
+            <td th:text="${pret.estProlonge ? 'Oui' : 'Non'}"></td>
+            <td>
+                <form th:if="${!pret.estProlonge}" th:action="@{/bibliothecaire/prets_encours/prolonger}" method="post" style="display:inline;">
+                    <input type="hidden" name="idPret" th:value="${pret.id}" />
+                    <input type="hidden" name="idAdherent" th:value="${idAdherent}" />
+                    <button type="submit" class="btn btn-sm btn-warning">Prolonger</button>
+                </form>
+                <span th:if="${pret.estProlonge}">Prolongé</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

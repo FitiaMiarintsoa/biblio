@@ -14,12 +14,17 @@ import org.springframework.stereotype.Controller;
 
 import com.itu.bibliotheque.model.Abonnement;
 import com.itu.bibliotheque.model.Adherent;
+import com.itu.bibliotheque.model.Livre;
 import com.itu.bibliotheque.model.Notification;
+import com.itu.bibliotheque.model.Reservation;
 import com.itu.bibliotheque.repository.AbonnementRepository;
 import com.itu.bibliotheque.repository.AdherentRepository;
+import com.itu.bibliotheque.repository.LivreRepository;
 import com.itu.bibliotheque.repository.NotificationRepository;
 import com.itu.bibliotheque.repository.ProfilRepository;
+import com.itu.bibliotheque.repository.ReservationRepository;
 import com.itu.bibliotheque.service.AdherentService;
+import com.itu.bibliotheque.service.ReservationService;
 
 @Controller
 @RequestMapping("/adherents")
@@ -38,7 +43,13 @@ public class AdherentController {
     private AdherentRepository adherentRepository;
 
     @Autowired
-    private NotificationRepository notificationRepository;
+    private ReservationRepository reservationRepository;
+
+    @Autowired
+    private LivreRepository livreRepository;
+
+    @Autowired
+    private ReservationService reservationService;
 
     @GetMapping
     public String listeAdherents(Model model) {
@@ -119,4 +130,33 @@ public class AdherentController {
 
         return "adherent/notification";
     }
+
+    @GetMapping("/demander-reservation")
+    public String showDemandeForm(Model model) {
+        model.addAttribute("livres", livreRepository.findAll());
+        return "adherent/reservation";
+    }
+    @PostMapping("/demander-reservation")
+    public String demanderReservation(
+        @RequestParam("idLivre") Integer idLivre,
+        @RequestParam("idAdherent") Integer idAdherent,
+        @RequestParam("dateReservation") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateReservation,
+        Model model
+    ) {
+        try {
+            Adherent adherent = adherentRepository.findById(idAdherent).orElseThrow();
+            Livre livre = livreRepository.findById((long) idLivre).orElseThrow();
+
+            // Utilise le service pour créer la réservation avec dateExpiration calculée automatiquement
+            reservationService.demanderReservation(adherent, livre, dateReservation);
+
+            model.addAttribute("success", "Votre demande de réservation a été envoyée !");
+        } catch (Exception e) {
+            model.addAttribute("error", "Erreur : " + e.getMessage());
+        }
+        model.addAttribute("livres", livreRepository.findAll());
+        return "adherent/reservation";
+    }
+
+
 }

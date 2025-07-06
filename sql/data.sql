@@ -46,6 +46,12 @@ INSERT INTO exemplaire (id_livre, statut) VALUES
 (2, 'disponible'),
 (3, 'disponible');
 
+INSERT INTO livre (titre, auteur, genre, isbn, restriction_age) VALUES
+('boky1', 'Antoine de Saint-Exupéry', 'Conte', '9780156012100', NULL);
+
+INSERT INTO exemplaire (id_livre, statut) VALUES
+(4, 'disponible');
+
 -- -- Insertion d’un prêt (Bob emprunte un exemplaire)
 -- INSERT INTO pret (id_adherent, id_exemplaire, date_emprunt, date_retour_prevue, est_prolonge) VALUES
 -- ((SELECT id FROM adherent WHERE id_personne = 2), 1, CURRENT_DATE - INTERVAL '3 days', CURRENT_DATE + INTERVAL '7 days', FALSE);

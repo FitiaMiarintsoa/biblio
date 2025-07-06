@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Valider les réservations</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Demandes de réservation en attente</h2>
+
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Adhérent</th>
+            <th>Livre</th>
+            <th>Date de demande</th>
+            <th>Expire le</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="r : ${reservations}">
+            <td th:text="${r.adherent.personne.nom + ' ' + r.adherent.personne.prenom}"></td>
+            <td th:text="${r.livre.titre}"></td>
+            <td th:text="${r.dateReservation}"></td>
+            <td th:text="${r.expireLe}"></td>
+            <td>
+                <form th:action="@{/reservations/valider-reservation}" method="post" style="display:inline;">
+                    <input type="hidden" name="idReservation" th:value="${r.id}" />
+                    <button type="submit" class="btn btn-success btn-sm">Valider</button>
+                </form>
+
+                <form th:action="@{/reservations/refuser-reservation}" method="post" style="display:inline; margin-left: 5px;">
+                    <input type="hidden" name="idReservation" th:value="${r.id}" />
+                    <button type="submit" class="btn btn-danger btn-sm">Refuser</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:if="${success}" class="alert alert-success mt-3" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-danger mt-3" th:text="${error}"></div>
+</div>
+</body>
+</html>

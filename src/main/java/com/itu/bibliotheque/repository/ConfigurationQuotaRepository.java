@@ -10,6 +10,8 @@ import java.util.List;
 
 public interface ConfigurationQuotaRepository extends JpaRepository<ConfigurationQuota, Integer> {
     Optional<ConfigurationQuota> findByProfil(Profil profil);
+    Optional<ConfigurationQuota> findByProfilId(Integer idProfil);
     List<ConfigurationQuota> findByDateSuppressionIsNull();
+    Optional<ConfigurationQuota> findByProfilAndDateSuppressionIsNull(Profil profil);
     boolean existsByProfilAndDateSuppressionIsNull(Profil profil);
 }
