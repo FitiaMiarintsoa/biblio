@@ -38,6 +38,11 @@ public class PretController {
     @Autowired
     private SanctionRepository sanctionRepository;
 
+    @GetMapping("/prets")
+    public String gestionPrets() {
+        return "bibliothecaire/prets"; 
+    }
+
     @GetMapping("/nouveau-pret")
     public String showForm(Model model) {
         model.addAttribute("adherents", adherentRepository.findAll());

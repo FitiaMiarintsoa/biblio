@@ -101,49 +101,49 @@ public class PretService {
     }
 
 
-public String rendreLivre(Integer pretId, LocalDate dateRetourReelle) {
-    Pret pret = pretRepository.findById(pretId)
-            .orElseThrow(() -> new RuntimeException("Prêt introuvable"));
+    public String rendreLivre(Integer pretId, LocalDate dateRetourReelle) {
+        Pret pret = pretRepository.findById(pretId)
+                .orElseThrow(() -> new RuntimeException("Prêt introuvable"));
 
-    if (pret.getDateRetourReelle() != null) {
-        return "Ce livre a déjà été rendu.";
+        if (pret.getDateRetourReelle() != null) {
+            return "Ce livre a déjà été rendu.";
+        }
+
+        pret.setDateRetourReelle(dateRetourReelle);
+        pretRepository.save(pret);
+
+        Exemplaire ex = pret.getExemplaire();
+        ex.setStatut("disponible");
+        exemplaireRepository.save(ex);
+
+        if (dateRetourReelle.isAfter(pret.getDateRetourPrevue())) {
+            Adherent adherent = pret.getAdherent();
+            TypeSanction typeSanction = typeSanctionRepository.findByNom("Retard de retour")
+                    .orElseThrow(() -> new RuntimeException("Type de sanction 'Retard de retour' introuvable"));
+
+            Sanction sanction = new Sanction();
+            sanction.setAdherent(adherent);
+            sanction.setTypeSanction(typeSanction);
+            sanction.setDescription("Retard de retour du livre n°" + ex.getId());
+            sanction.setDateDebut(LocalDate.now());
+            sanction.setDateFin(LocalDate.now().plusDays(typeSanction.getPenaliteJour()));
+            sanction.setEstActive(true);
+            sanction.setDateAjout(LocalDateTime.now());
+            sanctionRepository.save(sanction);
+
+            Notification notification = new Notification();
+            notification.setAdherent(adherent);
+            notification.setMessage("Vous avez reçu une sanction pour retard de retour du livre. "
+                    + "Sanction active du " + sanction.getDateDebut() + " au " + sanction.getDateFin() + ".");
+            notification.setEstLu(false);
+            notification.setDateNotification(LocalDateTime.now());
+            notificationRepository.save(notification);
+        }
+
+        enregistrerHistorique(pret.getAdherent(), "retour", "L'adhérent a rendu l’exemplaire " + pret.getExemplaire().getId());
+
+        return null;
     }
-
-    pret.setDateRetourReelle(dateRetourReelle);
-    pretRepository.save(pret);
-
-    Exemplaire ex = pret.getExemplaire();
-    ex.setStatut("disponible");
-    exemplaireRepository.save(ex);
-
-    if (dateRetourReelle.isAfter(pret.getDateRetourPrevue())) {
-        Adherent adherent = pret.getAdherent();
-        TypeSanction typeSanction = typeSanctionRepository.findByNom("Retard de retour")
-                .orElseThrow(() -> new RuntimeException("Type de sanction 'Retard de retour' introuvable"));
-
-        Sanction sanction = new Sanction();
-        sanction.setAdherent(adherent);
-        sanction.setTypeSanction(typeSanction);
-        sanction.setDescription("Retard de retour du livre n°" + ex.getId());
-        sanction.setDateDebut(LocalDate.now());
-        sanction.setDateFin(LocalDate.now().plusDays(typeSanction.getPenaliteJour()));
-        sanction.setEstActive(true);
-        sanction.setDateAjout(LocalDateTime.now());
-        sanctionRepository.save(sanction);
-
-        Notification notification = new Notification();
-        notification.setAdherent(adherent);
-        notification.setMessage("Vous avez reçu une sanction pour retard de retour du livre. "
-                + "Sanction active du " + sanction.getDateDebut() + " au " + sanction.getDateFin() + ".");
-        notification.setEstLu(false);
-        notification.setDateNotification(LocalDateTime.now());
-        notificationRepository.save(notification);
-    }
-
-    enregistrerHistorique(pret.getAdherent(), "retour", "L'adhérent a rendu l’exemplaire " + pret.getExemplaire().getId());
-
-    return null;
-}
 
 
     private void enregistrerHistorique(Adherent adherent, String nomAction, String commentaire) {

@@ -11,4 +11,10 @@ public interface SanctionRepository extends JpaRepository<Sanction, Integer> {
     List<Sanction> findByAdherentAndEstActiveTrueAndDateDebutLessThanEqualAndDateFinGreaterThanEqual(
         Adherent adherent, LocalDate today1, LocalDate today2
     );
+    boolean existsByAdherentAndEstActiveTrueAndDateDebutLessThanEqualAndDateFinGreaterThanEqual(
+        Adherent adherent, LocalDate dateDebut, LocalDate dateFin
+    );
+
+    List<Sanction> findByAdherentAndEstActiveTrue(Adherent adherent);
+        
 }
