@@ -7,7 +7,8 @@
 <body>
 <div class="container mt-4">
     <h2>Liste des configurations de quota</h2>
-    <a href="@{/bibliothecaire/quota/edit}" class="btn btn-primary mb-3">Ajouter un quota</a>
+    <!-- <a href="@{/bibliothecaire/quota/edit}" class="btn btn-primary mb-3">Ajouter un quota</a> -->
+     <a th:href="@{/bibliothecaire/quota/edit}" class="btn btn-primary mb-3">Ajouter un quota</a>
     <table class="table table-bordered">
     <thead>
         <tr>
@@ -39,6 +40,7 @@
             </tr>
         </tbody>
     </table>
+     <a th:href="@{/bibliothecaire/quota/ajouter-profil}" class="btn btn-secondary mt-3">Ajouter un profil</a>
 </div>
 </body>
 </html>

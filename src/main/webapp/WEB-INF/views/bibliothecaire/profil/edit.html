@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Ajouter un profil</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Ajouter un profil</h2>
+
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <form th:action="@{/bibliothecaire/quota/ajouter-profil}" th:object="${profil}" method="post">
+        <div class="form-group">
+            <label for="nom">Nom du profil</label>
+            <input type="text" th:field="*{nom}" class="form-control" required />
+        </div>
+
+        <button type="submit" class="btn btn-success">Enregistrer</button>
+        <a th:href="@{/bibliothecaire/quota}" class="btn btn-secondary">Annuler</a>
+    </form>
+</div>
+</body>
+</html>
