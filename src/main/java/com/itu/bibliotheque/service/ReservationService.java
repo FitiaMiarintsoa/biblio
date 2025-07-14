@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.itu.bibliotheque.model.Adherent;
 import com.itu.bibliotheque.model.ConfigurationQuota;
+import com.itu.bibliotheque.model.Exemplaire;
 import com.itu.bibliotheque.model.Livre;
 import com.itu.bibliotheque.model.Reservation;
 import com.itu.bibliotheque.repository.ConfigurationQuotaRepository;
@@ -30,33 +31,67 @@ public class ReservationService {
      * @param dateReservation date de réservation choisie
      * @return la réservation créée
      */
-    public Reservation reserver(Adherent adherent, Livre livre, LocalDate dateReservation) {
-        int nbJour = 0;
-        int quotaReservation = Integer.MAX_VALUE; 
+    // public Reservation reserver(Adherent adherent, Livre livre, LocalDate dateReservation) {
+    //     int nbJour = 0;
+    //     int quotaReservation = Integer.MAX_VALUE; 
 
-        // Récupérer le quota selon le profil
+    //     // Récupérer le quota selon le profil
+    //     if (adherent.getProfil() != null) {
+    //         Optional<ConfigurationQuota> quotaOpt = configurationQuotaRepository.findByProfilId(adherent.getProfil().getId());
+    //         if (quotaOpt.isPresent()) {
+    //             ConfigurationQuota quota = quotaOpt.get();
+    //             nbJour = quota.getNbJour();
+    //             quotaReservation = quota.getQuotaReservation(); 
+    //         }
+    //     }
+
+    //     int nbReservationsActives = reservationRepository.countByAdherentAndStatutIn(
+    //         adherent,
+    //         List.of("en_attente", "valide")
+    //     );
+
+    //     if (nbReservationsActives >= quotaReservation) {
+    //         throw new IllegalStateException("Quota de réservations atteint.");
+    //     }
+
+    //     // Créer la réservation confirmée
+    //     Reservation reservation = new Reservation();
+    //     reservation.setAdherent(adherent);
+    //     reservation.setLivre(livre);
+    //     reservation.setDateReservation(dateReservation);
+    //     reservation.setExpireLe(dateReservation.plusDays(nbJour));
+    //     reservation.setStatut("confirmee");
+
+    //     return reservationRepository.save(reservation);
+    // }
+
+    public Reservation reserver(Adherent adherent, Exemplaire exemplaire, LocalDate dateReservation) {
+        int nbJour = 0;
+        int quotaReservation = Integer.MAX_VALUE;
+
+        // Charger le quota
         if (adherent.getProfil() != null) {
             Optional<ConfigurationQuota> quotaOpt = configurationQuotaRepository.findByProfilId(adherent.getProfil().getId());
             if (quotaOpt.isPresent()) {
                 ConfigurationQuota quota = quotaOpt.get();
                 nbJour = quota.getNbJour();
-                quotaReservation = quota.getQuotaReservation(); 
+                quotaReservation = quota.getQuotaReservation();
             }
         }
 
         int nbReservationsActives = reservationRepository.countByAdherentAndStatutIn(
             adherent,
-            List.of("en_attente", "valide")
+            List.of("en_attente", "valide", "confirmee")
         );
 
         if (nbReservationsActives >= quotaReservation) {
             throw new IllegalStateException("Quota de réservations atteint.");
         }
 
-        // Créer la réservation confirmée
+        // Créer la réservation
         Reservation reservation = new Reservation();
         reservation.setAdherent(adherent);
-        reservation.setLivre(livre);
+        reservation.setExemplaire(exemplaire);
         reservation.setDateReservation(dateReservation);
         reservation.setExpireLe(dateReservation.plusDays(nbJour));
         reservation.setStatut("confirmee");
@@ -65,7 +100,7 @@ public class ReservationService {
     }
 
 
-    public Reservation demanderReservation(Adherent adherent, Livre livre, LocalDate dateReservation) {
+    public Reservation demanderReservation(Adherent adherent, Exemplaire exemplaire, LocalDate dateReservation) {
         int nbJour = 0;
         int quotaReservation = Integer.MAX_VALUE;
 
@@ -74,13 +109,13 @@ public class ReservationService {
             if (quotaOpt.isPresent()) {
                 ConfigurationQuota quota = quotaOpt.get();
                 nbJour = quota.getNbJour();
-                quotaReservation = quota.getQuotaReservation(); 
+                quotaReservation = quota.getQuotaReservation();
             }
         }
 
         int nbReservationsActives = reservationRepository.countByAdherentAndStatutIn(
             adherent,
-            List.of("en_attente", "valide") 
+            List.of("en_attente", "confirmee")
         );
 
         if (nbReservationsActives >= quotaReservation) {
@@ -89,12 +124,46 @@ public class ReservationService {
 
         Reservation reservation = new Reservation();
         reservation.setAdherent(adherent);
-        reservation.setLivre(livre);
+        reservation.setExemplaire(exemplaire);
         reservation.setDateReservation(dateReservation);
         reservation.setExpireLe(dateReservation.plusDays(nbJour));
         reservation.setStatut("en_attente");
 
         return reservationRepository.save(reservation);
     }
+
+
+
+    // public Reservation demanderReservation(Adherent adherent, Livre livre, LocalDate dateReservation) {
+    //     int nbJour = 0;
+    //     int quotaReservation = Integer.MAX_VALUE;
+
+    //     if (adherent.getProfil() != null) {
+    //         Optional<ConfigurationQuota> quotaOpt = configurationQuotaRepository.findByProfilId(adherent.getProfil().getId());
+    //         if (quotaOpt.isPresent()) {
+    //             ConfigurationQuota quota = quotaOpt.get();
+    //             nbJour = quota.getNbJour();
+    //             quotaReservation = quota.getQuotaReservation(); 
+    //         }
+    //     }
+
+    //     int nbReservationsActives = reservationRepository.countByAdherentAndStatutIn(
+    //         adherent,
+    //         List.of("en_attente", "confirmee") 
+    //     );
+
+    //     if (nbReservationsActives >= quotaReservation) {
+    //         throw new IllegalStateException("Quota de réservations atteint.");
+    //     }
+
+    //     Reservation reservation = new Reservation();
+    //     reservation.setAdherent(adherent);
+    //     reservation.setLivre(livre);
+    //     reservation.setDateReservation(dateReservation);
+    //     reservation.setExpireLe(dateReservation.plusDays(nbJour));
+    //     reservation.setStatut("en_attente");
+
+    //     return reservationRepository.save(reservation);
+    // }
 
 }

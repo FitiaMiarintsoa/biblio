@@ -4,7 +4,7 @@ package com.itu.bibliotheque.model;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+// import java.util.*;
 
 
 @Entity
@@ -18,9 +18,13 @@ public class Reservation {
     @JoinColumn(name = "id_adherent")
     private Adherent adherent;
 
+    // @ManyToOne
+    // @JoinColumn(name = "id_livre")
+    // private Livre livre;
+
     @ManyToOne
-    @JoinColumn(name = "id_livre")
-    private Livre livre;
+    @JoinColumn(name = "id_exemplaire")
+    private Exemplaire exemplaire;
 
     @Column(name = "date_reservation")
     private LocalDate dateReservation;
@@ -52,12 +56,20 @@ public class Reservation {
         this.adherent = adherent;
     }
 
-    public Livre getLivre() {
-        return livre;
+    // public Livre getLivre() {
+    //     return livre;
+    // }
+
+    // public void setLivre(Livre livre) {
+    //     this.livre = livre;
+    // }
+
+    public Exemplaire getExemplaire() {
+        return exemplaire;
     }
 
-    public void setLivre(Livre livre) {
-        this.livre = livre;
+    public void setExemplaire(Exemplaire exemplaire) {
+        this.exemplaire = exemplaire;
     }
 
     public LocalDate getDateReservation() {

@@ -2,23 +2,35 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Demande de réservation</title>
+    <meta charset="UTF-8">
     <link rel="stylesheet" href="/css/bootstrap.min.css">
 </head>
 <body>
 <div class="container mt-4">
     <h2>Demande de réservation (Adhérent)</h2>
+
     <form th:action="@{/adherents/demander-reservation}" method="post">
+        <!-- Sélection exemplaire -->
         <div class="mb-3">
-            <label>Livre :</label>
-            <select name="idLivre" class="form-control" required>
-                <option th:each="l : ${livres}" th:value="${l.id}" th:text="${l.titre}"></option>
+            <label>Exemplaire :</label>
+            <select name="idExemplaire" class="form-control" required>
+                <option value="" disabled selected>-- Choisir un exemplaire --</option>
+                <option th:each="e : ${exemplaires}"
+                        th:value="${e.id}"
+                        th:text="'Exemplaire ' + ${e.id} + ' - ' + ${e.livre.titre} + ' (' + ${e.statut} + ')'">
+                </option>
             </select>
         </div>
+
+        <!-- Date -->
         <div class="mb-3">
             <label>Date de réservation :</label>
-            <input type="date" name="dateReservation" class="form-control" required> 
+            <input type="date" name="dateReservation" class="form-control" required>
         </div>
+
+        <!-- ID adhérent -->
         <input type="hidden" name="idAdherent" th:value="${user.id}" />
+
         <button type="submit" class="btn btn-primary">Envoyer la demande</button>
     </form>
 

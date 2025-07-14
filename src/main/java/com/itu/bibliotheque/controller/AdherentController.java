@@ -14,12 +14,14 @@ import org.springframework.stereotype.Controller;
 
 import com.itu.bibliotheque.model.Abonnement;
 import com.itu.bibliotheque.model.Adherent;
+import com.itu.bibliotheque.model.Exemplaire;
 import com.itu.bibliotheque.model.Livre;
 import com.itu.bibliotheque.model.Notification;
 import com.itu.bibliotheque.model.Pret;
 import com.itu.bibliotheque.model.Reservation;
 import com.itu.bibliotheque.repository.AbonnementRepository;
 import com.itu.bibliotheque.repository.AdherentRepository;
+import com.itu.bibliotheque.repository.ExemplaireRepository;
 import com.itu.bibliotheque.repository.LivreRepository;
 import com.itu.bibliotheque.repository.NotificationRepository;
 import com.itu.bibliotheque.repository.ProfilRepository;
@@ -53,6 +55,9 @@ public class AdherentController {
 
     @Autowired
     private ReservationService reservationService;
+    
+    @Autowired
+    private ExemplaireRepository exemplaireRepository;
 
     @GetMapping
     public String listeAdherents(Model model) {
@@ -153,29 +158,57 @@ public class AdherentController {
             return "redirect:/adherent/login";
         }
 
-        model.addAttribute("livres", livreRepository.findAll());
-        model.addAttribute("user", adherent); 
+        model.addAttribute("exemplaires", exemplaireRepository.findAll());
+        model.addAttribute("user", adherent);
         return "adherent/reservation";
     }
 
     @PostMapping("/demander-reservation")
     public String demanderReservation(
-        @RequestParam("idLivre") Integer idLivre,
+        @RequestParam("idExemplaire") Integer idExemplaire,
         @RequestParam("idAdherent") Integer idAdherent,
         @RequestParam("dateReservation") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateReservation,
         Model model
     ) {
         try {
-            Adherent adherent = adherentRepository.findById(idAdherent).orElseThrow();
-            Livre livre = livreRepository.findById((long) idLivre).orElseThrow();
+            Adherent adherent = adherentRepository.findById(idAdherent).orElseThrow(() -> new RuntimeException("Adhérent introuvable"));
+            Exemplaire exemplaire = exemplaireRepository.findById(idExemplaire).orElseThrow(() -> new RuntimeException("Exemplaire introuvable"));
 
-            reservationService.demanderReservation(adherent, livre, dateReservation);
+            reservationService.demanderReservation(adherent, exemplaire, dateReservation);
 
             model.addAttribute("success", "Votre demande de réservation a été envoyée !");
         } catch (Exception e) {
             model.addAttribute("error", "Erreur : " + e.getMessage());
         }
+
         model.addAttribute("livres", livreRepository.findAll());
-        return "redirect:/adherents/demander-reservation";
+        model.addAttribute("user", adherentRepository.findById(idAdherent).orElse(null));
+        return "adherent/reservation";
     }
+
+
+    // @PostMapping("/demander-reservation")
+    // public String demanderReservation(
+    //     @RequestParam("idLivre") Integer idLivre,
+    //     @RequestParam("idExemplaire") Integer idExemplaire,
+    //     @RequestParam("idAdherent") Integer idAdherent,
+    //     @RequestParam("dateReservation") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateReservation,
+    //     Model model
+    // ) {
+    //     try {
+    //         Adherent adherent = adherentRepository.findById(idAdherent).orElseThrow();
+    //         Livre livre = livreRepository.findById((long) idLivre).orElseThrow();
+    //         Exemplaire exemplaire = exemplaireRepository.findById((int) idExemplaire).orElseThrow();
+
+    //         reservationService.demanderReservation(adherent, livre, exemplaire, dateReservation);
+
+    //         model.addAttribute("success", "Votre demande de réservation a été envoyée !");
+    //     } catch (Exception e) {
+    //         model.addAttribute("error", "Erreur : " + e.getMessage());
+    //     }
+
+    //     model.addAttribute("livres", livreRepository.findAll());
+    //     return "redirect:/adherents/demander-reservation";
+    // }
+
 }

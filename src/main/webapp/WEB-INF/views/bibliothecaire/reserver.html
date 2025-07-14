@@ -2,32 +2,48 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Faire une réservation</title>
+    <meta charset="UTF-8">
     <link rel="stylesheet" href="/css/bootstrap.min.css">
 </head>
 <body>
 <div class="container mt-4">
-    <h2>Réserver un livre (Bibliothécaire)</h2>
-        <form th:action="@{/reservations/reserver}" method="post">
-            <div class="mb-3">
-                <label>Adhérent :</label>
-                <select name="idAdherent" class="form-control" required>
-                    <option th:each="a : ${adherents}" th:value="${a.id}" th:text="${a.personne.nom + ' ' + a.personne.prenom}"></option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label>Livre :</label>
-                <select name="idLivre" class="form-control" required>
-                    <option th:each="l : ${livres}" th:value="${l.id}" th:text="${l.titre}"></option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label>Date de réservation :</label>
-                <input type="date" name="dateReservation" class="form-control" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Réserver</button>
-        </form>
+    <h2>Réserver un exemplaire</h2>
+    
+    <form th:action="@{/reservations/reserver}" method="post">
+        <!-- Adhérent -->
+        <div class="mb-3">
+            <label>Adhérent :</label>
+            <select name="idAdherent" class="form-control" required>
+                <option value="" disabled selected>-- Choisir un adhérent --</option>
+                <option th:each="a : ${adherents}" 
+                        th:value="${a.id}" 
+                        th:text="${a.personne.nom + ' ' + a.personne.prenom}">
+                </option>
+            </select>
+        </div>
 
+        <!-- Exemplaire -->
+        <div class="mb-3">
+            <label>Exemplaire :</label>
+            <select name="idExemplaire" class="form-control" required>
+                <option value="" disabled selected>-- Choisir un exemplaire --</option>
+                <option th:each="e : ${exemplaires}" 
+                        th:value="${e.id}" 
+                        th:text="'Exemplaire n°' + ${e.id} + ' — ' + ${e.livre.titre} + ' (' + ${e.statut} + ')'">
+                </option>
+            </select>
+        </div>
 
+        <!-- Date de réservation -->
+        <div class="mb-3">
+            <label>Date de réservation :</label>
+            <input type="date" name="dateReservation" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Réserver</button>
+    </form>
+
+    <!-- Messages -->
     <div th:if="${success}" class="alert alert-success mt-3" th:text="${success}"></div>
     <div th:if="${error}" class="alert alert-danger mt-3" th:text="${error}"></div>
 </div>
