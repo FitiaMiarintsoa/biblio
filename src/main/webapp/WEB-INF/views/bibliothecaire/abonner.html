@@ -11,8 +11,10 @@
         <div class="mb-3">
             <label>Adhérent :</label>
             <select name="idAdherent" class="form-control" required>
-                <option th:each="a : ${adherents}" th:value="${a.id}"
-                        th:text="${a.prenom + ' ' + a.nom}"></option>
+                <option th:each="a : ${adherents}" 
+                        th:value="${a.id}"
+                        th:text="${a.personne.prenom + ' ' + a.personne.nom}">
+                </option>
             </select>
         </div>
         <div class="mb-3">

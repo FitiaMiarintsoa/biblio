@@ -74,7 +74,7 @@ public class AdherentController {
         @RequestParam(name = "adresse") String adresse,
         @RequestParam(name = "dateNaissance") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateNaissance,
         @RequestParam(name = "idProfil") Integer idProfil,
-        @RequestParam(name = "souhaiteAbonnement", required = false) Boolean souhaiteAbonnement, // <-- ajouté
+        @RequestParam(name = "souhaiteAbonnement", required = false) Boolean souhaiteAbonnement,
         Model model
     ) {
         try {
@@ -178,6 +178,4 @@ public class AdherentController {
         model.addAttribute("livres", livreRepository.findAll());
         return "redirect:/adherents/demander-reservation";
     }
-
-
 }
