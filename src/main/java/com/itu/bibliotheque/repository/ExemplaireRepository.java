@@ -16,4 +16,5 @@ public interface ExemplaireRepository extends JpaRepository<Exemplaire, Integer>
 
     @Query("SELECT e FROM Exemplaire e WHERE e.statut = 'disponible' AND e.dateAjout <= :date AND e.dateSuppression IS NULL")
     List<Exemplaire> findExemplairesDisponiblesAtDate(@Param("date") LocalDateTime date);
+    List<Exemplaire> findByLivreId(Long idLivre);
 }
