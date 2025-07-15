@@ -109,7 +109,7 @@
         <tbody>
         <tr th:each="r : ${reservations}">
             <td th:text="${r.adherent.personne.nom + ' ' + r.adherent.personne.prenom}"></td>
-            <td th:text="${r.livre.titre}"></td>
+            <td th:text="${r.exemplaire.livre.titre}"></td>
             <td th:text="${r.dateReservation}"></td>
             <td th:text="${r.expireLe}"></td>
             <td>

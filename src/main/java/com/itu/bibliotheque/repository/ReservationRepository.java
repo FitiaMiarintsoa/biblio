@@ -26,5 +26,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Intege
     List<Reservation> findByStatut(String statut);
 
     int countByAdherentAndStatutIn(Adherent adherent, List<String> statuts);
+    int countByAdherentIdAndStatut(Long id, String statut);
+
 
 }

@@ -1,47 +1,275 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Livres et Exemplaires</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        :root {
+            --accent: #8b5a2b;
+            --accent-light: #a67c52;
+            --accent-dark: #6b4422;
+            --bg: #f9f5f0;
+            --bg-alt: #f0e6d6;
+            --white: #ffffff;
+            --text: #2e2e2e;
+            --muted: #777;
+            --card-shadow: rgba(139, 90, 43, 0.1);
+            --card-shadow-hover: rgba(139, 90, 43, 0.2);
+            --border-color: #e8ddd0;
         }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, var(--bg) 0%, var(--bg-alt) 100%);
+            color: var(--text);
+            margin: 0;
+            padding: 2rem;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
         h1 {
             text-align: center;
+            color: var(--accent);
+            font-size: 2.8rem;
+            margin-bottom: 3rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
-        .livre-section {
-            margin: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(to right, var(--accent), var(--accent-light));
+            border-radius: 2px;
         }
-        .livre-section h2 {
-            margin-top: 0;
-            color: #333;
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            max-width: 1400px;
+            margin: auto;
         }
-        table {
-            width: 100%;
-            margin-top: 10px;
-            border-collapse: collapse;
+
+        .card {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 25px var(--card-shadow);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
         }
-        th, td {
-            border: 1px solid #aaa;
-            padding: 8px;
-            text-align: left;
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
         }
-        th {
-            background-color: #eee;
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px var(--card-shadow-hover);
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card h2 {
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card h2::before {
+            content: '\f02d';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 1.2rem;
+            color: var(--accent-light);
+        }
+
+        .card p {
+            margin: 0.5rem 0;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .card .isbn {
+            margin-top: 1rem;
+            font-weight: bold;
+            color: var(--text);
+            background: var(--bg);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            display: inline-block;
+            border: 1px solid var(--border-color);
+        }
+
+        .exemplaires {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 2px solid var(--border-color);
+        }
+
+        .exemplaires::before {
+            content: 'Exemplaires';
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: var(--accent);
+            display: block;
+            margin-bottom: 0.75rem;
+        }
+
+        .exemplaire-item {
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+            background: linear-gradient(135deg, var(--bg) 0%, var(--bg-alt) 100%);
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-light);
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .exemplaire-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .exemplaire-item strong {
+            color: var(--accent-dark);
+            font-weight: 600;
+        }
+
+        .no-exemplaire {
+            font-style: italic;
+            color: #aaa;
+            text-align: center;
+            padding: 1rem;
+            background: var(--bg);
+            border-radius: 8px;
+            border: 2px dashed var(--border-color);
+        }
+
+        .no-exemplaire::before {
+            content: '\f071';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            margin-right: 0.5rem;
+            color: var(--muted);
+        }
+
+        /* Animation de chargement */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        .card:nth-child(even) {
+            animation-delay: 0.1s;
+        }
+
+        .card:nth-child(3n) {
+            animation-delay: 0.2s;
+        }
+
+        /* Responsive design amélioré */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+                margin-bottom: 2rem;
+            }
+            
+            .cards-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Indicateur de statut coloré */
+        .exemplaire-item[data-statut="disponible"] {
+            border-left-color: #28a745;
+        }
+
+        .exemplaire-item[data-statut="emprunté"] {
+            border-left-color: #ffc107;
+        }
+
+        .exemplaire-item[data-statut="indisponible"] {
+            border-left-color: #dc3545;
+        }
+
+        /* Scrollbar personnalisée */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-light);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
         }
     </style>
 </head>
 <body>
-    <h1>Liste des livres avec leurs exemplaires</h1>
-    <div id="livres-container"></div>
+    <h1>Liste des Livres</h1>
+    <div class="cards-container" id="livres-container"></div>
 
     <script>
-        // fetch('/api/livres-exemplaires')
-        fetch('http://localhost:8082/bibliotheque1-0.0.1-SNAPSHOT/api/livres-exemplaires')
+        fetch('http://localhost:8082/bibliotheque2-0.0.1-SNAPSHOT/api/livres-exemplaires')
             .then(response => response.json())
             .then(data => {
                 const container = document.getElementById('livres-container');
@@ -50,33 +278,25 @@
                     const livre = item.livre;
                     const exemplaires = item.exemplaires;
 
-                    const section = document.createElement('div');
-                    section.classList.add('livre-section');
+                    const card = document.createElement('div');
+                    card.className = 'card';
 
-                    section.innerHTML = `
-                        <h2>${livre.titre} (${livre.auteur})</h2>
-                        <p><strong>ISBN:</strong> ${livre.isbn}</p>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Statut</th>
-                                    <th>Date Ajout</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${exemplaires.map(ex => `
-                                    <tr>
-                                        <td>${ex.id}</td>
-                                        <td>${ex.statut}</td>
-                                        <td>${ex.dateAjout ? ex.dateAjout : '-'}</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
+                    card.innerHTML = `
+                        <h2>${livre.titre}</h2>
+                        <p>Auteur : ${livre.auteur}</p>
+                        <p class="isbn">ISBN : ${livre.isbn}</p>
+                        <div class="exemplaires">
+                            ${exemplaires && exemplaires.length > 0 ? exemplaires.map(ex => `
+                                <div class="exemplaire-item" data-statut="${(ex.statut || 'inconnu').toLowerCase()}">
+                                    <strong>ID:</strong> ${ex.id} —
+                                    <strong>Statut:</strong> ${ex.statut || 'Inconnu'} —
+                                    <strong>Date:</strong> ${Array.isArray(ex.dateAjout) ? new Date(...ex.dateAjout).toLocaleDateString() : (ex.dateAjout || '-')}
+                                </div>
+                            `).join('') : `<p class="no-exemplaire">Aucun exemplaire disponible</p>`}
+                        </div>
                     `;
 
-                    container.appendChild(section);
+                    container.appendChild(card);
                 });
             })
             .catch(error => {

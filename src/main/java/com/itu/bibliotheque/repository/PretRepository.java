@@ -18,4 +18,8 @@ public interface PretRepository extends JpaRepository<Pret, Integer> {
     List<Pret> findByAdherentIdAndDateRetourReelleIsNull(Integer idAdherent);
     long countByAdherentIdAndEstProlongeTrue(Integer idAdherent);
 
+    int countByAdherentIdAndDateRetourReelleIsNull(Long id);
+    int countByAdherentIdAndEstProlongeTrue(Long id);
+
+
 }

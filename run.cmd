@@ -4,4 +4,4 @@ call .\mvnw.cmd compile
 call .\mvnw.cmd package
 call .\mvnw.cmd test
 
-copy target\bibliotheque1-0.0.1-SNAPSHOT.war %TOMCAT_WEBAPPS_SOURCE%
+copy target\bibliotheque2-0.0.1-SNAPSHOT.war %TOMCAT_WEBAPPS_SOURCE%

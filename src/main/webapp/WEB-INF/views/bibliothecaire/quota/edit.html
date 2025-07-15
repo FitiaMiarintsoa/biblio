@@ -3,56 +3,539 @@
 <head>
     <title>Éditer Configuration Quota</title>
     <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+    :root {
+        --accent: #8b5a2b;
+        --accent-clair: #a67c52;
+        --accent-dark: #6b4422;
+        --bg: #f9f5f0;
+        --bg-alt: #f0e6d6;
+        --shadow: rgba(139, 90, 43, 0.12);
+        --shadow-hover: rgba(139, 90, 43, 0.2);
+        --gris: #666;
+        --blanc: #fff;
+        --border: #e8ddd0;
+        --text-muted: #777;
+        --success: #2d5a27;
+        --danger: #8b2635;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Georgia', serif;
+        background: linear-gradient(135deg, var(--bg) 0%, var(--bg-alt) 100%);
+        margin: 0;
+        padding: 40px 20px;
+        color: var(--accent);
+        min-height: 100vh;
+        line-height: 1.6;
+    }
+
+    h1, h2 {
+        text-align: center;
+        color: var(--accent);
+        margin-bottom: 40px;
+        font-weight: 600;
+        position: relative;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    h2::after {
+        content: '';
+        position: absolute;
+        bottom: -12px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(to right, var(--accent), var(--accent-clair));
+        border-radius: 2px;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: auto;
+        background: var(--blanc);
+        padding: 2.5rem;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px var(--shadow);
+        position: relative;
+        border: 1px solid var(--border);
+    }
+
+    .container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, var(--accent), var(--accent-clair));
+        border-radius: 20px 20px 0 0;
+    }
+
+    .btn, .btn-primary, .btn-secondary, .btn-success, .btn-warning, .btn-danger {
+        border: none;
+        padding: 12px 24px;
+        font-family: 'Georgia', serif;
+        font-size: 0.95rem;
+        border-radius: 8px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        text-decoration: none;
+        display: inline-block;
+        margin-right: 12px;
+        margin-bottom: 8px;
+        font-weight: 500;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn:hover::before {
+        left: 100%;
+    }
+
+    .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-primary { 
+        background: linear-gradient(135deg, var(--accent), var(--accent-clair)); 
+        color: white; 
+    }
+    .btn-primary:hover { 
+        background: linear-gradient(135deg, var(--accent-dark), var(--accent)); 
+        color: white; 
+    }
+
+    .btn-secondary { 
+        background: linear-gradient(135deg, #ccc, #ddd); 
+        color: var(--accent); 
+    }
+    .btn-secondary:hover { 
+        background: linear-gradient(135deg, #bbb, #ccc); 
+        color: var(--accent-dark); 
+    }
+
+    .btn-success { 
+        background: linear-gradient(135deg, var(--success), #3a7233); 
+        color: white; 
+        padding: 15px 30px;
+        font-size: 1.1rem;
+        border-radius: 12px;
+    }
+    .btn-success:hover { 
+        background: linear-gradient(135deg, #1e3d1a, var(--success)); 
+        color: white; 
+    }
+
+    .btn-warning { 
+        background: linear-gradient(135deg, var(--accent-clair), #c4926b); 
+        color: white; 
+    }
+    .btn-warning:hover { 
+        background: linear-gradient(135deg, var(--accent), var(--accent-clair)); 
+        color: white; 
+    }
+
+    .btn-danger { 
+        background: linear-gradient(135deg, var(--danger), #a63042); 
+        color: white; 
+    }
+    .btn-danger:hover { 
+        background: linear-gradient(135deg, #6b1e2a, var(--danger)); 
+        color: white; 
+    }
+
+    .btn-success::before {
+        content: '\f0c7';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        margin-right: 8px;
+    }
+
+    .btn-secondary::before {
+        content: '\f00d';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        margin-right: 8px;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+        position: relative;
+    }
+
+    .form-group::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 3px;
+        height: 100%;
+        background: linear-gradient(to bottom, var(--accent), var(--accent-clair));
+        border-radius: 2px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .form-group:focus-within::before {
+        opacity: 1;
+    }
+
+    label {
+        font-weight: 600;
+        display: block;
+        margin-bottom: 8px;
+        color: var(--accent);
+        font-size: 1rem;
+        padding-left: 12px;
+        position: relative;
+    }
+
+    label::before {
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        margin-right: 8px;
+        color: var(--accent-clair);
+    }
+
+    label[for="profil"]::before {
+        content: '\f007';
+    }
+
+    label[for="quotaPret"]::before {
+        content: '\f02d';
+    }
+
+    label[for="quotaPretPlace"]::before {
+        content: '\f015';
+    }
+
+    label[for="quotaReservation"]::before {
+        content: '\f073';
+    }
+
+    label[for="quotaProlongation"]::before {
+        content: '\f017';
+    }
+
+    label[for="nbJour"]::before {
+        content: '\f133';
+    }
+
+    input[type="text"], input[type="number"], select, input[type="date"] {
+        width: 100%;
+        padding: 15px 20px;
+        border: 2px solid var(--border);
+        font-family: 'Georgia', serif;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        background: var(--blanc);
+        color: var(--accent);
+        font-size: 1rem;
+        margin-left: 12px;
+        width: calc(100% - 12px);
+    }
+
+    input[type="text"]:focus, input[type="number"]:focus, select:focus, input[type="date"]:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 4px rgba(139, 90, 43, 0.1);
+        transform: translateY(-2px);
+        background: #fefefe;
+    }
+
+    input[type="number"] {
+        position: relative;
+    }
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+
+    select {
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 12px center;
+        background-repeat: no-repeat;
+        background-size: 16px;
+        padding-right: 40px;
+    }
+
+    .alert {
+        padding: 1.5rem 2rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        font-weight: 500;
+        border: none;
+        position: relative;
+        border-left: 5px solid;
+    }
+
+    .alert::before {
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        margin-right: 12px;
+        font-size: 1.2rem;
+    }
+
+    .alert-danger {
+        background: linear-gradient(135deg, #ffe6e6, #ffd1d1);
+        color: var(--danger);
+        border-left-color: var(--danger);
+    }
+
+    .alert-danger::before {
+        content: '\f071';
+    }
+
+    .alert-success {
+        background: linear-gradient(135deg, #e6ffe6, #d1ffd1);
+        color: var(--success);
+        border-left-color: var(--success);
+    }
+
+    .alert-success::before {
+        content: '\f058';
+    }
+
+    .form-actions {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 2px solid var(--border);
+        text-align: center;
+    }
+
+    .form-container {
+        background: linear-gradient(135deg, #fefefe, #f8f8f8);
+        padding: 2rem;
+        border-radius: 15px;
+        margin-top: 1rem;
+        border: 1px solid var(--border);
+    }
+
+    /* Animation pour les inputs */
+    @keyframes inputFocus {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.02); }
+        100% { transform: scale(1); }
+    }
+
+    input:focus, select:focus {
+        animation: inputFocus 0.3s ease;
+    }
+
+    /* Tooltip pour les champs */
+    .form-group[data-tooltip]::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        top: 100%;
+        left: 12px;
+        background: var(--accent-dark);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        z-index: 1000;
+        max-width: 250px;
+        word-wrap: break-word;
+    }
+
+    .form-group:hover[data-tooltip]::after {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(5px);
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+        body {
+            padding: 20px 10px;
+        }
+        
+        .container {
+            padding: 1.5rem;
+            border-radius: 15px;
+        }
+        
+        .form-container {
+            padding: 1.5rem;
+        }
+        
+        input[type="text"], input[type="number"], select, input[type="date"] {
+            padding: 12px 16px;
+            font-size: 0.95rem;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            width: 100%;
+            margin-right: 0;
+        }
+        
+        .form-actions {
+            margin-top: 2rem;
+        }
+    }
+
+    /* Scrollbar personnalisée */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: var(--bg);
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--accent-clair);
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--accent);
+    }
+    </style>
 </head>
 <body>
 <div class="container mt-4">
-    <h2 th:text="${quota.id != null ? 'Modifier' : 'Ajouter'} + ' un quota'"></h2>
+    <h2>Modifier un quota</h2>
 
-    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+    <div class="alert alert-danger" style="display: none;" id="errorAlert"></div>
 
-    <form th:action="@{/bibliothecaire/quota/save}" th:object="${quota}" method="post">
-        <input type="hidden" th:field="*{id}" />
+    <div class="form-container">
+        <form action="/bibliothecaire/quota/save" method="post">
+            <input type="hidden" name="id" value="" />
 
-        <div class="form-group">
-            <label for="profil">Profil</label>
-            <!-- <select th:field="*{profil}" class="form-control" required>
-                <option th:each="p : ${profils}" th:value="${p}" th:text="${p.nom}"></option>
-            </select> -->
+            <div class="form-group" data-tooltip="Sélectionnez le profil d'utilisateur pour ce quota">
+                <label for="profil">Profil d'utilisateur :</label>
+                <select id="profil" name="profil.id" required>
+                    <option value="">-- Sélectionnez un profil --</option>
+                    <option value="1">Étudiant</option>
+                    <option value="2">Enseignant</option>
+                    <option value="3">Personnel</option>
+                    <option value="4">Chercheur</option>
+                    <option value="5">Externe</option>
+                </select>
+            </div>
 
-            <select th:field="*{profil.id}" class="form-control" required>
-                <option th:each="p : ${profils}" th:value="${p.id}" th:text="${p.nom}"></option>
-            </select>
-        </div>
+            <div class="form-group" data-tooltip="Nombre maximum de livres pouvant être empruntés simultanément">
+                <label for="quotaPret">Quota de prêt :</label>
+                <input type="number" id="quotaPret" name="quotaPret" min="1" max="50" value="5" required />
+            </div>
 
-        <div class="form-group">
-            <label for="quotaPret">Quota prêt</label>
-            <input type="number" th:field="*{quotaPret}" class="form-control" min="0" required />
-        </div>
+            <div class="form-group" data-tooltip="Nombre maximum de livres pouvant être consultés sur place">
+                <label for="quotaPretPlace">Quota de prêt sur place :</label>
+                <input type="number" id="quotaPretPlace" name="quotaPretPlace" min="1" max="20" value="3" required />
+            </div>
 
-        <div class="form-group">
-            <label for="quotaPretPlace">Quota prêt sur place</label>
-            <input type="number" th:field="*{quotaPretPlace}" class="form-control" min="0" required />
-        </div>
+            <div class="form-group" data-tooltip="Nombre maximum de réservations simultanées">
+                <label for="quotaReservation">Quota de réservation :</label>
+                <input type="number" id="quotaReservation" name="quotaReservation" min="1" max="10" value="2" required />
+            </div>
 
-        <div class="form-group">
-            <label for="quotaReservation">Quota réservation</label>
-            <input type="number" th:field="*{quotaReservation}" class="form-control" min="0" required />
-        </div>
+            <div class="form-group" data-tooltip="Nombre maximum de prolongations autorisées par prêt">
+                <label for="quotaProlongation">Quota de prolongation :</label>
+                <input type="number" id="quotaProlongation" name="quotaProlongation" min="0" max="5" value="1" required />
+            </div>
 
-        <div class="form-group">
-            <label for="quotaProlongation">Quota prolongation</label>
-            <input type="number" th:field="*{quotaProlongation}" class="form-control" min="0" required />
-        </div>
+            <div class="form-group" data-tooltip="Durée standard du prêt en jours">
+                <label for="nbJour">Nombre de jours :</label>
+                <input type="number" id="nbJour" name="nbJour" min="1" max="365" value="14" required />
+            </div>
 
-        <div class="form-group">
-            <label for="nbJour">Nombre de jours (durée prêt ou réservation)</label>
-            <input type="number" th:field="*{nbJour}" class="form-control" min="1" required />
-        </div>
-
-        <button type="submit" class="btn btn-success">Enregistrer</button>
-        <!-- <a href="/bibliothecaire/quota" >Annuler</a> -->
-        <a th:href="@{/bibliothecaire/quota}" class="btn btn-secondary">Annuler</a>
-    </form>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-success">Enregistrer</button>
+                <a href="/bibliothecaire/quota" class="btn btn-secondary">Annuler</a>
+            </div>
+        </form>
+    </div>
 </div>
+
+<script>
+    // Validation côté client
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const quotaPret = parseInt(document.getElementById('quotaPret').value);
+        const quotaReservation = parseInt(document.getElementById('quotaReservation').value);
+        const quotaPretPlace = parseInt(document.getElementById('quotaPretPlace').value);
+        
+        if (quotaReservation > quotaPret) {
+            e.preventDefault();
+            showError('Le quota de réservation ne peut pas être supérieur au quota de prêt.');
+            return;
+        }
+        
+        if (quotaPretPlace > quotaPret) {
+            e.preventDefault();
+            showError('Le quota de prêt sur place ne peut pas être supérieur au quota de prêt.');
+            return;
+        }
+    });
+
+    function showError(message) {
+        const errorAlert = document.getElementById('errorAlert');
+        errorAlert.textContent = message;
+        errorAlert.style.display = 'block';
+        errorAlert.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Animation d'apparition progressive
+    document.addEventListener('DOMContentLoaded', function() {
+        const formGroups = document.querySelectorAll('.form-group');
+        formGroups.forEach((group, index) => {
+            setTimeout(() => {
+                group.style.opacity = '0';
+                group.style.transform = 'translateY(20px)';
+                group.style.transition = 'all 0.5s ease';
+                
+                setTimeout(() => {
+                    group.style.opacity = '1';
+                    group.style.transform = 'translateY(0)';
+                }, 100);
+            }, index * 100);
+        });
+    });
+
+    // Effet de survol pour les inputs
+    document.querySelectorAll('input, select').forEach(input => {
+        input.addEventListener('focus', function() {
+            this.closest('.form-group').style.transform = 'translateX(10px)';
+        });
+        
+        input.addEventListener('blur', function() {
+            this.closest('.form-group').style.transform = 'translateX(0)';
+        });
+    });
+</script>
 </body>
 </html>

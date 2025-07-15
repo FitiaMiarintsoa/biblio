@@ -10,29 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-// @RestController
-// @RequestMapping("/api")
-// public class LivreRestController {
-
-//     @Autowired
-//     private LivreRepository livreRepository;
-
-//     @Autowired
-//     private ExemplaireRepository exemplaireRepository;
-
-//     @GetMapping("/livres-exemplaires")
-//     public Map<Livre, List<Exemplaire>> getLivresAvecExemplaires() {
-//         List<Livre> livres = livreRepository.findAll();
-//         Map<Livre, List<Exemplaire>> result = new LinkedHashMap<>();
-
-//         for (Livre livre : livres) {
-//             List<Exemplaire> exemplaires = exemplaireRepository.findByLivreId(livre.getId());
-//             result.put(livre, exemplaires);
-//         }
-
-//         return result;
-//     }
-// }
 @RestController
 @RequestMapping("/api")
 public class LivreRestController {

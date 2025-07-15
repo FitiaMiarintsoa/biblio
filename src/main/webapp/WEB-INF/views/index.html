@@ -3,61 +3,121 @@
 <head>
     <title>Page d'accueil</title>
     <meta charset="UTF-8" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --noir: #1a1a1a;
+            --gris: #666;
+            --gris-clair: #e6e6e6;
+            --blanc: #fff;
+            --accent: #8b5a2b;
+            --accent-clair: #a67c52;
+            --hover: rgba(139, 90, 43, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(to right, #f5f7fa, #c3cfe2);
+            font-family: 'Georgia', serif;
+            background-color: #f9f5f0;
             margin: 0;
             padding: 0;
-            color: #333;
+            color: var(--noir);
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .container {
             max-width: 700px;
             margin: 100px auto;
-            background-color: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            background-color: var(--blanc);
+            padding: 40px 30px;
+            border: 1px solid var(--gris-clair);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
             text-align: center;
+            border-radius: 8px;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
         h1 {
-            font-size: 2rem;
+            font-size: 2.2rem;
             margin-bottom: 20px;
-            color: #2c3e50;
+            color: var(--accent);
+            animation: fadeInText 1s ease-out;
+        }
+
+        @keyframes fadeInText {
+            0% { opacity: 0; letter-spacing: -1px; }
+            100% { opacity: 1; letter-spacing: 0.5px; }
         }
 
         p {
             font-size: 1.1rem;
-            color: #555;
+            color: var(--gris);
+            margin-bottom: 30px;
         }
 
         .btn {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
             padding: 12px 25px;
-            margin: 15px 10px;
             font-size: 1rem;
-            border-radius: 8px;
+            border: 1px solid var(--accent);
+            background-color: transparent;
+            color: var(--accent);
             text-decoration: none;
-            transition: background-color 0.3s ease;
-            color: white;
+            font-weight: bold;
+            border-radius: 0;
+            transition: all 0.3s ease, transform 0.3s ease;
+            margin: 10px;
+            animation: fadeInBtn 1s ease forwards;
         }
 
-        .btn-primary {
-            background-color: #007bff;
+        .btn:nth-child(1) { animation-delay: 0.6s; }
+        .btn:nth-child(2) { animation-delay: 0.8s; }
+
+        @keyframes fadeInBtn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .btn-primary:hover {
-            background-color: #0056b3;
+        .btn:hover {
+            background-color: var(--hover);
+            color: var(--noir);
+            transform: translateY(-3px);
         }
 
-        .btn-success {
-            background-color: #28a745;
+        .btn i {
+            font-size: 1.1rem;
         }
 
-        .btn-success:hover {
-            background-color: #1e7e34;
+        @media (max-width: 600px) {
+            .container {
+                margin: 40px 20px;
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 1.6rem;
+            }
+
+            .btn {
+                font-size: 0.95rem;
+                padding: 10px 20px;
+            }
         }
     </style>
 </head>
@@ -67,8 +127,12 @@
     <p>Veuillez choisir votre mode de connexion :</p>
 
     <div>
-        <a th:href="@{/bibliothecaire/login}" class="btn btn-primary">Connexion Bibliothécaire</a>
-        <a th:href="@{/adherent/login}" class="btn btn-success">Connexion Adhérent</a>
+        <a th:href="@{/bibliothecaire/login}" class="btn">
+            <i class="fas fa-user-tie"></i> Connexion Bibliothécaire
+        </a>
+        <a th:href="@{/adherent/login}" class="btn">
+            <i class="fas fa-user"></i> Connexion Adhérent
+        </a>
     </div>
 </div>
 </body>

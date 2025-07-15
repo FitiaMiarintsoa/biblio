@@ -3,39 +3,95 @@
 <head>
     <title>Demande de réservation</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #f9f5f0;
+            color: #1a1a1a;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border: 1px solid #e6e6e6;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #8b5a2b;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: block;
+            color: #333;
+        }
+        select, input[type="date"], button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 0;
+            font-family: 'Georgia', serif;
+        }
+        button {
+            background-color: #8b5a2b;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background-color: #a67c52;
+        }
+        .alert {
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 0;
+            font-size: 0.95rem;
+        }
+        .alert-success {
+            background-color: #e6ffed;
+            border-left: 5px solid #28a745;
+            color: #155724;
+        }
+        .alert-danger {
+            background-color: #ffe6e6;
+            border-left: 5px solid #dc3545;
+            color: #721c24;
+        }
+    </style>
 </head>
 <body>
-<div class="container mt-4">
+<div class="container">
     <h2>Demande de réservation (Adhérent)</h2>
 
     <form th:action="@{/adherents/demander-reservation}" method="post">
-        <!-- Sélection exemplaire -->
-        <div class="mb-3">
-            <label>Exemplaire :</label>
-            <select name="idExemplaire" class="form-control" required>
-                <option value="" disabled selected>-- Choisir un exemplaire --</option>
-                <option th:each="e : ${exemplaires}"
-                        th:value="${e.id}"
-                        th:text="'Exemplaire ' + ${e.id} + ' - ' + ${e.livre.titre} + ' (' + ${e.statut} + ')'">
-                </option>
-            </select>
-        </div>
+        <label>Exemplaire :</label>
+        <select name="idExemplaire" required>
+            <option value="" disabled selected>-- Choisir un exemplaire --</option>
+            <option th:each="e : ${exemplaires}"
+                    th:value="${e.id}"
+                    th:text="'Exemplaire ' + ${e.id} + ' - ' + ${e.livre.titre} + ' (' + ${e.statut} + ')'">
+            </option>
+        </select>
 
-        <!-- Date -->
-        <div class="mb-3">
-            <label>Date de réservation :</label>
-            <input type="date" name="dateReservation" class="form-control" required>
-        </div>
+        <label>Date de réservation :</label>
+        <input type="date" name="dateReservation" required>
 
-        <!-- ID adhérent -->
         <input type="hidden" name="idAdherent" th:value="${user.id}" />
 
-        <button type="submit" class="btn btn-primary">Envoyer la demande</button>
+        <button type="submit">Envoyer la demande</button>
     </form>
 
-    <div th:if="${success}" class="alert alert-success mt-3" th:text="${success}"></div>
-    <div th:if="${error}" class="alert alert-danger mt-3" th:text="${error}"></div>
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 </div>
 </body>
 </html>

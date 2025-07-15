@@ -3,16 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <title>Mes Emprunts</title>
-    <!-- <link rel="stylesheet" th:href="@{/public/assets/css/style.css}"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #f9f5f0;
+            color: #1a1a1a;
+            padding: 40px 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2rem;
+            color: #8b5a2b;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #e6e6e6;
+            text-align: left;
+        }
+        th {
+            background-color: #f2ede6;
+            color: #333;
+        }
+        tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+        .no-data {
+            text-align: center;
+            color: #666;
+        }
+        a {
+            color: #8b5a2b;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            color: #a67c52;
+        }
+    </style>
 </head>
 <body>
     <h1>Mes emprunts en cours</h1>
 
-    <div th:if="${#lists.isEmpty(prets)}">
+    <div th:if="${#lists.isEmpty(prets)}" class="no-data">
         <p>Aucun emprunt en cours.</p>
     </div>
 
-    <table th:if="${not #lists.isEmpty(prets)}" border="1">
+    <table th:if="${not #lists.isEmpty(prets)}">
         <thead>
             <tr>
                 <th>Titre du livre</th>
@@ -33,7 +78,8 @@
         </tbody>
     </table>
 
-    <br>
-    <a th:href="@{/adherent/home}">Retour à l'accueil adhérent</a>
+    <div style="text-align:center;">
+        <a th:href="@{/adherent/home}"><i class="fas fa-arrow-left"></i> Retour à l'accueil</a>
+    </div>
 </body>
 </html>

@@ -340,7 +340,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="adherent : ${adherents}">
+                    <!-- <tr th:each="adherent : ${adherents}"> -->
+                    <tr th:each="adherent : ${adherents}"
+                        th:onclick="'location.href=\'' + @{/adherents/fiche(id=${adherent.id})} + '\''"
+                        style="cursor: pointer;">
+
                         <td th:text="${adherent.id}"></td>
                         <td th:text="${adherent.personne.nom}"></td>
                         <td th:text="${adherent.personne.prenom}"></td>
@@ -356,6 +360,11 @@
                             <span th:unless="${adherent.estBloque}" class="status-badge actif">
                                 <i class="fas fa-check"></i> Actif
                             </span>
+                        </td>
+                        <td>
+                            <a th:href="@{/adherents/fiche(id=${adherent.id})}" class="btn-action secondary">
+                                <i class="fas fa-eye"></i> Voir fiche
+                            </a>
                         </td>
                     </tr>
                 </tbody>

@@ -65,6 +65,11 @@ public class AdherentController {
         return "bibliothecaire/listeAdherents";
     }
 
+    @GetMapping("/fiche")
+        public String showFiche(Model model) {
+        return "bibliothecaire/fiche";
+    }
+
     @GetMapping("/ajouter")
     public String showFormAjout(Model model) {
         model.addAttribute("profils", profil.findAll());
