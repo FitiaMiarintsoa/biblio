@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Livres et Exemplaires</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            text-align: center;
+        }
+        .livre-section {
+            margin: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .livre-section h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            margin-top: 10px;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #aaa;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #eee;
+        }
+    </style>
+</head>
+<body>
+    <h1>Liste des livres avec leurs exemplaires</h1>
+    <div id="livres-container"></div>
+
+    <script>
+        // fetch('/api/livres-exemplaires')
+        fetch('http://localhost:8082/bibliotheque1-0.0.1-SNAPSHOT/api/livres-exemplaires')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('livres-container');
+
+                data.forEach(item => {
+                    const livre = item.livre;
+                    const exemplaires = item.exemplaires;
+
+                    const section = document.createElement('div');
+                    section.classList.add('livre-section');
+
+                    section.innerHTML = `
+                        <h2>${livre.titre} (${livre.auteur})</h2>
+                        <p><strong>ISBN:</strong> ${livre.isbn}</p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Statut</th>
+                                    <th>Date Ajout</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${exemplaires.map(ex => `
+                                    <tr>
+                                        <td>${ex.id}</td>
+                                        <td>${ex.statut}</td>
+                                        <td>${ex.dateAjout ? ex.dateAjout : '-'}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+
+                    container.appendChild(section);
+                });
+            })
+            .catch(error => {
+                console.error('Erreur lors de la récupération des données :', error);
+                document.getElementById('livres-container').innerHTML = '<p style="color:red;">Erreur de chargement des livres.</p>';
+            });
+    </script>
+</body>
+</html>

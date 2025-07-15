@@ -1,35 +1,347 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Abonnement d’un adhérent</title>
-    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <meta charset="UTF-8">
+    <title>Nouvel abonnement</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --noir: #1a1a1a;
+            --gris-fonce: #333;
+            --gris: #666;
+            --gris-clair: #e6e6e6;
+            --blanc: #fff;
+            --accent: #8b5a2b;
+            --accent-clair: #a67c52;
+            --accent-tres-clair: #d4b896;
+            --bg-principal: #f9f5f0;
+            --bg-secondaire: #f0e6d6;
+            --hover: rgba(139, 90, 43, 0.1);
+            --shadow: rgba(0, 0, 0, 0.1);
+            --success: #2d5a27;
+            --warning: #b8860b;
+            --danger: #8b2635;
+            --info: #2f4f4f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, var(--bg-principal) 0%, var(--bg-secondaire) 100%);
+            color: var(--noir);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* En-tête */
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-clair));
+            border-radius: 2px;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            font-weight: normal;
+            letter-spacing: 0.5px;
+        }
+
+        .page-header .subtitle {
+            color: var(--gris);
+            font-size: 1.1rem;
+            font-style: italic;
+        }
+
+        /* Navigation */
+        .nav-menu {
+            background: var(--blanc);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px var(--shadow);
+            border: 1px solid rgba(139, 90, 43, 0.1);
+        }
+
+        .nav-menu ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .nav-menu li a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            text-decoration: none;
+            color: var(--gris-fonce);
+            background: var(--bg-principal);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border: 1px solid transparent;
+        }
+
+        .nav-menu li a:hover {
+            background: var(--accent);
+            color: var(--blanc);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 90, 43, 0.3);
+            border-color: var(--accent-clair);
+        }
+
+        .nav-menu li a i {
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Formulaire principal */
+        .form-card {
+            background: var(--blanc);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px var(--shadow);
+            border: 1px solid rgba(139, 90, 43, 0.1);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .form-card h3 {
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            color: var(--gris-fonce);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--gris-clair);
+            border-radius: 8px;
+            font-family: 'Georgia', serif;
+            background: var(--blanc);
+            color: var(--noir);
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--hover);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--gris-clair);
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Georgia', serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-clair));
+            color: var(--blanc);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 90, 43, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--gris-clair);
+            color: var(--gris-fonce);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gris);
+            color: var(--blanc);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 102, 102, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .nav-menu ul {
+                grid-template-columns: 1fr;
+            }
+
+            .form-card {
+                padding: 1.5rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+
+        /* Animation d'entrée */
+        .container > * {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .container > *:nth-child(2) { animation-delay: 0.1s; }
+        .container > *:nth-child(3) { animation-delay: 0.2s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Amélioration des scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--gris-clair);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-clair);
+        }
+    </style>
 </head>
 <body>
-<div class="container mt-4">
-    <h2>Nouvel abonnement</h2>
-    <form th:action="@{/adherents/abonner}" method="post">
-        <div class="mb-3">
-            <label>Adhérent :</label>
-            <select name="idAdherent" class="form-control" required>
-                <option th:each="a : ${adherents}" 
-                        th:value="${a.id}"
-                        th:text="${a.personne.prenom + ' ' + a.personne.nom}">
-                </option>
-            </select>
+    <div class="container">
+        <div class="page-header">
+            <h1>Nouvel abonnement</h1>
+            <p class="subtitle">Créer un abonnement pour un adhérent</p>
         </div>
-        <div class="mb-3">
-            <label>Date de début :</label>
-            <input type="date" name="dateDebut" class="form-control" required/>
-        </div>
-        <div class="mb-3">
-            <label>Date de fin :</label>
-            <input type="date" name="dateFin" class="form-control" required/>
-        </div>
-        <button type="submit" class="btn btn-primary">Abonner</button>
 
-        <div th:if="${success}" class="alert alert-success mt-2" th:text="${success}"></div>
-        <div th:if="${error}" class="alert alert-danger mt-2" th:text="${error}"></div>
-    </form>
-</div>
+        <div class="nav-menu">
+            <ul>
+                <li><a th:href="@{/bibliothecaire/nouveau-pret}"><i class="fas fa-plus"></i>Ajouter un prêt</a></li>
+                <li><a th:href="@{/bibliothecaire/rendre}"><i class="fas fa-undo"></i>Rendre un livre</a></li>
+                <li><a th:href="@{/bibliothecaire/retards}"><i class="fas fa-exclamation-triangle"></i>Prêts en retard</a></li>
+                <li><a th:href="@{/bibliothecaire/prets_encours}"><i class="fas fa-clock"></i>Prolonger un prêt</a></li>
+                <li><a th:href="@{/bibliothecaire/quota}"><i class="fas fa-cogs"></i>Configuration quota</a></li>
+                <li><a th:href="@{/reservations/valider-reservations}"><i class="fas fa-check-circle"></i>Réservations en attente</a></li>
+                <li><a th:href="@{/reservations/reserver}"><i class="fas fa-bookmark"></i>Enregistrer une réservation</a></li>
+                <li><a th:href="@{/bibliothecaire/home}"><i class="fas fa-home"></i>Retour à l'accueil</a></li>
+            </ul>
+        </div>
+
+        <div class="form-card">
+            <h3><i class="fas fa-credit-card"></i> Informations de l'abonnement</h3>
+            <!-- <form method="post" action="/bibliothecaire/nouvel-abonnement"> -->
+            <form th:action="@{/adherents/abonner}" method="post">
+                <div class="form-group">
+                    <label for="adherent">Adhérent :</label>
+                    <!-- <select id="adherent" name="adherent" required> -->
+                    <select id="adherent" name="idAdherent" required>
+                        <option value="">-- Sélectionnez un adhérent --</option>
+                        <option th:each="adherent : ${adherents}" 
+                                th:value="${adherent.id}" 
+                                th:text="${adherent.personne.nom + ' ' + adherent.personne.prenom}"></option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="dateDebut">Date de début :</label>
+                    <input type="date" id="dateDebut" name="dateDebut" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="dateFin">Date de fin :</label>
+                    <input type="date" id="dateFin" name="dateFin" required>
+                </div>
+                
+                <div class="form-actions">
+                    <a href="/bibliothecaire/home" class="btn btn-secondary">
+                        <i class="fas fa-times"></i>
+                        Annuler
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-user-check"></i>
+                        Abonner
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

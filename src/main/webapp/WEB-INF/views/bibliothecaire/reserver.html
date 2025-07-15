@@ -3,49 +3,112 @@
 <head>
     <title>Faire une réservation</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --accent: #8b5a2b;
+            --accent-clair: #a67c52;
+            --bg: #f9f5f0;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --success: #2d5a27;
+            --danger: #8b2635;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(to right, #f9f5f0, #f0e6d6);
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px var(--shadow);
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--accent);
+            margin-bottom: 2rem;
+        }
+
+        label {
+            font-weight: 500;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        select, input[type="date"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-clair));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        .alert {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .alert-success {
+            background: rgba(45, 90, 39, 0.1);
+            color: var(--success);
+        }
+
+        .alert-danger {
+            background: rgba(139, 38, 53, 0.1);
+            color: var(--danger);
+        }
+    </style>
 </head>
 <body>
-<div class="container mt-4">
+<div class="container">
     <h2>Réserver un exemplaire</h2>
-    
+
     <form th:action="@{/reservations/reserver}" method="post">
-        <!-- Adhérent -->
-        <div class="mb-3">
-            <label>Adhérent :</label>
-            <select name="idAdherent" class="form-control" required>
-                <option value="" disabled selected>-- Choisir un adhérent --</option>
-                <option th:each="a : ${adherents}" 
-                        th:value="${a.id}" 
-                        th:text="${a.personne.nom + ' ' + a.personne.prenom}">
-                </option>
-            </select>
-        </div>
+        <label>Adhérent :</label>
+        <select name="idAdherent" required>
+            <option value="" disabled selected>-- Choisir un adhérent --</option>
+            <option th:each="a : ${adherents}"
+                    th:value="${a.id}"
+                    th:text="${a.personne.nom + ' ' + a.personne.prenom}">
+            </option>
+        </select>
 
-        <!-- Exemplaire -->
-        <div class="mb-3">
-            <label>Exemplaire :</label>
-            <select name="idExemplaire" class="form-control" required>
-                <option value="" disabled selected>-- Choisir un exemplaire --</option>
-                <option th:each="e : ${exemplaires}" 
-                        th:value="${e.id}" 
-                        th:text="'Exemplaire n°' + ${e.id} + ' — ' + ${e.livre.titre} + ' (' + ${e.statut} + ')'">
-                </option>
-            </select>
-        </div>
+        <label>Exemplaire :</label>
+        <select name="idExemplaire" required>
+            <option value="" disabled selected>-- Choisir un exemplaire --</option>
+            <option th:each="e : ${exemplaires}"
+                    th:value="${e.id}"
+                    th:text="'Exemplaire n°' + ${e.id} + ' — ' + ${e.livre.titre} + ' (' + ${e.statut} + ')'">
+            </option>
+        </select>
 
-        <!-- Date de réservation -->
-        <div class="mb-3">
-            <label>Date de réservation :</label>
-            <input type="date" name="dateReservation" class="form-control" required>
-        </div>
+        <label>Date de réservation :</label>
+        <input type="date" name="dateReservation" required>
 
-        <button type="submit" class="btn btn-primary">Réserver</button>
+        <button type="submit"><i class="fas fa-calendar-plus"></i> Réserver</button>
     </form>
 
-    <!-- Messages -->
-    <div th:if="${success}" class="alert alert-success mt-3" th:text="${success}"></div>
-    <div th:if="${error}" class="alert alert-danger mt-3" th:text="${error}"></div>
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 </div>
 </body>
 </html>

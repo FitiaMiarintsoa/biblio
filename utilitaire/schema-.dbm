@@ -3,16 +3,16 @@
 CAUTION: Do not modify this file unless you know what you are doing.
  Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="1.2.0" use-changelog="false" max-obj-count="13"
+<dbmodel pgmodeler-ver="1.2.0" use-changelog="false" max-obj-count="21"
 	 gen-disabled-objs-code="false" show-sys-schemas-rects="true"
-	 last-position="-330,-185" last-zoom="0.65" scene-rect="-508,-647,2874.09,1908.92"
+	 last-position="-291,20" last-zoom="0.65" scene-rect="-568,-687,2914.09,2110.12"
 	 default-schema="public" default-owner="postgres"
 	 layers="Default layer"
 	 active-layers="0"
 	 layer-name-colors="#000000"
 	 layer-rect-colors="#b4b4b4"
 	 show-layer-names="false" show-layer-rects="false">
-<database name="bibliotheque" encoding="UTF8" lc-collate="fr_FR.UTF-8" lc-ctype="fr_FR.UTF-8" is-template="false" allow-conns="true">
+<database name="bibliotheque_fitia" encoding="UTF8" lc-collate="English_Madagascar.1252" lc-ctype="English_Madagascar.1252" is-template="false" allow-conns="true">
 	<role name="postgres"/>
 	<tablespace name="pg_default"/>
 </database>
@@ -20,16 +20,16 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <schema name="public" layers="0" rect-visible="true" fill-color="#e1e1e1" name-color="#000000" sql-disabled="true">
 </schema>
 
-<sequence name="categorie_adherent_id_seq" cycle="false" start="1" increment="1" min-value="1" max-value="2147483647" cache="1">
+<sequence name="profil_id_seq" cycle="false" start="1" increment="1" min-value="1" max-value="2147483647" cache="1">
 	<schema name="public"/>
 	<role name="postgres"/>
 </sequence>
 
-<table name="categorie_adherent" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
+<table name="profil" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="60" y="60"/>
-	<column name="id" not-null="true" sequence="public.categorie_adherent_id_seq">
+	<position x="-480" y="-180"/>
+	<column name="id" not-null="true" sequence="public.profil_id_seq">
 		<type name="integer" length="0"/>
 	</column>
 	<column name="nom" not-null="true">
@@ -44,10 +44,10 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="date_suppression">
 		<type name="timestamp" length="0"/>
 	</column>
-	<constraint name="categorie_adherent_pkey" type="pk-constr" table="public.categorie_adherent">
+	<constraint name="profil_pkey" type="pk-constr" table="public.profil">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
-	<constraint name="categorie_adherent_nom_key" type="uq-constr" table="public.categorie_adherent">
+	<constraint name="profil_nom_key" type="uq-constr" table="public.profil">
 		<columns names="nom" ref-type="src-columns"/>
 	</constraint>
 </table>
@@ -57,10 +57,10 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<role name="postgres"/>
 </sequence>
 
-<table name="personne" layers="0" collapse-mode="2" max-obj-count="9" z-value="0">
+<table name="personne" layers="0" collapse-mode="2" max-obj-count="7" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="1360" y="-600"/>
+	<position x="120" y="-440"/>
 	<column name="id" not-null="true" sequence="public.personne_id_seq">
 		<type name="integer" length="0"/>
 	</column>
@@ -79,12 +79,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="date_naissance">
 		<type name="date" length="0"/>
 	</column>
-	<column name="date_ajout" default-value="CURRENT_TIMESTAMP">
-		<type name="timestamp" length="0"/>
-	</column>
-	<column name="date_suppression">
-		<type name="timestamp" length="0"/>
-	</column>
 	<constraint name="personne_pkey" type="pk-constr" table="public.personne">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
@@ -93,20 +87,22 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="adherent" layers="0" collapse-mode="2" max-obj-count="8" z-value="0">
+<sequence name="adherent_id_seq" cycle="false" start="1" increment="1" min-value="1" max-value="2147483647" cache="1">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="640" y="-560"/>
-	<column name="id" not-null="true">
+</sequence>
+
+<table name="adherent" layers="0" collapse-mode="2" max-obj-count="7" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="520" y="-40"/>
+	<column name="id" not-null="true" sequence="public.adherent_id_seq">
 		<type name="integer" length="0"/>
 	</column>
-	<column name="identifiant" not-null="true">
-		<type name="character varying" length="50"/>
-	</column>
-	<column name="id_categorie_adherent" not-null="true">
+	<column name="id_profil" not-null="true">
 		<type name="integer" length="0"/>
 	</column>
-	<column name="quota_max" default-value="5">
+	<column name="id_personne" not-null="true">
 		<type name="integer" length="0"/>
 	</column>
 	<column name="est_bloque" default-value="false">
@@ -118,22 +114,24 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="date_suppression">
 		<type name="timestamp" length="0"/>
 	</column>
-	<constraint name="adherent_quota_max_check" type="ck-constr" table="public.adherent">
-			<expression> <![CDATA[(quota_max >= 1)]]> </expression>
-	</constraint>
 	<constraint name="adherent_pkey" type="pk-constr" table="public.adherent">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
-	<constraint name="adherent_identifiant_key" type="uq-constr" table="public.adherent">
-		<columns names="identifiant" ref-type="src-columns"/>
-	</constraint>
 </table>
 
-<table name="bibliothecaire" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
+<sequence name="bibliothecaire_id_seq" cycle="false" start="1" increment="1" min-value="1" max-value="2147483647" cache="1">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="1580" y="-100"/>
-	<column name="id" not-null="true">
+</sequence>
+
+<table name="bibliothecaire" layers="0" collapse-mode="2" max-obj-count="4" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="-540" y="-640"/>
+	<column name="id" not-null="true" sequence="public.bibliothecaire_id_seq">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="id_personne" not-null="true">
 		<type name="integer" length="0"/>
 	</column>
 	<column name="date_ajout" default-value="CURRENT_TIMESTAMP">
@@ -147,6 +145,85 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
+<sequence name="role_id_seq" cycle="false" start="1" increment="1" min-value="1" max-value="2147483647" cache="1">
+	<schema name="public"/>
+	<role name="postgres"/>
+</sequence>
+
+<table name="role" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1300" y="-200"/>
+	<column name="id" not-null="true" sequence="public.role_id_seq">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="nom" not-null="true">
+		<type name="character varying" length="100"/>
+	</column>
+	<column name="description">
+		<type name="text" length="0"/>
+	</column>
+	<constraint name="role_pkey" type="pk-constr" table="public.role">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="role_nom_key" type="uq-constr" table="public.role">
+		<columns names="nom" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="utilisateur_id_seq" cycle="false" start="1" increment="1" min-value="1" max-value="2147483647" cache="1">
+	<schema name="public"/>
+	<role name="postgres"/>
+</sequence>
+
+<table name="utilisateur" layers="0" collapse-mode="2" max-obj-count="8" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="780" y="-620"/>
+	<column name="id" not-null="true" sequence="public.utilisateur_id_seq">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="id_personne" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="username" not-null="true">
+		<type name="character varying" length="100"/>
+	</column>
+	<column name="mot_de_passe" not-null="true">
+		<type name="character varying" length="255"/>
+	</column>
+	<column name="actif" default-value="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="date_ajout" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="date_suppression">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="utilisateur_pkey" type="pk-constr" table="public.utilisateur">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="utilisateur_username_key" type="uq-constr" table="public.utilisateur">
+		<columns names="username" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="utilisateur_role" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1440" y="-620"/>
+	<column name="id_utilisateur" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="id_role" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<constraint name="utilisateur_role_pkey" type="pk-constr" table="public.utilisateur_role">
+		<columns names="id_utilisateur,id_role" ref-type="src-columns"/>
+	</constraint>
+</table>
+
 <sequence name="livre_id_seq" cycle="false" start="1" increment="1" min-value="1" max-value="2147483647" cache="1">
 	<schema name="public"/>
 	<role name="postgres"/>
@@ -155,7 +232,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="livre" layers="0" collapse-mode="2" max-obj-count="9" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="380" y="940"/>
+	<position x="1920" y="960"/>
 	<column name="id" not-null="true" sequence="public.livre_id_seq">
 		<type name="integer" length="0"/>
 	</column>
@@ -196,7 +273,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="exemplaire" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="-180" y="280"/>
+	<position x="1860" y="200"/>
 	<column name="id" not-null="true" sequence="public.exemplaire_id_seq">
 		<type name="integer" length="0"/>
 	</column>
@@ -228,7 +305,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="pret" layers="0" collapse-mode="2" max-obj-count="10" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="460" y="420"/>
+	<position x="1840" y="-300"/>
 	<column name="id" not-null="true" sequence="public.pret_id_seq">
 		<type name="integer" length="0"/>
 	</column>
@@ -269,14 +346,14 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="reservation" layers="0" collapse-mode="2" max-obj-count="9" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="840" y="420"/>
+	<position x="1240" y="100"/>
 	<column name="id" not-null="true" sequence="public.reservation_id_seq">
 		<type name="integer" length="0"/>
 	</column>
 	<column name="id_adherent" not-null="true">
 		<type name="integer" length="0"/>
 	</column>
-	<column name="id_livre" not-null="true">
+	<column name="id_exemplaire">
 		<type name="integer" length="0"/>
 	</column>
 	<column name="date_reservation" default-value="CURRENT_DATE">
@@ -295,7 +372,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="timestamp" length="0"/>
 	</column>
 	<constraint name="reservation_statut_check" type="ck-constr" table="public.reservation">
-			<expression> <![CDATA[((statut)::text = ANY ((ARRAY['en_attente'::character varying, 'confirmee'::character varying, 'expiree'::character varying, 'annulee'::character varying])::text[]))]]> </expression>
+			<expression> <![CDATA[((statut)::text = ANY ((ARRAY['en_attente'::character varying, 'confirmee'::character varying, 'expiree'::character varying, 'annulee'::character varying, 'refusee'::character varying])::text[]))]]> </expression>
 	</constraint>
 	<constraint name="reservation_pkey" type="pk-constr" table="public.reservation">
 		<columns names="id" ref-type="src-columns"/>
@@ -310,7 +387,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="type_action" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="940" y="940"/>
+	<position x="360" y="780"/>
 	<column name="id" not-null="true" sequence="public.type_action_id_seq">
 		<type name="integer" length="0"/>
 	</column>
@@ -339,10 +416,10 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<role name="postgres"/>
 </sequence>
 
-<table name="historique_adherent" layers="0" collapse-mode="2" max-obj-count="8" z-value="0">
+<table name="historique_adherent" layers="0" collapse-mode="2" max-obj-count="7" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="1360" y="420"/>
+	<position x="920" y="840"/>
 	<column name="id" not-null="true" sequence="public.historique_adherent_id_seq">
 		<type name="integer" length="0"/>
 	</column>
@@ -358,9 +435,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="date_action" default-value="CURRENT_TIMESTAMP">
 		<type name="timestamp" length="0"/>
 	</column>
-	<column name="date_ajout" default-value="CURRENT_TIMESTAMP">
-		<type name="timestamp" length="0"/>
-	</column>
 	<column name="date_suppression">
 		<type name="timestamp" length="0"/>
 	</column>
@@ -374,17 +448,29 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<role name="postgres"/>
 </sequence>
 
-<table name="configuration_quota" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
+<table name="configuration_quota" layers="0" collapse-mode="2" max-obj-count="10" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="180" y="-500"/>
+	<position x="-540" y="620"/>
 	<column name="id" not-null="true" sequence="public.configuration_quota_id_seq">
 		<type name="integer" length="0"/>
 	</column>
-	<column name="id_categorie_adherent" not-null="true">
+	<column name="id_profil" not-null="true">
 		<type name="integer" length="0"/>
 	</column>
-	<column name="quota_max">
+	<column name="quota_pret">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="quota_pret_place">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="quota_reservation">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="quota_prolongation">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="nb_jour">
 		<type name="integer" length="0"/>
 	</column>
 	<column name="date_ajout" default-value="CURRENT_TIMESTAMP">
@@ -398,21 +484,173 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
+<sequence name="notification_id_seq" cycle="false" start="1" increment="1" min-value="1" max-value="2147483647" cache="1">
+	<schema name="public"/>
+	<role name="postgres"/>
+</sequence>
+
+<table name="notification" layers="0" collapse-mode="2" max-obj-count="7" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="-200" y="140"/>
+	<column name="id" not-null="true" sequence="public.notification_id_seq">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="id_adherent" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="message" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<column name="est_lu" default-value="false">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="date_notification" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="date_suppression">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="notification_pkey" type="pk-constr" table="public.notification">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="type_sanction_id_seq" cycle="false" start="1" increment="1" min-value="1" max-value="2147483647" cache="1">
+	<schema name="public"/>
+	<role name="postgres"/>
+</sequence>
+
+<table name="type_sanction" layers="0" collapse-mode="2" max-obj-count="4" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="-140" y="1060"/>
+	<column name="id" not-null="true" sequence="public.type_sanction_id_seq">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="nom" not-null="true">
+		<type name="character varying" length="100"/>
+	</column>
+	<column name="description">
+		<type name="text" length="0"/>
+	</column>
+	<column name="penalite_jour" default-value="0">
+		<type name="integer" length="0"/>
+	</column>
+	<constraint name="type_sanction_pkey" type="pk-constr" table="public.type_sanction">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="type_sanction_nom_key" type="uq-constr" table="public.type_sanction">
+		<columns names="nom" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="sanction_id_seq" cycle="false" start="1" increment="1" min-value="1" max-value="2147483647" cache="1">
+	<schema name="public"/>
+	<role name="postgres"/>
+</sequence>
+
+<table name="sanction" layers="0" collapse-mode="2" max-obj-count="10" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="140" y="380"/>
+	<column name="id" not-null="true" sequence="public.sanction_id_seq">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="id_adherent" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="id_type_sanction" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="description">
+		<type name="text" length="0"/>
+	</column>
+	<column name="date_debut" not-null="true">
+		<type name="date" length="0"/>
+	</column>
+	<column name="date_fin">
+		<type name="date" length="0"/>
+	</column>
+	<column name="est_active" default-value="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="date_ajout" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="date_suppression">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="sanction_pkey" type="pk-constr" table="public.sanction">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="abonnement_id_seq" cycle="false" start="1" increment="1" min-value="1" max-value="2147483647" cache="1">
+	<schema name="public"/>
+	<role name="postgres"/>
+</sequence>
+
+<table name="abonnement" layers="0" collapse-mode="2" max-obj-count="7" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1380" y="660"/>
+	<column name="id" not-null="true" sequence="public.abonnement_id_seq">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="id_adherent" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="date_debut" not-null="true">
+		<type name="date" length="0"/>
+	</column>
+	<column name="date_fin" not-null="true">
+		<type name="date" length="0"/>
+	</column>
+	<column name="date_ajout" default-value="CURRENT_TIMESTAMP">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="date_suppression">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="abonnement_pkey" type="pk-constr" table="public.abonnement">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
 <constraint name="fk_adherent_personne" type="fk-constr" comparison-type="MATCH SIMPLE"
 	 upd-action="NO ACTION" del-action="CASCADE" ref-table="public.personne" table="public.adherent">
-	<columns names="id" ref-type="src-columns"/>
+	<columns names="id_personne" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
-<constraint name="fk_adherent_categorie" type="fk-constr" comparison-type="MATCH SIMPLE"
-	 upd-action="NO ACTION" del-action="RESTRICT" ref-table="public.categorie_adherent" table="public.adherent">
-	<columns names="id_categorie_adherent" ref-type="src-columns"/>
+<constraint name="fk_adherent_profil" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="RESTRICT" ref-table="public.profil" table="public.adherent">
+	<columns names="id_profil" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
 <constraint name="fk_bibliothecaire_personne" type="fk-constr" comparison-type="MATCH SIMPLE"
 	 upd-action="NO ACTION" del-action="CASCADE" ref-table="public.personne" table="public.bibliothecaire">
-	<columns names="id" ref-type="src-columns"/>
+	<columns names="id_personne" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="utilisateur_id_personne_fkey" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.personne" table="public.utilisateur">
+	<columns names="id_personne" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="utilisateur_role_id_utilisateur_fkey" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="CASCADE" ref-table="public.utilisateur" table="public.utilisateur_role">
+	<columns names="id_utilisateur" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="utilisateur_role_id_role_fkey" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="CASCADE" ref-table="public.role" table="public.utilisateur_role">
+	<columns names="id_role" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
@@ -440,9 +678,9 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
-<constraint name="fk_reservation_livre" type="fk-constr" comparison-type="MATCH SIMPLE"
-	 upd-action="NO ACTION" del-action="CASCADE" ref-table="public.livre" table="public.reservation">
-	<columns names="id_livre" ref-type="src-columns"/>
+<constraint name="fk_reservation_exemplaire" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="SET NULL" ref-table="public.exemplaire" table="public.reservation">
+	<columns names="id_exemplaire" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
@@ -458,76 +696,142 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
-<constraint name="fk_configuration_categorie" type="fk-constr" comparison-type="MATCH SIMPLE"
-	 upd-action="NO ACTION" del-action="CASCADE" ref-table="public.categorie_adherent" table="public.configuration_quota">
-	<columns names="id_categorie_adherent" ref-type="src-columns"/>
+<constraint name="fk_configuration_profil" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="CASCADE" ref-table="public.profil" table="public.configuration_quota">
+	<columns names="id_profil" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_notification_adherent" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="CASCADE" ref-table="public.adherent" table="public.notification">
+	<columns names="id_adherent" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_sanction_adherent" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="CASCADE" ref-table="public.adherent" table="public.sanction">
+	<columns names="id_adherent" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_sanction_type" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="RESTRICT" ref-table="public.type_sanction" table="public.sanction">
+	<columns names="id_type_sanction" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_abonnement_adherent" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="CASCADE" ref-table="public.adherent" table="public.abonnement">
+	<columns names="id_adherent" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
 <relationship name="rel_adherent_personne" type="relfk" layers="0"
-	 custom-color="#19b0f3"
+	 custom-color="#727283"
 	 src-table="public.adherent"
 	 dst-table="public.personne" reference-fk="fk_adherent_personne"
 	 src-required="false" dst-required="true"/>
 
-<relationship name="rel_adherent_categorie_adherent" type="relfk" layers="0"
-	 custom-color="#c3e921"
+<relationship name="rel_adherent_profil" type="relfk" layers="0"
+	 custom-color="#95e978"
 	 src-table="public.adherent"
-	 dst-table="public.categorie_adherent" reference-fk="fk_adherent_categorie"
+	 dst-table="public.profil" reference-fk="fk_adherent_profil"
 	 src-required="false" dst-required="true"/>
 
 <relationship name="rel_bibliothecaire_personne" type="relfk" layers="0"
-	 custom-color="#ebaf8c"
+	 custom-color="#b260be"
 	 src-table="public.bibliothecaire"
 	 dst-table="public.personne" reference-fk="fk_bibliothecaire_personne"
 	 src-required="false" dst-required="true"/>
 
+<relationship name="rel_utilisateur_personne" type="relfk" layers="0"
+	 custom-color="#015b8d"
+	 src-table="public.utilisateur"
+	 dst-table="public.personne" reference-fk="utilisateur_id_personne_fkey"
+	 src-required="false" dst-required="true"/>
+
+<relationship name="rel_utilisateur_role_utilisateur" type="relfk" layers="0"
+	 custom-color="#0a2a43"
+	 src-table="public.utilisateur_role"
+	 dst-table="public.utilisateur" reference-fk="utilisateur_role_id_utilisateur_fkey"
+	 src-required="false" dst-required="true"/>
+
+<relationship name="rel_utilisateur_role_role" type="relfk" layers="0"
+	 custom-color="#9069f4"
+	 src-table="public.utilisateur_role"
+	 dst-table="public.role" reference-fk="utilisateur_role_id_role_fkey"
+	 src-required="false" dst-required="true"/>
+
 <relationship name="rel_exemplaire_livre" type="relfk" layers="0"
-	 custom-color="#b9146d"
+	 custom-color="#6200af"
 	 src-table="public.exemplaire"
 	 dst-table="public.livre" reference-fk="fk_exemplaire_livre"
 	 src-required="false" dst-required="true"/>
 
 <relationship name="rel_pret_adherent" type="relfk" layers="0"
-	 custom-color="#e0a4c5"
+	 custom-color="#2f2356"
 	 src-table="public.pret"
 	 dst-table="public.adherent" reference-fk="fk_pret_adherent"
 	 src-required="false" dst-required="true"/>
 
 <relationship name="rel_pret_exemplaire" type="relfk" layers="0"
-	 custom-color="#3b3d3b"
+	 custom-color="#2f8df0"
 	 src-table="public.pret"
 	 dst-table="public.exemplaire" reference-fk="fk_pret_exemplaire"
 	 src-required="false" dst-required="true"/>
 
 <relationship name="rel_reservation_adherent" type="relfk" layers="0"
-	 custom-color="#c8231f"
+	 custom-color="#26daf8"
 	 src-table="public.reservation"
 	 dst-table="public.adherent" reference-fk="fk_reservation_adherent"
 	 src-required="false" dst-required="true"/>
 
-<relationship name="rel_reservation_livre" type="relfk" layers="0"
-	 custom-color="#3379f7"
+<relationship name="rel_reservation_exemplaire" type="relfk" layers="0"
+	 custom-color="#1bf7a4"
 	 src-table="public.reservation"
-	 dst-table="public.livre" reference-fk="fk_reservation_livre"
-	 src-required="false" dst-required="true"/>
+	 dst-table="public.exemplaire" reference-fk="fk_reservation_exemplaire"
+	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_historique_adherent_adherent" type="relfk" layers="0"
-	 custom-color="#beac9c"
+	 custom-color="#8654a1"
 	 src-table="public.historique_adherent"
 	 dst-table="public.adherent" reference-fk="fk_historique_adherent"
 	 src-required="false" dst-required="true"/>
 
 <relationship name="rel_historique_adherent_type_action" type="relfk" layers="0"
-	 custom-color="#9bd048"
+	 custom-color="#da2c15"
 	 src-table="public.historique_adherent"
 	 dst-table="public.type_action" reference-fk="fk_historique_type_action"
 	 src-required="false" dst-required="true"/>
 
-<relationship name="rel_configuration_quota_categorie_adherent" type="relfk" layers="0"
-	 custom-color="#758311"
+<relationship name="rel_configuration_quota_profil" type="relfk" layers="0"
+	 custom-color="#87b88b"
 	 src-table="public.configuration_quota"
-	 dst-table="public.categorie_adherent" reference-fk="fk_configuration_categorie"
+	 dst-table="public.profil" reference-fk="fk_configuration_profil"
+	 src-required="false" dst-required="true"/>
+
+<relationship name="rel_notification_adherent" type="relfk" layers="0"
+	 custom-color="#b88667"
+	 src-table="public.notification"
+	 dst-table="public.adherent" reference-fk="fk_notification_adherent"
+	 src-required="false" dst-required="true"/>
+
+<relationship name="rel_sanction_adherent" type="relfk" layers="0"
+	 custom-color="#678076"
+	 src-table="public.sanction"
+	 dst-table="public.adherent" reference-fk="fk_sanction_adherent"
+	 src-required="false" dst-required="true"/>
+
+<relationship name="rel_sanction_type_sanction" type="relfk" layers="0"
+	 custom-color="#9cf791"
+	 src-table="public.sanction"
+	 dst-table="public.type_sanction" reference-fk="fk_sanction_type"
+	 src-required="false" dst-required="true"/>
+
+<relationship name="rel_abonnement_adherent" type="relfk" layers="0"
+	 custom-color="#405816"
+	 src-table="public.abonnement"
+	 dst-table="public.adherent" reference-fk="fk_abonnement_adherent"
 	 src-required="false" dst-required="true"/>
 
 </dbmodel>

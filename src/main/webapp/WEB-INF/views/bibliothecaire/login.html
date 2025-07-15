@@ -2,14 +2,416 @@
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
-    <title>Login Bibliothécaire</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion Bibliothécaire</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --noir: #1a1a1a;
+            --gris-fonce: #333;
+            --gris: #666;
+            --gris-clair: #e6e6e6;
+            --blanc: #fff;
+            --accent: #8b5a2b;
+            --accent-clair: #a67c52;
+            --accent-tres-clair: #d4b896;
+            --hover: rgba(139, 90, 43, 0.1);
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #f9f5f0 0%, #f0e6d6 100%);
+            color: var(--noir);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* Motif de fond subtil */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(139, 90, 43, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(139, 90, 43, 0.03) 0%, transparent 50%);
+            background-size: 100px 100px;
+            animation: backgroundShift 20s ease-in-out infinite;
+        }
+
+        @keyframes backgroundShift {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-10px, -10px); }
+        }
+
+        .login-container {
+            background-color: var(--blanc);
+            width: 100%;
+            max-width: 460px;
+            padding: 60px 50px;
+            border-radius: 12px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.08),
+                0 2px 8px rgba(0, 0, 0, 0.05);
+            position: relative;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(139, 90, 43, 0.1);
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-clair), var(--accent));
+            border-radius: 12px 12px 0 0;
+            background-size: 200% 100%;
+            animation: gradientShift 4s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .login-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-clair));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 20px rgba(139, 90, 43, 0.2);
+            position: relative;
+        }
+
+        .login-icon::before {
+            content: '';
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            border: 2px solid rgba(139, 90, 43, 0.2);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.1); opacity: 0; }
+        }
+
+        .login-icon i {
+            font-size: 2.2rem;
+            color: var(--blanc);
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-weight: normal;
+            color: var(--noir);
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .subtitle {
+            color: var(--gris);
+            font-size: 1rem;
+            font-style: italic;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--gris-fonce);
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .input-wrapper {
+            position: relative;
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .input-wrapper:focus-within {
+            transform: translateY(-2px);
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gris);
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper:focus-within i {
+            color: var(--accent);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        input {
+            width: 100%;
+            padding: 16px 20px 16px 50px;
+            border: 2px solid var(--gris-clair);
+            border-radius: 8px;
+            font-family: 'Georgia', serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: #fafafa;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px var(--hover);
+            background-color: var(--blanc);
+        }
+
+        input::placeholder {
+            color: var(--gris);
+            opacity: 0.7;
+        }
+
+        button {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-clair));
+            color: var(--blanc);
+            border: none;
+            border-radius: 8px;
+            font-family: 'Georgia', serif;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(139, 90, 43, 0.3);
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, var(--accent-clair), var(--accent-tres-clair));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 90, 43, 0.4);
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .extra-options {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.95rem;
+        }
+
+        .extra-options a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            position: relative;
+        }
+
+        .extra-options a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .extra-options a:hover {
+            background-color: var(--hover);
+            transform: translateY(-1px);
+        }
+
+        .extra-options a:hover::before {
+            width: 80%;
+        }
+
+        /* Animation d'entrée */
+        .login-container {
+            animation: slideIn 0.8s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 50px 35px;
+                max-width: 90%;
+            }
+            
+            h2 {
+                font-size: 1.7rem;
+                margin-bottom: 15px;
+            }
+
+            .login-icon {
+                width: 70px;
+                height: 70px;
+            }
+
+            .login-icon i {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* États de chargement */
+        .loading {
+            position: relative;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid var(--blanc);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .loading span {
+            opacity: 0;
+        }
+    </style>
 </head>
 <body>
-    <h2>Connexion Bibliothécaire</h2>
-    <form th:action="@{/bibliothecaire/login}" method="post">
-        <label>Nom d'utilisateur : <input type="text" name="username" /></label><br />
-        <label>Mot de passe : <input type="password" name="password" /></label><br />
-        <button type="submit">Se connecter</button>
-    </form>
+    <div class="login-container">
+        <div class="login-header">
+            <div class="login-icon">
+                <i class="fas fa-book-open"></i>
+            </div>
+            <h2>Connexion Bibliothécaire</h2>
+            <p class="subtitle">Accès à votre espace professionnel</p>
+        </div>
+        
+        <form th:action="@{/bibliothecaire/login}" method="post" id="loginForm">
+            <div class="form-group">
+                <label for="username">Nom d'utilisateur</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="username" name="username" required placeholder="Votre nom d'utilisateur">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Mot de passe</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" name="password" required placeholder="Votre mot de passe">
+                </div>
+            </div>
+
+            <button type="submit" id="submitBtn">
+                <span>Se connecter</span>
+            </button>
+
+            <div class="extra-options">
+                <a href="#" th:href="@{/bibliothecaire/forgot-password}">
+                    <i class="fas fa-key"></i> Mot de passe oublié ?
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            const submitBtn = document.getElementById('submitBtn');
+            
+            submitBtn.classList.add('loading');
+            
+            // Simuler un chargement (à retirer en production)
+            setTimeout(() => {
+                submitBtn.classList.remove('loading');
+            }, 2000);
+        });
+
+        // Animation au focus des champs
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.previousElementSibling.style.color = 'var(--accent)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.previousElementSibling.style.color = 'var(--gris-fonce)';
+            });
+        });
+    </script>
 </body>
 </html>

@@ -3,12 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <title>Prêts en retard</title>
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --accent: #8b5a2b;
+            --accent-clair: #a67c52;
+            --bg: #f9f5f0;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: Georgia, serif;
+            background: linear-gradient(to right, var(--bg), #f0e6d6);
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px var(--shadow);
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--accent);
+            margin-bottom: 2rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--accent-clair);
+            color: white;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        td {
+            background-color: #fffdfb;
+        }
+    </style>
 </head>
 <body>
-<div class="container mt-4">
+<div class="container">
     <h2>Liste des prêts en retard</h2>
-    <table class="table table-bordered">
+    <table>
         <thead>
         <tr>
             <th>Adhérent</th>

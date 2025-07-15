@@ -3,45 +3,274 @@
 <head>
     <meta charset="UTF-8">
     <title>Enregistrement d'un prêt</title>
-    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --noir: #1a1a1a;
+            --gris-fonce: #333;
+            --gris: #666;
+            --gris-clair: #e6e6e6;
+            --blanc: #fff;
+            --accent: #8b5a2b;
+            --accent-clair: #a67c52;
+            --accent-tres-clair: #d4b896;
+            --bg-principal: #f9f5f0;
+            --bg-secondaire: #f0e6d6;
+            --hover: rgba(139, 90, 43, 0.1);
+            --shadow: rgba(0, 0, 0, 0.1);
+            --success: #2d5a27;
+            --warning: #b8860b;
+            --danger: #8b2635;
+            --info: #2f4f4f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, var(--bg-principal) 0%, var(--bg-secondaire) 100%);
+            color: var(--noir);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-clair));
+            border-radius: 2px;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            font-weight: normal;
+            letter-spacing: 0.5px;
+        }
+
+        .page-header .subtitle {
+            color: var(--gris);
+            font-size: 1.1rem;
+            font-style: italic;
+        }
+
+        .main-card {
+            background: var(--blanc);
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 25px var(--shadow);
+            border: 1px solid rgba(139, 90, 43, 0.1);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .form-section h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 2px solid var(--gris-clair);
+            padding-bottom: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--gris-fonce);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--gris-clair);
+            border-radius: 8px;
+            font-family: 'Georgia', serif;
+            background: var(--blanc);
+            color: var(--noir);
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--hover);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-clair));
+            color: var(--blanc);
+            border: none;
+            border-radius: 8px;
+            font-family: 'Georgia', serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 90, 43, 0.3);
+        }
+
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: rgba(45, 90, 39, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(45, 90, 39, 0.2);
+        }
+
+        .alert-danger {
+            background: rgba(139, 38, 53, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(139, 38, 53, 0.2);
+        }
+
+        .form-help {
+            font-size: 0.85rem;
+            color: var(--gris);
+            margin-top: 0.3rem;
+            font-style: italic;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .main-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="container mt-4">
-    <h2>Enregistrer un prêt</h2>
-    <form method="post" th:action="@{/bibliothecaire/save}">
-        <div class="mb-3">
-            <label>Adhérent :</label>
-            <select name="idAdherent" class="form-control" required>
-                <option th:each="a : ${adherents}" 
-                        th:value="${a.id}" 
-                        th:text="${a.personne.prenom + ' ' + a.personne.nom}">
-                </option>
-            </select>
+    <div class="container">
+        <div class="page-header">
+            <h1>Enregistrement d'un Prêt</h1>
+            <p class="subtitle">Création d'un nouveau prêt de livre</p>
         </div>
 
-        <div class="mb-3">
-            <label>Exemplaire :</label>
-            <select name="idExemplaire" class="form-control" required>
-                <option th:each="e : ${exemplaires}" 
-                        th:value="${e.id}"
-                        th:text="${e.livre.titre + ' - Ex n°' + e.id}">
-                </option>
-            </select>
+        <div class="main-card">
+            <form method="post" th:action="@{/bibliothecaire/save}">
+                <div class="form-section">
+                    <h3><i class="fas fa-user"></i> Informations Adhérent</h3>
+                    <div class="form-group">
+                        <label for="idAdherent">Sélectionner l'adhérent :</label>
+                        <select id="idAdherent" name="idAdherent" class="form-control" required>
+                            <option value="">-- Choisissez un adhérent --</option>
+                            <option th:each="a : ${adherents}" 
+                                    th:value="${a.id}" 
+                                    th:text="${a.personne.prenom + ' ' + a.personne.nom}">
+                            </option>
+                        </select>
+                        <div class="form-help">Recherchez l'adhérent par son nom ou prénom</div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3><i class="fas fa-book"></i> Sélection du Livre</h3>
+                    <div class="form-group">
+                        <label for="idExemplaire">Exemplaire à emprunter :</label>
+                        <select id="idExemplaire" name="idExemplaire" class="form-control" required>
+                            <option value="">-- Choisissez un exemplaire --</option>
+                            <option th:each="e : ${exemplaires}" 
+                                    th:value="${e.id}"
+                                    th:text="${e.livre.titre + ' - Exemplaire n°' + e.id}">
+                            </option>
+                        </select>
+                        <div class="form-help">Seuls les exemplaires disponibles sont affichés</div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3><i class="fas fa-calendar"></i> Date d'Emprunt</h3>
+                    <div class="form-group">
+                        <label for="dateEmprunt">Date de début du prêt :</label>
+                        <input type="date" id="dateEmprunt" name="dateEmprunt" class="form-control" required>
+                        <div class="form-help">La date de retour sera calculée automatiquement</div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-save"></i> Enregistrer le prêt
+                </button>
+
+                <div th:if="${error}" class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span th:text="${error}"></span>
+                </div>
+
+                <div th:if="${success}" class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    <span th:text="${success}"></span>
+                </div>
+            </form>
         </div>
-
-        <div class="mb-3">
-            <label>Date d'emprunt :</label>
-            <input type="date" name="dateEmprunt" class="form-control" required>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Enregistrer</button>
-
-        <!-- Message d'erreur -->
-        <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
-
-        <!-- Message de succès -->
-        <div th:if="${success}" class="alert alert-success" role="alert" th:text="${success}"></div>
-    </form>
-</div>
+    </div>
 </body>
 </html>

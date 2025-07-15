@@ -2,13 +2,101 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Valider les réservations</title>
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --accent: #8b5a2b;
+            --accent-clair: #a67c52;
+            --bg: #f9f5f0;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --success: #2d5a27;
+            --danger: #8b2635;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(to right, #f9f5f0, #f0e6d6);
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px var(--shadow);
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--accent);
+            margin-bottom: 2rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+        }
+
+        thead {
+            background-color: var(--accent-clair);
+            color: white;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        form {
+            display: inline;
+        }
+
+        button {
+            padding: 0.4rem 0.75rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+
+        .alert-success {
+            background: rgba(45, 90, 39, 0.1);
+            color: var(--success);
+        }
+
+        .alert-danger {
+            background: rgba(139, 38, 53, 0.1);
+            color: var(--danger);
+        }
+    </style>
 </head>
 <body>
-<div class="container mt-4">
+<div class="container">
     <h2>Demandes de réservation en attente</h2>
 
-    <table class="table table-bordered">
+    <table>
         <thead>
         <tr>
             <th>Adhérent</th>
@@ -25,22 +113,21 @@
             <td th:text="${r.dateReservation}"></td>
             <td th:text="${r.expireLe}"></td>
             <td>
-                <form th:action="@{/reservations/valider-reservation}" method="post" style="display:inline;">
+                <form th:action="@{/reservations/valider-reservation}" method="post">
                     <input type="hidden" name="idReservation" th:value="${r.id}" />
-                    <button type="submit" class="btn btn-success btn-sm">Valider</button>
+                    <button type="submit" class="btn-success">Valider</button>
                 </form>
-
-                <form th:action="@{/reservations/refuser-reservation}" method="post" style="display:inline; margin-left: 5px;">
+                <form th:action="@{/reservations/refuser-reservation}" method="post">
                     <input type="hidden" name="idReservation" th:value="${r.id}" />
-                    <button type="submit" class="btn btn-danger btn-sm">Refuser</button>
+                    <button type="submit" class="btn-danger">Refuser</button>
                 </form>
             </td>
         </tr>
         </tbody>
     </table>
 
-    <div th:if="${success}" class="alert alert-success mt-3" th:text="${success}"></div>
-    <div th:if="${error}" class="alert alert-danger mt-3" th:text="${error}"></div>
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 </div>
 </body>
 </html>
