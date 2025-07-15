@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Ajouter un profil</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <style>
+    :root {
+        --accent: #8b5a2b;
+        --accent-clair: #a67c52;
+        --bg: #f9f5f0;
+        --shadow: rgba(0, 0, 0, 0.08);
+        --gris: #666;
+        --blanc: #fff;
+    }
+
+    body {
+        font-family: 'Georgia', serif;
+        background-color: var(--bg);
+        margin: 0;
+        padding: 40px 20px;
+        color: var(--accent);
+    }
+
+    h1, h2 {
+        text-align: center;
+        color: var(--accent);
+        margin-bottom: 30px;
+    }
+
+    .container {
+        max-width: 1000px;
+        margin: auto;
+        background: var(--blanc);
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 8px 20px var(--shadow);
+    }
+
+    .btn, .btn-primary, .btn-secondary, .btn-success, .btn-warning, .btn-danger {
+        border: none;
+        padding: 10px 18px;
+        font-family: 'Georgia', serif;
+        font-size: 1rem;
+        border-radius: 0;
+        transition: background 0.3s ease, transform 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        margin-right: 10px;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .btn-primary { background-color: var(--accent); color: white; }
+    .btn-secondary { background-color: #ccc; color: black; }
+    .btn-success { background-color: #2d5a27; color: white; }
+    .btn-warning { background-color: #a67c52; color: white; }
+    .btn-danger { background-color: #8b2635; color: white; }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        padding: 12px;
+        border: 1px solid #e0e0e0;
+        text-align: left;
+    }
+
+    thead {
+        background-color: var(--accent);
+        color: white;
+    }
+
+    tbody tr:nth-child(even) {
+        background-color: #f3f0eb;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    input[type="text"], input[type="number"], select, input[type="date"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        font-family: 'Georgia', serif;
+        border-radius: 0;
+    }
+
+    .alert {
+        padding: 1rem;
+        border-radius: 0;
+        margin-top: 1rem;
+        font-weight: bold;
+    }
+
+    .alert-danger {
+        background-color: #ffe6e6;
+        color: #8b2635;
+    }
+
+    .alert-success {
+        background-color: #e6ffe6;
+        color: #2d5a27;
+    }
+
+    .livre-section {
+        background-color: var(--blanc);
+        padding: 20px;
+        margin-bottom: 30px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px var(--shadow);
+    }
+
+    .livre-section h2 {
+        margin-bottom: 10px;
+        color: var(--accent);
+    }
+</style>
+
+</head>
+
+<body>
+<div class="container mt-4">
+    <h2>Ajouter un profil</h2>
+
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <form th:action="@{/bibliothecaire/quota/ajouter-profil}" th:object="${profil}" method="post">
+        <div class="form-group">
+            <label for="nom">Nom du profil</label>
+            <input type="text" th:field="*{nom}" class="form-control" required />
+        </div>
+
+        <button type="submit" class="btn btn-success">Enregistrer</button>
+        <a th:href="@{/bibliothecaire/quota}" class="btn btn-secondary">Annuler</a>
+    </form>
+</div>
+</body>
+</html>

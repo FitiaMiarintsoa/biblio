@@ -3,37 +3,373 @@
 <head>
     <meta charset="UTF-8" />
     <title>Liste des adhérents</title>
-    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --noir: #1a1a1a;
+            --gris-fonce: #333;
+            --gris: #666;
+            --gris-clair: #e6e6e6;
+            --blanc: #fff;
+            --accent: #8b5a2b;
+            --accent-clair: #a67c52;
+            --accent-tres-clair: #d4b896;
+            --bg-principal: #f9f5f0;
+            --bg-secondaire: #f0e6d6;
+            --hover: rgba(139, 90, 43, 0.1);
+            --shadow: rgba(0, 0, 0, 0.1);
+            --success: #2d5a27;
+            --warning: #b8860b;
+            --danger: #8b2635;
+            --info: #2f4f4f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, var(--bg-principal) 0%, var(--bg-secondaire) 100%);
+            color: var(--noir);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-clair));
+            border-radius: 2px;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            font-weight: normal;
+            letter-spacing: 0.5px;
+        }
+
+        .page-header .subtitle {
+            color: var(--gris);
+            font-size: 1.1rem;
+            font-style: italic;
+        }
+
+        .actions-bar {
+            background: var(--blanc);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px var(--shadow);
+            border: 1px solid rgba(139, 90, 43, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .actions-bar h3 {
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-action {
+            padding: 0.7rem 1.5rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-clair));
+            color: var(--blanc);
+            border: none;
+            border-radius: 8px;
+            font-family: 'Georgia', serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 90, 43, 0.3);
+            color: var(--blanc);
+        }
+
+        .btn-action.secondary {
+            background: var(--bg-principal);
+            color: var(--gris-fonce);
+            border: 2px solid var(--gris-clair);
+        }
+
+        .btn-action.secondary:hover {
+            background: var(--accent);
+            color: var(--blanc);
+            border-color: var(--accent);
+        }
+
+        .table-container {
+            background: var(--blanc);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 25px var(--shadow);
+            border: 1px solid rgba(139, 90, 43, 0.1);
+            overflow-x: auto;
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--gris-clair);
+        }
+
+        .table-header h3 {
+            color: var(--accent);
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0;
+        }
+
+        .table-stats {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            background: var(--bg-principal);
+            color: var(--gris-fonce);
+            font-weight: 500;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 1rem 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--gris-clair);
+        }
+
+        th {
+            background: var(--bg-principal);
+            color: var(--gris-fonce);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
+        }
+
+        tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(139, 90, 43, 0.05);
+            transform: translateX(5px);
+        }
+
+        .status-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .status-badge.actif {
+            background: rgba(45, 90, 39, 0.1);
+            color: var(--success);
+        }
+
+        .status-badge.bloque {
+            background: rgba(139, 38, 53, 0.1);
+            color: var(--danger);
+        }
+
+        .profile-badge {
+            background: var(--accent-tres-clair);
+            color: var(--accent);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .actions-bar {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .table-container {
+                padding: 1rem;
+            }
+
+            .table-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .table-stats {
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-4">
-        <h2>Liste des adhérents</h2>
-        <a th:href="@{/adherents/ajouter}">Ajouter un adhérent</a>
-        <a th:href="@{/adherents/abonner}">Abonnement adhérent</a>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nom</th>
-                    <th>Prénom</th>
-                    <th>Email</th>
-                    <th>Adresse</th>
-                    <th>Profil</th>
-                    <th>Bloqué</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="adherent : ${adherents}">
-                    <td th:text="${adherent.id}"></td>
-                    <td th:text="${adherent.personne.nom}"></td>
-                    <td th:text="${adherent.personne.prenom}"></td>
-                    <td th:text="${adherent.personne.email}"></td>
-                    <td th:text="${adherent.personne.adresse}"></td>
-                    <td th:text="${adherent.profil.nom}"></td>
-                    <td th:text="${adherent.estBloque ? 'Oui' : 'Non'}"></td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="container">
+        <div class="page-header">
+            <h1>Gestion des Adhérents</h1>
+            <p class="subtitle">Administration des membres de la bibliothèque</p>
+        </div>
+
+        <div class="actions-bar">
+            <h3><i class="fas fa-users-cog"></i> Actions Rapides</h3>
+            <div class="action-buttons">
+                <a th:href="@{/adherents/ajouter}" class="btn-action">
+                    <i class="fas fa-user-plus"></i> Ajouter un adhérent
+                </a>
+                <a th:href="@{/adherents/abonner}" class="btn-action secondary">
+                    <i class="fas fa-id-card"></i> Gérer les abonnements
+                </a>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="table-header">
+                <h3><i class="fas fa-list-ul"></i> Liste des Adhérents</h3>
+                <div class="table-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-users"></i>
+                        <span th:text="${#lists.size(adherents)} + ' adhérents'"></span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Actifs</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-ban"></i>
+                        <span>Bloqués</span>
+                    </div>
+                </div>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-hashtag"></i> ID</th>
+                        <th><i class="fas fa-user"></i> Nom</th>
+                        <th><i class="fas fa-user"></i> Prénom</th>
+                        <th><i class="fas fa-envelope"></i> Email</th>
+                        <th><i class="fas fa-map-marker-alt"></i> Adresse</th>
+                        <th><i class="fas fa-id-badge"></i> Profil</th>
+                        <th><i class="fas fa-info-circle"></i> Statut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- <tr th:each="adherent : ${adherents}"> -->
+                    <tr th:each="adherent : ${adherents}"
+                        th:onclick="'location.href=\'' + @{/adherents/fiche(id=${adherent.id})} + '\''"
+                        style="cursor: pointer;">
+
+                        <td th:text="${adherent.id}"></td>
+                        <td th:text="${adherent.personne.nom}"></td>
+                        <td th:text="${adherent.personne.prenom}"></td>
+                        <td th:text="${adherent.personne.email}"></td>
+                        <td th:text="${adherent.personne.adresse}"></td>
+                        <td>
+                            <span class="profile-badge" th:text="${adherent.profil.nom}"></span>
+                        </td>
+                        <td>
+                            <span th:if="${adherent.estBloque}" class="status-badge bloque">
+                                <i class="fas fa-ban"></i> Bloqué
+                            </span>
+                            <span th:unless="${adherent.estBloque}" class="status-badge actif">
+                                <i class="fas fa-check"></i> Actif
+                            </span>
+                        </td>
+                        <td>
+                            <a th:href="@{/adherents/fiche(id=${adherent.id})}" class="btn-action secondary">
+                                <i class="fas fa-eye"></i> Voir fiche
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </body>
 </html>

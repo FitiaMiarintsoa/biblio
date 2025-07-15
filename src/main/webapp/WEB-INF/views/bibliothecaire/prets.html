@@ -1,76 +1,488 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
     <title>Gestion des prêts</title>
-    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --noir: #1a1a1a;
+            --gris-fonce: #333;
+            --gris: #666;
+            --gris-clair: #e6e6e6;
+            --blanc: #fff;
+            --accent: #8b5a2b;
+            --accent-clair: #a67c52;
+            --accent-tres-clair: #d4b896;
+            --bg-principal: #f9f5f0;
+            --bg-secondaire: #f0e6d6;
+            --hover: rgba(139, 90, 43, 0.1);
+            --shadow: rgba(0, 0, 0, 0.1);
+            --success: #2d5a27;
+            --warning: #b8860b;
+            --danger: #8b2635;
+            --info: #2f4f4f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, var(--bg-principal) 0%, var(--bg-secondaire) 100%);
+            color: var(--noir);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* En-tête */
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-clair));
+            border-radius: 2px;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            font-weight: normal;
+            letter-spacing: 0.5px;
+        }
+
+        .page-header .subtitle {
+            color: var(--gris);
+            font-size: 1.1rem;
+            font-style: italic;
+        }
+
+        /* Navigation */
+        .nav-menu {
+            background: var(--blanc);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px var(--shadow);
+            border: 1px solid rgba(139, 90, 43, 0.1);
+        }
+
+        .nav-menu ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .nav-menu li a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            text-decoration: none;
+            color: var(--gris-fonce);
+            background: var(--bg-principal);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border: 1px solid transparent;
+        }
+
+        .nav-menu li a:hover {
+            background: var(--accent);
+            color: var(--blanc);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 90, 43, 0.3);
+            border-color: var(--accent-clair);
+        }
+
+        .nav-menu li a i {
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Formulaire de filtrage */
+        .filters-card {
+            background: var(--blanc);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px var(--shadow);
+            border: 1px solid rgba(139, 90, 43, 0.1);
+        }
+
+        .filters-card h3 {
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filters-form {
+            display: flex;
+            align-items: end;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            color: var(--gris-fonce);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .filter-group select {
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--gris-clair);
+            border-radius: 8px;
+            font-family: 'Georgia', serif;
+            background: var(--blanc);
+            color: var(--noir);
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        .filter-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--hover);
+        }
+
+        .btn-filter {
+            padding: 0.75rem 2rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-clair));
+            color: var(--blanc);
+            border: none;
+            border-radius: 8px;
+            font-family: 'Georgia', serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-filter:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 90, 43, 0.3);
+        }
+
+        /* Tableau */
+        .table-container {
+            background: var(--blanc);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 25px var(--shadow);
+            border: 1px solid rgba(139, 90, 43, 0.1);
+            overflow-x: auto;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .table-header h3 {
+            color: var(--accent);
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .table-stats {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            background: var(--bg-principal);
+            color: var(--gris-fonce);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 1rem 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--gris-clair);
+        }
+
+        th {
+            background: var(--bg-principal);
+            color: var(--gris-fonce);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
+        }
+
+        tr:hover {
+            background: rgba(139, 90, 43, 0.05);
+        }
+
+        /* Statuts */
+        .status {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .status-en-retard {
+            background: rgba(139, 38, 53, 0.1);
+            color: var(--danger);
+        }
+
+        .status-en-cours {
+            background: rgba(45, 90, 39, 0.1);
+            color: var(--success);
+        }
+
+        .status-termine {
+            background: rgba(102, 102, 102, 0.1);
+            color: var(--gris);
+        }
+
+        /* Icônes pour les liens de navigation */
+        .nav-menu li a[href*="nouveau-pret"] i::before { content: '\f067'; }
+        .nav-menu li a[href*="rendre"] i::before { content: '\f0e2'; }
+        .nav-menu li a[href*="retards"] i::before { content: '\f071'; }
+        .nav-menu li a[href*="prets_encours"] i::before { content: '\f017'; }
+        .nav-menu li a[href*="quota"] i::before { content: '\f013'; }
+        .nav-menu li a[href*="valider-reservations"] i::before { content: '\f00c'; }
+        .nav-menu li a[href*="reserver"] i::before { content: '\f02e'; }
+        .nav-menu li a[href*="home"] i::before { content: '\f015'; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .nav-menu ul {
+                grid-template-columns: 1fr;
+            }
+
+            .filters-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-group select {
+                min-width: auto;
+            }
+
+            .table-container {
+                padding: 1rem;
+            }
+
+            .table-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .table-stats {
+                justify-content: center;
+            }
+        }
+
+        /* Animation d'entrée */
+        .container > * {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .container > *:nth-child(2) { animation-delay: 0.1s; }
+        .container > *:nth-child(3) { animation-delay: 0.2s; }
+        .container > *:nth-child(4) { animation-delay: 0.3s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Amélioration des scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--gris-clair);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-clair);
+        }
+    </style>
 </head>
 <body>
-<div class="container mt-4">
-    <h1>Gestion des prêts</h1>
+    <div class="container">
+        <div class="page-header">
+            <h1>Gestion des Prêts</h1>
+            <p class="subtitle">Administration des emprunts et retours</p>
+        </div>
 
-    <nav class="mb-3">
-        <ul>
-            <li><a th:href="@{/bibliothecaire/nouveau-pret}">Ajouter un prêt</a></li>
-            <li><a th:href="@{/bibliothecaire/rendre}">Rendre un livre</a></li>
-            <li><a th:href="@{/bibliothecaire/retards}">Voir les prêts en retard</a></li>
-            <li><a th:href="@{/bibliothecaire/prets_encours}">Prolonger un prêt</a></li>
-            <li><a th:href="@{/reservations/valider-reservations}">Réservations en attente</a></li>
-            <li><a th:href="@{/reservations/reserver}">Enregistrer une réservation</a></li>
-            <li><a th:href="@{/bibliothecaire/home}">Retour à l'accueil</a></li>
-        </ul>
-    </nav>
+        <div class="nav-menu">
+            <ul>
+                <li><a th:href="@{/bibliothecaire/nouveau-pret}"><i class="fas fa-plus"></i>Ajouter un prêt</a></li>
+                <li><a th:href="@{/bibliothecaire/rendre}"><i class="fas fa-undo"></i>Rendre un livre</a></li>
+                <li><a th:href="@{/bibliothecaire/retards}"><i class="fas fa-exclamation-triangle"></i>Prêts en retard</a></li>
+                <li><a th:href="@{/bibliothecaire/prets_encours}"><i class="fas fa-clock"></i>Prolonger un prêt</a></li>
+                <li><a th:href="@{/bibliothecaire/quota}"><i class="fas fa-cogs"></i>Configuration quota</a></li>
+                <li><a th:href="@{/reservations/valider-reservations}"><i class="fas fa-check-circle"></i>Réservations en attente</a></li>
+                <li><a th:href="@{/reservations/reserver}"><i class="fas fa-bookmark"></i>Enregistrer une réservation</a></li>
+                <li><a th:href="@{/bibliothecaire/home}"><i class="fas fa-home"></i>Retour à l'accueil</a></li>
+            </ul>
+        </div>
 
-    <form method="get" th:action="@{/bibliothecaire/prets}" class="mb-4">
-        <label for="statut">Statut :</label>
-        <select id="statut" name="statut">
-            <option value="" th:selected="${statutSelectionne == null}">-- Tous --</option>
-            <option value="en_cours" th:selected="${statutSelectionne == 'en_cours'}">En cours</option>
-            <option value="en_retard" th:selected="${statutSelectionne == 'en_retard'}">En retard</option>
-        </select>
+        <div class="filters-card">
+            <h3><i class="fas fa-filter"></i> Filtres de recherche</h3>
+            <form method="get" th:action="@{/bibliothecaire/prets}" class="filters-form">
+                <div class="filter-group">
+                    <label for="statut">Statut</label>
+                    <select id="statut" name="statut">
+                        <option value="" th:selected="${statutSelectionne == null}">-- Tous les statuts --</option>
+                        <option value="en_cours" th:selected="${statutSelectionne == 'en_cours'}">En cours</option>
+                        <option value="en_retard" th:selected="${statutSelectionne == 'en_retard'}">En retard</option>
+                    </select>
+                </div>
 
-        <label for="idAdherent">Adhérent :</label>
-        <select id="idAdherent" name="idAdherent">
-            <option value="" th:selected="${idAdherentSelectionne == null}">-- Tous --</option>
-            <option th:each="adherent : ${adherents}" 
-                    th:value="${adherent.id}" 
-                    th:text="${adherent.personne.nom + ' ' + adherent.personne.prenom}" 
-                    th:selected="${adherent.id == idAdherentSelectionne}">
-            </option>
-        </select>
+                <div class="filter-group">
+                    <label for="idAdherent">Adhérent</label>
+                    <select id="idAdherent" name="idAdherent">
+                        <option value="" th:selected="${idAdherentSelectionne == null}">-- Tous les adhérents --</option>
+                        <option th:each="adherent : ${adherents}" 
+                                th:value="${adherent.id}" 
+                                th:text="${adherent.personne.nom + ' ' + adherent.personne.prenom}" 
+                                th:selected="${adherent.id == idAdherentSelectionne}"></option>
+                    </select>
+                </div>
 
-        <button type="submit" class="btn btn-primary btn-sm">Filtrer</button>
-    </form>
+                <button type="submit" class="btn-filter">
+                    <i class="fas fa-search"></i>
+                    Filtrer
+                </button>
+            </form>
+        </div>
 
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Adhérent</th>
-                <th>Livre</th>
-                <th>Date Emprunt</th>
-                <th>Date Retour Prévue</th>
-                <th>Date Retour Réelle</th>
-                <th>Statut</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="pret : ${prets}">
-                <td th:text="${pret.id}"></td>
-                <td th:text="${pret.adherent.personne.nom + ' ' + pret.adherent.personne.prenom}"></td>
-                <td th:text="${pret.exemplaire.livre.titre}"></td>
-                <td th:text="${pret.dateEmprunt}"></td>
-                <td th:text="${pret.dateRetourPrevue}"></td>
-                <td th:text="${pret.dateRetourReelle != null ? pret.dateRetourReelle : '-'}"></td>
-                <td>
-                    <span th:if="${pret.dateRetourReelle == null}">
-                        <span th:if="${pret.dateRetourPrevue != null and pret.dateRetourPrevue.isBefore(#temporals.today())}" style="color:red;">En retard</span>
-                        <span th:unless="${pret.dateRetourPrevue != null and pret.dateRetourPrevue.isBefore(#temporals.today())}" style="color:green;">En cours</span>
-                    </span>
-                    <span th:if="${pret.dateRetourReelle != null}">Terminé</span>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+        <div class="table-container">
+            <div class="table-header">
+                <h3><i class="fas fa-list"></i> Liste des Prêts</h3>
+                <div class="table-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-book"></i>
+                        <span th:text="${#lists.size(prets)} + ' prêts'"></span>
+                    </div>
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Adhérent</th>
+                        <th>Livre</th>
+                        <th>Date Emprunt</th>
+                        <th>Date Retour Prévue</th>
+                        <th>Date Retour Réelle</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="pret : ${prets}">
+                        <td th:text="${pret.id}"></td>
+                        <td th:text="${pret.adherent.personne.nom + ' ' + pret.adherent.personne.prenom}"></td>
+                        <td th:text="${pret.exemplaire.livre.titre}"></td>
+                        <td th:text="${pret.dateEmprunt}"></td>
+                        <td th:text="${pret.dateRetourPrevue}"></td>
+                        <td th:text="${pret.dateRetourReelle != null ? pret.dateRetourReelle : '-'}"></td>
+                        <td>
+                            <span th:if="${pret.dateRetourReelle == null}">
+                                <span th:if="${pret.dateRetourPrevue != null and pret.dateRetourPrevue.isBefore(#temporals.today())}" 
+                                      class="status status-en-retard">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    En retard
+                                </span>
+                                <span th:unless="${pret.dateRetourPrevue != null and pret.dateRetourPrevue.isBefore(#temporals.today())}" 
+                                      class="status status-en-cours">
+                                    <i class="fas fa-clock"></i>
+                                    En cours
+                                </span>
+                            </span>
+                            <span th:if="${pret.dateRetourReelle != null}" class="status status-termine">
+                                <i class="fas fa-check-circle"></i>
+                                Terminé
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </body>
 </html>

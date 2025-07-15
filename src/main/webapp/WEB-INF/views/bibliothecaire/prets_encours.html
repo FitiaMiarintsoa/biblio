@@ -2,28 +2,126 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Prêts en cours</title>
-    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --accent: #8b5a2b;
+            --accent-clair: #a67c52;
+            --bg: #f9f5f0;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --success: #2d5a27;
+            --danger: #8b2635;
+            --warning: #b8860b;
+        }
+
+        body {
+            font-family: Georgia, serif;
+            background: linear-gradient(to right, var(--bg), #f0e6d6);
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            background: #fff;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px var(--shadow);
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--accent);
+            margin-bottom: 2rem;
+        }
+
+        label {
+            font-weight: 500;
+            margin-right: 0.5rem;
+        }
+
+        select {
+            padding: 0.5rem;
+            border-radius: 6px;
+            border: 2px solid #ccc;
+            font-size: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .alert {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: rgba(45, 90, 39, 0.1);
+            color: var(--success);
+        }
+
+        .alert-danger {
+            background: rgba(139, 38, 53, 0.1);
+            color: var(--danger);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+
+        th {
+            background: var(--accent-clair);
+            color: white;
+            padding: 0.75rem;
+        }
+
+        td {
+            padding: 0.75rem;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-<div class="container mt-4">
+<div class="container">
     <h2>Prêts en cours</h2>
 
     <form th:action="@{/bibliothecaire/prets_encours}" method="get" class="mb-3">
         <label for="idAdherent">Filtrer par adhérent :</label>
-        <select name="idAdherent" class="form-control" style="max-width: 300px; display: inline-block;">
+        <select name="idAdherent" style="max-width: 300px;">
             <option value="">-- Tous --</option>
             <option th:each="a : ${adherents}"
                     th:value="${a.id}"
                     th:text="${a.personne.nom + ' ' + a.personne.prenom}"
                     th:selected="${a.id == idAdherent}"></option>
         </select>
-        <button type="submit" class="btn btn-primary ml-2">Filtrer</button>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-filter"></i> Filtrer</button>
     </form>
 
     <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
     <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
-    <table class="table table-bordered">
+    <table>
         <thead>
         <tr>
             <th>Adhérent</th>
@@ -45,9 +143,9 @@
                 <form th:if="${!pret.estProlonge}" th:action="@{/bibliothecaire/prets_encours/prolonger}" method="post" style="display:inline;">
                     <input type="hidden" name="idPret" th:value="${pret.id}" />
                     <input type="hidden" name="idAdherent" th:value="${idAdherent}" />
-                    <button type="submit" class="btn btn-sm btn-warning">Prolonger</button>
+                    <button type="submit" class="btn btn-warning btn-sm">Prolonger</button>
                 </form>
-                <span th:if="${pret.estProlonge}">Prolongé</span>
+                <span th:if="${pret.estProlonge}">Déjà prolongé</span>
             </td>
         </tr>
         </tbody>

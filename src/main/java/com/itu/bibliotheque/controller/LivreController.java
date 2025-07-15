@@ -36,10 +36,15 @@ public class LivreController {
     private PretService pretService;
 
     @GetMapping("/livres")
+    // public String listLivres(Model model) {
+    //     List<Livre> livres = livreService.findAll();
+    //     model.addAttribute("livres", livres);
+    //     return "livres";
+    // }
     public String listLivres(Model model) {
-        List<Livre> livres = livreService.findAll();
-        model.addAttribute("livres", livres);
-        return "livres";
+        // List<Livre> livres = livreService.findAll();
+        // model.addAttribute("livres", livres);
+        return "livrejson";
     }
     @GetMapping("/livres/disponibles")
     public String livresDisponibles(

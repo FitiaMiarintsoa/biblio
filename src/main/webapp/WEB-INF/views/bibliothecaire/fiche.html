@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Fiche Adhérent</title>
+    <style>
+        body {
+            font-family: Georgia, serif;
+            background: #f9f5f0;
+            color: #1a1a1a;
+            margin: 0;
+            padding: 2rem;
+        }
+
+        .fiche-container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            color: #8b5a2b;
+        }
+
+        p, li {
+            font-size: 1rem;
+            margin: 0.5rem 0;
+        }
+
+        ul {
+            padding-left: 1.2rem;
+        }
+
+        .section {
+            margin-top: 2rem;
+            border-top: 1px solid #e0d4c3;
+            padding-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="fiche-container">
+        <h1>Fiche de l'Adhérent</h1>
+        <div id="infos" class="section"></div>
+        <div id="abonnement" class="section"></div>
+        <div id="sanctions" class="section"></div>
+        <div id="quotas" class="section"></div>
+        <div id="historique" class="section"></div>
+    </div>
+
+    <script>
+        const id = new URLSearchParams(window.location.search).get("id");
+
+        fetch(`http://localhost:8082/bibliotheque2-0.0.1-SNAPSHOT/api/adherents/${id}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    document.querySelector(".fiche-container").innerHTML = `<p style="color: red;">${data.error}</p>`;
+                    return;
+                }
+
+                // Infos
+                document.getElementById("infos").innerHTML = `
+                    <h2>Informations personnelles</h2>
+                    <p><strong>Nom :</strong> ${data.nom} ${data.prenom}</p>
+                    <p><strong>Email :</strong> ${data.email}</p>
+                    <p><strong>Adresse :</strong> ${data.adresse}</p>
+                    <p><strong>Profil :</strong> ${data.profil}</p>
+                    <p><strong>Statut :</strong> ${data.bloque ? "Bloqué" : "Actif"}</p>
+                `;
+
+                // Abonnement
+                const abonnement = data.abonnement;
+                document.getElementById("abonnement").innerHTML = `
+                    <h2>Abonnement</h2>
+                    ${abonnement ? `<p>Fin : ${abonnement.dateFin}</p>` : `<p>Aucun abonnement</p>`}
+                `;
+
+                // Sanctions
+                const sanctions = data.sanctions;
+                document.getElementById("sanctions").innerHTML = `
+                    <h2>Sanctions Actives</h2>
+                    ${sanctions.length > 0 ? sanctions.map(s => `
+                        <p>${s.description} — du ${s.dateDebut} au ${s.dateFin ?? "?"}</p>
+                    `).join('') : `<p>Aucune sanction</p>`}
+                `;
+
+                // Quotas restants
+                const q = data.quotasRestants;
+                document.getElementById("quotas").innerHTML = `
+                    <h2>Quotas Restants</h2>
+                    ${q ? `
+                        <ul>
+                            <li>Prêts : ${q.pret}</li>
+                            <li>Réservations : ${q.reservation}</li>
+                            <li>Prolongations : ${q.prolongation}</li>
+                            <li>Prêts sur place : ${q.pret_place}</li>
+                        </ul>` : `<p>Aucun quota disponible</p>`
+                    }
+                `;
+
+                // Historique
+                const hist = data.historique;
+                document.getElementById("historique").innerHTML = `
+                    <h2>Historique des actions</h2>
+                    ${hist.length > 0 ? hist.map(h => `
+                        <p>${h.dateAction} — ${h.commentaire}</p>
+                    `).join('') : `<p>Aucun historique</p>`}
+                `;
+            })
+            .catch(error => {
+                document.querySelector(".fiche-container").innerHTML = `<p style="color: red;">Erreur lors du chargement.</p>`;
+                console.error(error);
+            });
+    </script>
+</body>
+</html>

@@ -3,33 +3,107 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Rendre un livre</title>
-    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --noir: #1a1a1a;
+            --accent: #8b5a2b;
+            --accent-clair: #a67c52;
+            --bg-principal: #f9f5f0;
+            --bg-secondaire: #f0e6d6;
+            --gris-clair: #e6e6e6;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --success: #2d5a27;
+            --danger: #8b2635;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, var(--bg-principal), var(--bg-secondaire));
+            color: var(--noir);
+            margin: 0;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 25px var(--shadow);
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--accent);
+            margin-bottom: 2rem;
+        }
+
+        label {
+            font-weight: 500;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        select, input[type="date"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--gris-clair);
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-clair));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        .alert {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .alert-success {
+            background: rgba(45, 90, 39, 0.1);
+            color: var(--success);
+        }
+
+        .alert-danger {
+            background: rgba(139, 38, 53, 0.1);
+            color: var(--danger);
+        }
+    </style>
 </head>
 <body>
-<div class="container mt-4">
+<div class="container">
     <h2>Rendre un livre emprunté</h2>
 
     <form th:action="@{/bibliothecaire/rendre}" method="post">
-        <div class="mb-3">
-            <label for="pretId">Sélectionnez le prêt :</label>
-            <select id="pretId" name="pretId" class="form-control" required>
-                <option th:each="pret : ${pretsEnCours}" 
-                        th:value="${pret.id}" 
-                        th:text="${pret.adherent.personne.nom + ' - ' + pret.exemplaire.livre.titre + ' (emprunté le ' + pret.dateEmprunt + ')'}">
-                </option>
-            </select>
-        </div>
+        <label for="pretId">Sélectionnez le prêt :</label>
+        <select id="pretId" name="pretId" required>
+            <option th:each="pret : ${pretsEnCours}"
+                    th:value="${pret.id}"
+                    th:text="${pret.adherent.personne.nom + ' - ' + pret.exemplaire.livre.titre + ' (emprunté le ' + pret.dateEmprunt + ')'}">
+            </option>
+        </select>
 
-        <div class="mb-3">
-            <label for="dateRetour">Date de retour :</label>
-            <input id="dateRetour" name="dateRetour" type="date" class="form-control" required/>
-        </div>
+        <label for="dateRetour">Date de retour :</label>
+        <input id="dateRetour" name="dateRetour" type="date" required/>
 
-        <button type="submit" class="btn btn-primary">Enregistrer le retour</button>
+        <button type="submit"><i class="fas fa-save"></i> Enregistrer le retour</button>
     </form>
 
-    <div th:if="${success}" class="alert alert-success mt-3" th:text="${success}"></div>
-    <div th:if="${error}" class="alert alert-danger mt-3" th:text="${error}"></div>
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 </div>
 </body>
 </html>

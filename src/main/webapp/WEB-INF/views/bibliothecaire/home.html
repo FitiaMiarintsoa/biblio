@@ -1,21 +1,230 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Accueil Bibliothécaire</title>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil Bibliothécaire</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --noir: #1a1a1a;
+            --gris-fonce: #333;
+            --gris: #666;
+            --gris-clair: #e6e6e6;
+            --blanc: #fff;
+            --accent: #8b5a2b; /* Brun élégant */
+            --accent-clair: #a67c52;
+            --hover: rgba(139, 90, 43, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #f9f5f0;
+            color: var(--noir);
+            line-height: 1.6;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--gris-clair);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: normal;
+            color: var(--noir);
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .user-name {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .welcome-message {
+            font-size: 1.1rem;
+            color: var(--gris);
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 50px 0;
+        }
+
+        .menu-item {
+            background: var(--blanc);
+            border: 1px solid var(--gris-clair);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: var(--noir);
+            display: block;
+            height: 100%;
+        }
+
+        .menu-item:hover {
+            border-color: var(--accent);
+            background-color: var(--hover);
+            transform: translateY(-3px);
+        }
+
+        .menu-content {
+            padding: 30px;
+            position: relative;
+        }
+
+        .menu-icon {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+
+        .menu-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            font-weight: normal;
+            color: var(--gris-fonce);
+        }
+
+        .menu-desc {
+            color: var(--gris);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .menu-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        .menu-link:hover {
+            color: var(--accent-clair);
+        }
+
+        .menu-link i {
+            margin-left: 5px;
+            font-size: 0.8rem;
+        }
+
+        .logout-container {
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .logout-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 25px;
+            background: transparent;
+            color: var(--gris);
+            border: 1px solid var(--gris-clair);
+            border-radius: 0;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: var(--gris-clair);
+            color: var(--noir);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .menu-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .menu-content {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 15px;
+            }
+            
+            header {
+                margin-bottom: 30px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Bienvenue, <span th:text="${user.personne.nom}">Nom Adhérent</span> !</h1>
+    <div class="container">
+        <header>
+            <h1>Bienvenue, <span class="user-name" th:text="${user.personne.nom}">Nom Bibliothécaire</span></h1>
+            <p class="welcome-message">Vous êtes connecté en tant que bibliothécaire</p>
+        </header>
 
-    <p>Vous êtes connecté en tant que bibliothécaire.</p>
+        <div class="menu-grid">
+            <a href="#" th:href="@{/livres}" class="menu-item">
+                <div class="menu-content">
+                    <div class="menu-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h3 class="menu-title">Gestion des livres</h3>
+                    <p class="menu-desc">Ajouter, modifier ou supprimer des livres de la collection</p>
+                    <span class="menu-link">Accéder <i class="fas fa-chevron-right"></i></span>
+                </div>
+            </a>
+            
+            <a href="#" th:href="@{/adherents}" class="menu-item">
+                <div class="menu-content">
+                    <div class="menu-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="menu-title">Gestion des adhérents</h3>
+                    <p class="menu-desc">Gérer les comptes et les informations des membres</p>
+                    <span class="menu-link">Accéder <i class="fas fa-chevron-right"></i></span>
+                </div>
+            </a>
+            
+            <a href="#" th:href="@{/bibliothecaire/prets}" class="menu-item">
+                <div class="menu-content">
+                    <div class="menu-icon">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <h3 class="menu-title">Gestion des prêts</h3>
+                    <p class="menu-desc">Suivre et administrer les prêts en cours</p>
+                    <span class="menu-link">Accéder <i class="fas fa-chevron-right"></i></span>
+                </div>
+            </a>
+        </div>
 
-    <nav>
-        <ul>
-            <li><a th:href="@{/livres}">Gestion des livres</a></li>
-            <li><a th:href="@{/adherents}">Gestion des adhérents</a></li>
-            <li><a th:href="@{/bibliothecaire/prets}">Gestion des prêts</a></li> 
-            <li><a th:href="@{/bibliothecaire/logout}">Déconnexion</a></li>
-        </ul>
-    </nav>
+        <div class="logout-container">
+            <a th:href="@{/bibliothecaire/logout}" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                Déconnexion
+            </a>
+        </div>
+    </div>
 </body>
 </html>

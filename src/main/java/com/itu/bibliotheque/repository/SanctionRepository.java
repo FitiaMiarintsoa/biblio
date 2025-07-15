@@ -16,5 +16,5 @@ public interface SanctionRepository extends JpaRepository<Sanction, Integer> {
     );
 
     List<Sanction> findByAdherentAndEstActiveTrue(Adherent adherent);
-        
+    List<Sanction> findByAdherentIdAndEstActiveTrue(Long adherentId);
 }

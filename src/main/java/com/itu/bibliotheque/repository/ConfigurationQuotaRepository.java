@@ -14,4 +14,5 @@ public interface ConfigurationQuotaRepository extends JpaRepository<Configuratio
     List<ConfigurationQuota> findByDateSuppressionIsNull();
     Optional<ConfigurationQuota> findByProfilAndDateSuppressionIsNull(Profil profil);
     boolean existsByProfilAndDateSuppressionIsNull(Profil profil);
+    ConfigurationQuota findByProfilId(Long profilId);
 }

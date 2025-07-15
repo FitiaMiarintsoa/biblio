@@ -10,5 +10,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface AbonnementRepository extends JpaRepository<Abonnement, Integer> {
     boolean existsByAdherentAndDateDebutLessThanEqualAndDateFinGreaterThanEqual(
     Adherent adherent, LocalDate dateDebut, LocalDate dateFin);
+    Abonnement findTopByAdherentIdOrderByDateFinDesc(Long adherentId);
 
 }
