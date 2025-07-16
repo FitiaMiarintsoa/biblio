@@ -440,8 +440,52 @@
                     </div>
                 </div>
             </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Adhérent</th>
+                    <th>Livre</th>
+                    <th>Date Emprunt</th>
+                    <th>Date Retour Prévue</th>
+                    <th>Date Retour Réelle</th>
+                    <th>Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="pret : ${prets}">
+                    <td th:text="${pret.id}"></td>
+                    <td th:text="${pret.adherent?.personne?.nom + ' ' + pret.adherent?.personne?.prenom} ?: '-'"></td>
+                    <td th:text="${pret.exemplaire?.livre?.titre} ?: '-'"></td>
+                    <td th:text="${pret.dateEmprunt} ?: '-'"></td>
+                    <td th:text="${pret.dateRetourPrevue} ?: '-'"></td>
+                    <td th:text="${pret.dateRetourReelle} ?: '-'"></td>
+                    <td>
+                        <span th:if="${pret.dateRetourReelle != null}" class="status status-termine">
+                            <i class="fas fa-check-circle"></i>
+                            Terminé
+                        </span>
+                        <span th:if="${pret.dateRetourReelle == null}">
+                            <span th:if="${pret.dateRetourPrevue != null and pret.dateRetourPrevue < T(java.time.LocalDate).now()}"
+                                class="status status-en-retard">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                En retard
+                            </span>
+                            <span th:if="${pret.dateRetourPrevue == null or pret.dateRetourPrevue >= T(java.time.LocalDate).now()}"
+                                class="status status-en-cours">
+                                <i class="fas fa-clock"></i>
+                                En cours
+                            </span>
+                        </span>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(prets)}">
+                    <td colspan="7" style="text-align: center;">Aucun prêt trouvé</td>
+                </tr>
+            </tbody>
+        </table>
 
-            <table>
+            <!-- <table>
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -481,7 +525,7 @@
                         </td>
                     </tr>
                 </tbody>
-            </table>
+            </table> -->
         </div>
     </div>
 </body>
