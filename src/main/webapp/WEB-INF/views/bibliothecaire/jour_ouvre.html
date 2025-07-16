@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Configuration des jours ouvrés</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --noir: #1a1a1a;
+            --gris-fonce: #333;
+            --gris: #666;
+            --gris-clair: #e6e6e6;
+            --blanc: #fff;
+            --accent: #8b5a2b;
+            --accent-clair: #a67c52;
+            --accent-tres-clair: #d4b896;
+            --bg-principal: #f9f5f0;
+            --bg-secondaire: #f0e6d6;
+            --hover: rgba(139, 90, 43, 0.1);
+            --shadow: rgba(0, 0, 0, 0.1);
+            --success: #2d5a27;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, var(--bg-principal), var(--bg-secondaire));
+            color: var(--noir);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: var(--blanc);
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px var(--shadow);
+            border: 1px solid rgba(139, 90, 43, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--accent);
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        label {
+            font-weight: bold;
+            color: var(--gris-fonce);
+        }
+
+        select {
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--gris-clair);
+            border-radius: 8px;
+            font-family: 'Georgia', serif;
+            font-size: 1rem;
+            background: var(--blanc);
+            transition: border 0.3s ease;
+        }
+
+        select:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 3px var(--hover);
+        }
+
+        button {
+            align-self: flex-end;
+            background: linear-gradient(135deg, var(--accent), var(--accent-clair));
+            color: var(--blanc);
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-family: 'Georgia', serif;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 90, 43, 0.3);
+        }
+
+        .message {
+            margin-top: 1rem;
+            color: var(--success);
+            font-weight: 500;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2><i class="fas fa-calendar-alt"></i> Configuration des jours ouvrés</h2>
+
+        <form th:action="@{/configuration/jour-ouvre}" method="post">
+            <div>
+                <label for="directionDecalage">Choisissez la direction de décalage si la date de retour tombe un jour non ouvré :</label><br>
+                <select id="directionDecalage" name="directionDecalage" required>
+                    <option value="apres" th:selected="${config.directionDecalage == 'apres'}">Après (jour ouvré suivant)</option>
+                    <option value="avant" th:selected="${config.directionDecalage == 'avant'}">Avant (jour ouvré précédent)</option>
+                </select>
+            </div>
+
+            <button type="submit"><i class="fas fa-save"></i> Enregistrer</button>
+        </form>
+
+        <p th:if="${param.success}" class="message">✔ Configuration enregistrée avec succès.</p>
+    </div>
+</body>
+</html>

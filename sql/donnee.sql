@@ -121,3 +121,5 @@ VALUES
 (1, 2, 3, 1, 3, 7),
 (2, 3, 4, 2, 5, 9),
 (3, 4, 5, 3, 7, 12);
+
+INSERT INTO configuration_jour_ouvre (direction_decalage) VALUES ('apres');
