@@ -139,16 +139,16 @@
             <td th:text="${pret.dateEmprunt}"></td>
             <td th:text="${pret.dateRetourPrevue}"></td>
             <td th:text="${pret.estProlonge ? 'Oui' : 'Non'}"></td>
-            <!-- <td>
+            <td>
                 <form th:if="${!pret.estProlonge}" th:action="@{/bibliothecaire/prets_encours/prolonger}" method="post" style="display:inline;">
                     <input type="hidden" name="idPret" th:value="${pret.id}" />
                     <input type="hidden" name="idAdherent" th:value="${idAdherent}" />
                     <button type="submit" class="btn btn-warning btn-sm">Prolonger</button>
                 </form>
                 <span th:if="${pret.estProlonge}">Déjà prolongé</span>
-            </td> -->
+            </td>
 
-            <td>
+            <!-- <td>
                 <form th:action="@{/bibliothecaire/prets_encours/prolonger}" method="post" style="display:inline;">
                     <input type="hidden" name="idPret" th:value="${pret.id}" />
                     <input type="hidden" name="idAdherent" th:value="${idAdherent}" />
@@ -157,7 +157,7 @@
                         <span th:if="${pret.estProlonge}"> à nouveau</span>
                     </button>
                 </form>
-            </td>
+            </td> -->
         </tr>
         </tbody>
     </table>
