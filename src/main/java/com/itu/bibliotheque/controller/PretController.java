@@ -220,48 +220,49 @@ public class PretController {
     //     }
     //     return "redirect:/bibliothecaire/prets_encours";
     // }
-@PostMapping("/prets_encours/prolonger")
-public String prolongerPret(
-        @RequestParam("idPret") Integer idPret,
-        @RequestParam(value = "idAdherent", required = false) Integer idAdherent,
-        RedirectAttributes redirectAttributes) {
+    @PostMapping("/prets_encours/prolonger")
+    public String prolongerPret(
+            @RequestParam("idPret") Integer idPret,
+            @RequestParam(value = "idAdherent", required = false) Integer idAdherent,
+            RedirectAttributes redirectAttributes) {
 
-    try {
-        Pret pret = pretRepository.findById(idPret)
-                .orElseThrow(() -> new RuntimeException("Prêt introuvable"));
+        try {
+            Pret pret = pretRepository.findById(idPret)
+                    .orElseThrow(() -> new RuntimeException("Prêt introuvable"));
 
-        Adherent adherent = pret.getAdherent();
+            Adherent adherent = pret.getAdherent();
 
-        ConfigurationQuota quota = configurationQuotaRepository.findByProfilAndDateSuppressionIsNull(adherent.getProfil())
-                .orElseThrow(() -> new RuntimeException("Configuration quota introuvable pour ce profil"));
+            ConfigurationQuota quota = configurationQuotaRepository.findByProfilAndDateSuppressionIsNull(adherent.getProfil())
+                    .orElseThrow(() -> new RuntimeException("Configuration quota introuvable pour ce profil"));
 
-        // ➤ Nombre de prolongations en cours (pas encore rendues)
-        long nbProlongementsEnCours = pretRepository.countByAdherentIdAndEstProlongeTrueAndDateRetourReelleIsNull(adherent.getId());
+            // ➤ Nombre de prolongations en cours (pas encore rendues)
+            long nbProlongementsEnCours = pretRepository.countByAdherentIdAndEstProlongeTrueAndDateRetourReelleIsNull(adherent.getId());
 
-        if (nbProlongementsEnCours >= quota.getQuotaProlongation()) {
-            redirectAttributes.addFlashAttribute("error", "Quota de prolongation simultanée dépassé pour cet adhérent.");
-        } else {
-            LocalDate nouvelleDate = pret.getDateRetourPrevue().plusDays(quota.getNbJour());
-            // ➤ Ajuster si jour férié ou dimanche
-            while (pretService.estJourNonOuvre(nouvelleDate)) {
-                nouvelleDate = nouvelleDate.plusDays(1);
+            if (nbProlongementsEnCours >= quota.getQuotaProlongation()) {
+                redirectAttributes.addFlashAttribute("error", "Quota de prolongation simultanée dépassé pour cet adhérent.");
+            } else {
+                LocalDate nouvelleDate = pret.getDateRetourPrevue().plusDays(quota.getNbJour());
+                // ➤ Ajuster si jour férié ou dimanche
+                // while (pretService.estJourNonOuvre(nouvelleDate)) {
+                //     nouvelleDate = nouvelleDate.plusDays(1);
+                // }
+                nouvelleDate = pretService.ajusterAuJourOuvreSelonConfig(nouvelleDate);
+
+                pret.setDateRetourPrevue(nouvelleDate);
+                pret.setEstProlonge(true); // peut rester à true même après plusieurs prolongations
+                pretRepository.save(pret);
+
+                redirectAttributes.addFlashAttribute("success", "Prêt prolongé avec succès jusqu’au " + nouvelleDate + ".");
             }
 
-            pret.setDateRetourPrevue(nouvelleDate);
-            pret.setEstProlonge(true); // peut rester à true même après plusieurs prolongations
-            pretRepository.save(pret);
-
-            redirectAttributes.addFlashAttribute("success", "Prêt prolongé avec succès jusqu’au " + nouvelleDate + ".");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Erreur lors de la prolongation : " + e.getMessage());
         }
 
-    } catch (Exception e) {
-        redirectAttributes.addFlashAttribute("error", "Erreur lors de la prolongation : " + e.getMessage());
+        if (idAdherent != null) {
+            return "redirect:/bibliothecaire/prets_encours?idAdherent=" + idAdherent;
+        }
+        return "redirect:/bibliothecaire/prets_encours";
     }
-
-    if (idAdherent != null) {
-        return "redirect:/bibliothecaire/prets_encours?idAdherent=" + idAdherent;
-    }
-    return "redirect:/bibliothecaire/prets_encours";
-}
 
 }

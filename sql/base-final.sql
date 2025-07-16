@@ -189,3 +189,10 @@ CREATE DATABASE bibliotheque;
         libelle VARCHAR(100) DEFAULT 'Jour férié'
     );
 
+CREATE TABLE configuration_jour_ouvre (
+    id SERIAL PRIMARY KEY,
+    direction_decalage VARCHAR(10) NOT NULL CHECK (direction_decalage IN ('avant', 'apres')),
+    date_ajout TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    date_modification TIMESTAMP
+);
+

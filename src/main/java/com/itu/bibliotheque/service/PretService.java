@@ -45,6 +45,10 @@ public class PretService {
     @Autowired
     private JourFerieRepository jourFerieRepository;
 
+    @Autowired
+    private ConfigurationJourOuvreRepository configurationJourOuvreRepository;
+
+
     public String verifierEtEnregistrerPret(Adherent adherent, Exemplaire exemplaire, LocalDate dateEmprunt) {
         LocalDate aujourdHui = LocalDate.now();
 
@@ -102,7 +106,7 @@ public class PretService {
 
         // Calcule la date de retour prévue puis l'ajuste si c’est un jour non ouvré
         LocalDate dateRetourPrevue = dateEmprunt.plusDays(quota.getNbJour());
-        dateRetourPrevue = ajusterAuProchainJourOuvre(dateRetourPrevue);
+        dateRetourPrevue = ajusterAuJourOuvreSelonConfig(dateRetourPrevue);
 
         // Enregistrement du prêt
         Pret pret = new Pret();
@@ -128,6 +132,19 @@ public class PretService {
     public LocalDate ajusterAuProchainJourOuvre(LocalDate date) {
         while (estJourNonOuvre(date)) {
             date = date.plusDays(1);
+        }
+        return date;
+    }
+    public LocalDate ajusterAuJourOuvreSelonConfig(LocalDate date) {
+        ConfigurationJourOuvre config = configurationJourOuvreRepository.findTopByOrderByIdDesc();
+        if (config == null || config.getDirectionDecalage().equalsIgnoreCase("apres")) {
+            while (estJourNonOuvre(date)) {
+                date = date.plusDays(1);
+            }
+        } else if (config.getDirectionDecalage().equalsIgnoreCase("avant")) {
+            while (estJourNonOuvre(date)) {
+                date = date.minusDays(1);
+            }
         }
         return date;
     }
