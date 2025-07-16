@@ -6,6 +6,7 @@ import com.itu.bibliotheque.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -41,29 +42,36 @@ public class PretService {
     @Autowired
     private AbonnementRepository abonnementRepository;
 
+    @Autowired
+    private JourFerieRepository jourFerieRepository;
+
     public String verifierEtEnregistrerPret(Adherent adherent, Exemplaire exemplaire, LocalDate dateEmprunt) {
         LocalDate aujourdHui = LocalDate.now();
 
-        if (adherent == null ) {
-            return "Adhérent introuvable.";
-        }
-        if (exemplaire == null) {
-            return "Exemplaire introuvable.";
+        if (adherent == null) return "Adhérent introuvable.";
+        if (exemplaire == null) return "Exemplaire introuvable.";
+
+        // Refuser si date d'emprunt = jour férié ou dimanche
+        if (estJourNonOuvre(dateEmprunt)) {
+            return "La date d'emprunt ne peut pas être un dimanche ou un jour férié.";
         }
 
-
-        List<Sanction> sanctionsActives = sanctionRepository.findByAdherentAndEstActiveTrueAndDateDebutLessThanEqualAndDateFinGreaterThanEqual(adherent, dateEmprunt, dateEmprunt);
+        List<Sanction> sanctionsActives = sanctionRepository
+                .findByAdherentAndEstActiveTrueAndDateDebutLessThanEqualAndDateFinGreaterThanEqual(adherent, dateEmprunt, dateEmprunt);
 
         if (!sanctionsActives.isEmpty()) {
             return "Cet adhérent est sanctionné à la date d'emprunt et ne peut pas emprunter de livres.";
         }
 
-        boolean estAbonne = abonnementRepository.existsByAdherentAndDateDebutLessThanEqualAndDateFinGreaterThanEqual(adherent, dateEmprunt, dateEmprunt);
-        
+        boolean estAbonne = abonnementRepository
+                .existsByAdherentAndDateDebutLessThanEqualAndDateFinGreaterThanEqual(adherent, dateEmprunt, dateEmprunt);
+
         if (!estAbonne) {
             return "L'adhérent n'est pas abonné à la date d'emprunt.";
         }
-        boolean dejaEmprunteCeJour = pretRepository.existsByExemplaireAndDateEmpruntLessThanEqualAndDateRetourReelleGreaterThanEqual(exemplaire, dateEmprunt, dateEmprunt);
+
+        boolean dejaEmprunteCeJour = pretRepository
+                .existsByExemplaireAndDateEmpruntLessThanEqualAndDateRetourReelleGreaterThanEqual(exemplaire, dateEmprunt, dateEmprunt);
 
         if (dejaEmprunteCeJour) {
             return "Ce livre n’est pas disponible à la date choisie.";
@@ -92,8 +100,11 @@ public class PretService {
             return "Cet adhérent a atteint le nombre maximal de livres empruntés.";
         }
 
+        // Calcule la date de retour prévue puis l'ajuste si c’est un jour non ouvré
         LocalDate dateRetourPrevue = dateEmprunt.plusDays(quota.getNbJour());
+        dateRetourPrevue = ajusterAuProchainJourOuvre(dateRetourPrevue);
 
+        // Enregistrement du prêt
         Pret pret = new Pret();
         pret.setAdherent(adherent);
         pret.setExemplaire(exemplaire);
@@ -107,10 +118,62 @@ public class PretService {
         exemplaireRepository.save(exemplaire);
 
         enregistrerHistorique(adherent, "emprunt", "L'adhérent a emprunté l’exemplaire " + exemplaire.getId());
-
         return null;
     }
 
+    public boolean estJourNonOuvre(LocalDate date) {
+        return date.getDayOfWeek() == DayOfWeek.SUNDAY || jourFerieRepository.existsByDateFerie(date);
+    }
+
+    public LocalDate ajusterAuProchainJourOuvre(LocalDate date) {
+        while (estJourNonOuvre(date)) {
+            date = date.plusDays(1);
+        }
+        return date;
+    }
+
+    // public String rendreLivre(Integer pretId, LocalDate dateRetourReelle) {
+    //     Pret pret = pretRepository.findById(pretId)
+    //             .orElseThrow(() -> new RuntimeException("Prêt introuvable"));
+
+    //     if (pret.getDateRetourReelle() != null) {
+    //         return "Ce livre a déjà été rendu.";
+    //     }
+
+    //     pret.setDateRetourReelle(dateRetourReelle);
+    //     pretRepository.save(pret);
+
+    //     Exemplaire ex = pret.getExemplaire();
+    //     ex.setStatut("disponible");
+    //     exemplaireRepository.save(ex);
+
+    //     if (dateRetourReelle.isAfter(pret.getDateRetourPrevue())) {
+    //         Adherent adherent = pret.getAdherent();
+    //         TypeSanction typeSanction = typeSanctionRepository.findByNom("Retard de retour")
+    //                 .orElseThrow(() -> new RuntimeException("Type de sanction 'Retard de retour' introuvable"));
+
+    //         Sanction sanction = new Sanction();
+    //         sanction.setAdherent(adherent);
+    //         sanction.setTypeSanction(typeSanction);
+    //         sanction.setDescription("Retard de retour du livre n°" + ex.getId());
+    //         sanction.setDateDebut(dateRetourReelle);
+    //         sanction.setDateFin(dateRetourReelle.plusDays(typeSanction.getPenaliteJour()));
+    //         sanction.setEstActive(true);
+    //         sanction.setDateAjout(LocalDateTime.now());
+    //         sanctionRepository.save(sanction);
+
+    //         Notification notification = new Notification();
+    //         notification.setAdherent(adherent);
+    //         notification.setMessage("Vous avez reçu une sanction pour retard de retour du livre. "
+    //                 + "Sanction active du " + sanction.getDateDebut() + " au " + sanction.getDateFin() + ".");
+    //         notification.setEstLu(false);
+    //         notification.setDateNotification(LocalDateTime.now());
+    //         notificationRepository.save(notification);
+    //     }
+
+    //     enregistrerHistorique(pret.getAdherent(), "retour", "L'adhérent a rendu l’exemplaire " + pret.getExemplaire().getId());
+    //     return null;
+    // }
 
     public String rendreLivre(Integer pretId, LocalDate dateRetourReelle) {
         Pret pret = pretRepository.findById(pretId)
@@ -120,25 +183,44 @@ public class PretService {
             return "Ce livre a déjà été rendu.";
         }
 
+        if (estJourNonOuvre(dateRetourReelle)) {
+            return "La date de retour ne peut pas être un dimanche ou un jour férié.";
+        }
         pret.setDateRetourReelle(dateRetourReelle);
         pretRepository.save(pret);
 
-        Exemplaire ex = pret.getExemplaire();
-        ex.setStatut("disponible");
-        exemplaireRepository.save(ex);
+        Exemplaire exemplaire = pret.getExemplaire();
+        exemplaire.setStatut("disponible");
+        exemplaireRepository.save(exemplaire);
 
         if (dateRetourReelle.isAfter(pret.getDateRetourPrevue())) {
             Adherent adherent = pret.getAdherent();
-            TypeSanction typeSanction = typeSanctionRepository.findByNom("Retard de retour")
-                    .orElseThrow(() -> new RuntimeException("Type de sanction 'Retard de retour' introuvable"));
+            int idProfil = adherent.getProfil().getId();
+        int idTypeSanction;
+
+        switch (idProfil) {
+            case 1:
+                idTypeSanction = 1; 
+                break;
+            case 2:
+                idTypeSanction = 2; 
+                break;
+            case 3:
+                idTypeSanction = 3; 
+                break;
+            default:
+                throw new RuntimeException("Aucune règle de sanction définie pour ce profil.");
+        }
+
+
+            TypeSanction typeSanction = typeSanctionRepository.findById(idTypeSanction)
+                    .orElseThrow(() -> new RuntimeException("Type de sanction ID " + idTypeSanction + " introuvable."));
 
             Sanction sanction = new Sanction();
             sanction.setAdherent(adherent);
             sanction.setTypeSanction(typeSanction);
-            sanction.setDescription("Retard de retour du livre n°" + ex.getId());
-            // sanction.setDateDebut(LocalDate.now());
+            sanction.setDescription("Sanction automatique pour retard de retour du livre n°" + exemplaire.getId());
             sanction.setDateDebut(dateRetourReelle);
-            // sanction.setDateFin(LocalDate.now().plusDays(typeSanction.getPenaliteJour()));
             sanction.setDateFin(dateRetourReelle.plusDays(typeSanction.getPenaliteJour()));
             sanction.setEstActive(true);
             sanction.setDateAjout(LocalDateTime.now());
@@ -146,13 +228,14 @@ public class PretService {
 
             Notification notification = new Notification();
             notification.setAdherent(adherent);
-            notification.setMessage("Vous avez reçu une sanction pour retard de retour du livre. "
-                    + "Sanction active du " + sanction.getDateDebut() + " au " + sanction.getDateFin() + ".");
+            notification.setMessage("Sanction active du " + sanction.getDateDebut()
+                    + " au " + sanction.getDateFin() + " pour le livre n°" + exemplaire.getId());
             notification.setEstLu(false);
             notification.setDateNotification(LocalDateTime.now());
             notificationRepository.save(notification);
         }
-        enregistrerHistorique(pret.getAdherent(), "retour", "L'adhérent a rendu l’exemplaire " + pret.getExemplaire().getId());
+
+        enregistrerHistorique(pret.getAdherent(), "retour", "L'adhérent a rendu l’exemplaire " + exemplaire.getId());
         return null;
     }
 

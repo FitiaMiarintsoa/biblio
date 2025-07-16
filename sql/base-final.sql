@@ -182,3 +182,10 @@ CREATE DATABASE bibliotheque;
         date_suppression TIMESTAMP,
         CONSTRAINT fk_abonnement_adherent FOREIGN KEY (id_adherent) REFERENCES adherent(id) ON DELETE CASCADE
     );
+
+    CREATE TABLE jour_ferie (
+        id SERIAL PRIMARY KEY,
+        date_ferie DATE UNIQUE NOT NULL,
+        libelle VARCHAR(100) DEFAULT 'Jour férié'
+    );
+

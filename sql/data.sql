@@ -79,6 +79,23 @@ INSERT INTO type_sanction (nom, description, penalite_jour) VALUES
 INSERT INTO configuration_quota 
 (id_profil, quota_pret, quota_pret_place, quota_reservation, quota_prolongation, nb_jour) 
 VALUES
-(1, 5, 3, 2, 1, 7),
-(2, 10, 5, 5, 2, 10);
+(1, 2, 3, 1, 3, 7),
+(2, 3, 4, 2, 5, 9),
+(3, 4, 5, 3, 7, 12);
 
+-- Retard de retour (10 jours)
+-- INSERT INTO sanction (id_adherent, id_type_sanction, description, date_debut, date_fin) VALUES
+-- (1, 1, 'Retard de retour supérieur à 10 jours', '2025-07-01', '2025-07-11'),
+-- (2, 1, 'Retard de retour supérieur à 10 jours', '2025-07-01', '2025-07-11'),
+-- (3, 1, 'Retard de retour supérieur à 10 jours', '2025-07-01', '2025-07-11');
+
+-- -- Perte de livre (9 jours)
+-- INSERT INTO sanction (id_adherent, id_type_sanction, description, date_debut, date_fin) VALUES
+-- (4, 2, 'Perte de livre signalée', '2025-07-01', '2025-07-10'),
+-- (5, 2, 'Perte de livre signalée', '2025-07-01', '2025-07-10'),
+-- (6, 2, 'Perte de livre signalée', '2025-07-01', '2025-07-10');
+
+-- -- Comportement inapproprié (8 jours)
+-- INSERT INTO sanction (id_adherent, id_type_sanction, description, date_debut, date_fin) VALUES
+-- (7, 3, 'Comportement déplacé en bibliothèque', '2025-07-01', '2025-07-09'),
+-- (8, 3, 'Comportement déplacé en bibliothèque', '2025-07-01', '2025-07-09');
